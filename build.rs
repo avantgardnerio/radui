@@ -1,7 +1,6 @@
-use std::{env, fs};
+use std::{fs};
 use std::fs::OpenOptions;
 use std::io::Write;
-use std::path::Path;
 use xsd_parser::generator::builder::GeneratorBuilder;
 use xsd_parser::parser::parse;
 use xsd_parser::parser::types::{RsEntity, RsFile, TupleStruct};
@@ -11,9 +10,8 @@ fn main() {
     println!("cargo::rerun-if-changed=build.rs");
     println!("cargo::rerun-if-changed={input}");
 
-    let out_dir = env::var_os("OUT_DIR").unwrap();
-    let dest_path = Path::new(&out_dir).join("models.rs");
-    println!("cargo:warning=generating {}", dest_path.display());
+    let dest_path = "src/generated/models.rs";
+    println!("cargo:warning=generating {}", dest_path);
 
     let gen = GeneratorBuilder::default().build();
     let mut rs_file = RsFile::default();
@@ -36,5 +34,14 @@ fn main() {
         .create(true)
         .open(dest_path)
         .unwrap();
+
+    let imports = r#"use yaserde_derive::{YaDeserialize, YaSerialize};
+use xsd_types::types as xs;
+use xsd_parser::generator::validator::Validate;
+use xsd_macro_utils::UtilsTupleIo;
+use xsd_macro_utils::UtilsDefaultSerde;
+use std::str::FromStr;
+"#;
+    file.write_all(imports.as_bytes()).unwrap();
     file.write_all(code.as_bytes()).unwrap();
 }
