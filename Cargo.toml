@@ -8,3 +8,12 @@ edition = "2021"
 [dependencies]
 piston_window = "0.131.0"
 pistoncore-glfw_window = "0.80.0"
+yaserde = "0.7.1"
+yaserde_derive = "0.7.1"
+xsd-types = {git = "https://github.com/lumeohq/xsd-parser-rs.git"}
+xsd-parser = {git = "https://github.com/lumeohq/xsd-parser-rs.git"}
+xsd-macro-utils = {git = "https://github.com/lumeohq/xsd-parser-rs.git"}
+xml-rs = "0.8"
+
+[build-dependencies]
+xsd-parser = {git = "https://github.com/lumeohq/xsd-parser-rs.git"}
