@@ -1,7 +1,6 @@
 use std::fs;
 use glfw_window::GlfwWindow;
-use piston_window::{clear, Glyphs, PistonWindow, rectangle, Text, TextureContext, TextureSettings, Transformed, WindowSettings};
-use piston_window::ellipse::circle;
+use piston_window::{clear, Glyphs, PistonWindow, Text, TextureContext, TextureSettings, Transformed, WindowSettings};
 use yaserde::de::{from_str};
 use radui::generated::models::{WidgetChoice, Windows};
 
@@ -27,15 +26,14 @@ fn main() {
     while let Some(e) = window.next() {
         window.draw_2d(&e, |ctx, gl, dev| {
             clear([0.5, 0.5, 0.5, 1.0], gl);
-            match &win.child.widget_choice {
-                WidgetChoice::Box(b) => {
-                    rectangle([1.0, 0.0, 0.0, 1.0], // red
-                              [b.x, b.y, b.width, b.height],
-                              ctx.transform, gl);
+            match win.child.widget_choice.as_ref() {
+                WidgetChoice::Grid(_grid) => {
+                    // TODO: grid
                 }
                 WidgetChoice::Label(lbl) => {
+                    lbl.hi();
                     let font_size = 24;
-                    let transform = ctx.transform.trans(lbl.x, lbl.y + font_size as f64);
+                    let transform = ctx.transform.trans(0.0, font_size as f64);
                     let white = [1.0, 1.0, 1.0, 1.0];
                     Text::new_color(white, font_size)
                         .draw(&lbl.text, &mut glyphs, &ctx.draw_state, transform, gl)

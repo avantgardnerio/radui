@@ -21,25 +21,29 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:complexType name="Box">
-        <xs:attribute name="id" type="xs:string" use="required" />
-        <xs:attribute name="x" type="xs:float" use="required" />
-        <xs:attribute name="y" type="xs:float" use="required" />
-        <xs:attribute name="width" type="xs:float" use="required" />
-        <xs:attribute name="height" type="xs:float" use="required" />
+    <xs:complexType name="Grid">
+        <xs:sequence>
+            <xs:element name="children" type="GridRow" />
+        </xs:sequence>
+        <xs:attribute name="width" type="xs:string" use="required" />
+        <xs:attribute name="height" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="GridRow">
+        <xs:sequence>
+            <xs:element name="child" type="Widget" />
+        </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="Label">
         <xs:attribute name="id" type="xs:string" use="required" />
         <xs:attribute name="text" type="xs:string" use="required" />
-        <xs:attribute name="x" type="xs:float" use="required" />
-        <xs:attribute name="y" type="xs:float" use="required" />
     </xs:complexType>
 
     <xs:complexType name="Widget">
         <xs:choice>
-            <xs:element minOccurs="1" name="Box" type="Box" />
-            <xs:element minOccurs="1" name="Label" type="Label" />
+            <xs:element name="Grid" type="Grid" />
+            <xs:element name="Label" type="Label" />
         </xs:choice>
     </xs:complexType>
 

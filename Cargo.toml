@@ -3,17 +3,15 @@ name = "radui"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 piston_window = "0.131.0"
 pistoncore-glfw_window = "0.80.0"
 yaserde = "0.7.1"
 yaserde_derive = "0.7.1"
-xsd-types = {git = "https://github.com/lumeohq/xsd-parser-rs.git", rev = "80050d945861de64d0bd48de069ffac6aadf8f87"}
-xsd-parser = {git = "https://github.com/lumeohq/xsd-parser-rs.git", rev = "80050d945861de64d0bd48de069ffac6aadf8f87"}
-xsd-macro-utils = {git = "https://github.com/lumeohq/xsd-parser-rs.git", rev = "80050d945861de64d0bd48de069ffac6aadf8f87"}
+xsd-types = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "574e6c080af6cd4bf79c494ced79b83628ee87f8"}
+xsd-parser = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "574e6c080af6cd4bf79c494ced79b83628ee87f8"}
+xsd-macro-utils = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "574e6c080af6cd4bf79c494ced79b83628ee87f8"}
 xml-rs = "0.8"
 
 [build-dependencies]
-xsd-parser = {git = "https://github.com/lumeohq/xsd-parser-rs.git", rev = "80050d945861de64d0bd48de069ffac6aadf8f87"}
+xsd-parser = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "574e6c080af6cd4bf79c494ced79b83628ee87f8"}

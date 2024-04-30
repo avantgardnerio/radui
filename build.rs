@@ -38,6 +38,12 @@ fn main() {
     let imports = r#"use yaserde_derive::{YaDeserialize, YaSerialize};
 use xsd_types::types as xs;
 use xsd_parser::generator::validator::Validate;
+use yaserde::{YaDeserialize, YaSerialize};
+use std::io::{Read, Write};
+use xml::attribute::OwnedAttribute;
+use xml::namespace::Namespace;
+use yaserde::ser::Serializer;
+use yaserde::de::Deserializer;
 
 "#;
     file.write_all(imports.as_bytes()).unwrap();
