@@ -25,7 +25,7 @@ fn main() {
     let mut glyphs = Glyphs::from_bytes(font_data, factory, TextureSettings::new()).unwrap();
 
     while let Some(e) = window.next() {
-        window.draw_2d(&e, |ctx, gl, _| {
+        window.draw_2d(&e, |ctx, gl, dev| {
             clear([0.5, 0.5, 0.5, 1.0], gl);
             match &win.child.widget_choice {
                 WidgetChoice::Box(b) => {
@@ -36,10 +36,10 @@ fn main() {
                 WidgetChoice::Label(lbl) => {
                     let transform = ctx.transform.trans(lbl.x + 2.0, lbl.y + 21.0);
                     let white = [1.0, 1.0, 1.0, 1.0];
-                    println!("Drawing text {}", lbl.text);
                     Text::new_color(white, 24)
-                        .draw(lbl.text.as_str(), &mut glyphs, &ctx.draw_state, transform, gl)
+                        .draw(&lbl.text, &mut glyphs, &ctx.draw_state, transform, gl)
                         .unwrap();
+                    glyphs.factory.encoder.flush(dev);
                 }
                 WidgetChoice::__Unknown__(_) => {}
             }

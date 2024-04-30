@@ -4,7 +4,7 @@
               xsi:noNamespaceSchemaLocation="radui.xsd">
     <Window id="window1" title="RadUI" width="640" height="480">
         <child>
-            <Label id="lbl1" text="HELLO" x="20" y="20"/>
+            <Label id="lbl1" text="Hello, RadUI!" x="20" y="20"/>
         </child>
     </Window>
 </Windows>
