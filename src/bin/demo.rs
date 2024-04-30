@@ -1,6 +1,6 @@
 use std::fs;
 use glfw_window::GlfwWindow;
-use piston_window::{clear, PistonWindow, rectangle, WindowSettings};
+use piston_window::{clear, Glyphs, PistonWindow, rectangle, Text, TextureContext, TextureSettings, Transformed, WindowSettings};
 use piston_window::ellipse::circle;
 use yaserde::de::{from_str};
 use radui::generated::models::{WidgetChoice, Windows};
@@ -17,21 +17,32 @@ fn main() {
     let mut window: PistonWindow<GlfwWindow> =
         WindowSettings::new(win.title.as_str(), [win.width, win.height])
             .build().unwrap();
+    let font_data: &[u8] = include_bytes!("../../resources/FiraSans-Regular.ttf");
+    let factory = TextureContext {
+        factory: window.factory.clone(),
+        encoder: window.factory.create_command_buffer().into(),
+    };
+    let mut glyphs = Glyphs::from_bytes(font_data, factory, TextureSettings::new()).unwrap();
+
     while let Some(e) = window.next() {
-        window.draw_2d(&e, |c, g, _| {
-            clear([0.5, 0.5, 0.5, 1.0], g);
+        window.draw_2d(&e, |ctx, gl, _| {
+            clear([0.5, 0.5, 0.5, 1.0], gl);
             match &win.child.widget_choice {
                 WidgetChoice::Box(b) => {
                     rectangle([1.0, 0.0, 0.0, 1.0], // red
                               [b.x, b.y, b.width, b.height],
-                              c.transform, g);
+                              ctx.transform, gl);
                 }
-                WidgetChoice::Circle(c) => {
-                    circle(c.x, c.y, c.radius);
+                WidgetChoice::Label(lbl) => {
+                    let transform = ctx.transform.trans(lbl.x + 2.0, lbl.y + 21.0);
+                    let white = [1.0, 1.0, 1.0, 1.0];
+                    println!("Drawing text {}", lbl.text);
+                    Text::new_color(white, 24)
+                        .draw(lbl.text.as_str(), &mut glyphs, &ctx.draw_state, transform, gl)
+                        .unwrap();
                 }
                 WidgetChoice::__Unknown__(_) => {}
             }
-            circle(50.0, 50.0, 100.0);
         });
     }
 }
