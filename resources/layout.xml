@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Pointbuffers xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+<Windows xmlns:xsd="http://www.w3.org/2001/XMLSchema"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:noNamespaceSchemaLocation="radui.xsd">
-    <Pointbuffer name="Quad 1 test case" count="4">
-        <!-- Pointbuffer #1: Quad 1 - four points in quad 1 (+x,+y) to test point fit algorithm -->
-        <point id="1" x="4" y="5" z="0"/>
-        <point id="2" x="5" y="4" z="0"/>
-        <point id="3" x="6" y="5" z="0"/>
-        <point id="4" x="5" y="6" z="0"/>
-    </Pointbuffer>
-</Pointbuffers>
+    <Window id="window1" title="RadUI" width="640" height="480">
+        <child>
+            <Box id="box1" x="20" y="20" width="20" height="20"/>
+        </child>
+    </Window>
+</Windows>

@@ -1,15 +1,16 @@
 use std::fs;
 use glfw_window::GlfwWindow;
 use piston_window::{clear, PistonWindow, rectangle, WindowSettings};
-use yaserde::de::{Deserializer, from_str};
-use radui::generated::models::{Pointbuffer, Pointbuffers};
+use piston_window::ellipse::circle;
+use yaserde::de::{from_str};
+use radui::generated::models::{Windows};
 
 fn main() {
     println!("hello world");
 
     let filename = "resources/layout.xml";
     let content = fs::read_to_string(filename).unwrap();
-    let buffers: Pointbuffers = from_str(&content).unwrap();
+    let buffers: Windows = from_str(&content).unwrap();
     println!("buffers={buffers:#?}");
     
     let mut window: PistonWindow<GlfwWindow> =
@@ -21,6 +22,7 @@ fn main() {
             rectangle([1.0, 0.0, 0.0, 1.0], // red
                       [0.0, 0.0, 100.0, 100.0], // rectangle
                       c.transform, g);
+            circle(50.0, 50.0, 100.0);
         });
     }
 }

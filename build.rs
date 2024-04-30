@@ -38,9 +38,7 @@ fn main() {
     let imports = r#"use yaserde_derive::{YaDeserialize, YaSerialize};
 use xsd_types::types as xs;
 use xsd_parser::generator::validator::Validate;
-use xsd_macro_utils::UtilsTupleIo;
-use xsd_macro_utils::UtilsDefaultSerde;
-use std::str::FromStr;
+
 "#;
     file.write_all(imports.as_bytes()).unwrap();
     file.write_all(code.as_bytes()).unwrap();

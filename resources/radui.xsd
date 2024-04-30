@@ -1,31 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs ="http://www.w3.org/2001/XMLSchema">
 
-    <xs:element name="Pointbuffers">
+    <xs:element name="Windows">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="Pointbuffer" maxOccurs="unbounded"/>
+                <xs:element ref="Window" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="Pointbuffer">
+    <xs:element name="Window">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="point" maxOccurs="unbounded"/>
+                <xs:element name="child" type="Widget" />
             </xs:sequence>
-            <xs:attribute name="name" type="xs:string" use="required"/>
-            <xs:attribute name="count" type="xs:integer" use="required" />
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="point">
-        <xs:complexType>
             <xs:attribute name="id" type="xs:string" use="required" />
-            <xs:attribute name="x" type="xs:integer" use="required" />
-            <xs:attribute name="y" type="xs:integer" use="required" />
-            <xs:attribute name="z" type="xs:integer" use="required" />
+            <xs:attribute name="title" type="xs:string" use="required"/>
+            <xs:attribute name="width" type="xs:integer" use="required" />
+            <xs:attribute name="height" type="xs:integer" use="required" />
         </xs:complexType>
     </xs:element>
+
+    <xs:complexType name="Box">
+        <xs:attribute name="id" type="xs:string" use="required" />
+        <xs:attribute name="x" type="xs:integer" use="required" />
+        <xs:attribute name="y" type="xs:integer" use="required" />
+        <xs:attribute name="width" type="xs:integer" use="required" />
+        <xs:attribute name="height" type="xs:integer" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="Circle">
+        <xs:attribute name="id" type="xs:string" use="required" />
+        <xs:attribute name="x" type="xs:integer" use="required" />
+        <xs:attribute name="y" type="xs:integer" use="required" />
+        <xs:attribute name="radius" type="xs:integer" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="Widget">
+        <xs:choice>
+            <xs:element minOccurs="1" name="Box" type="Box" />
+            <xs:element minOccurs="1" name="Circle" type="Circle" />
+        </xs:choice>
+    </xs:complexType>
 
 </xs:schema>
