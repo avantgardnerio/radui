@@ -27,7 +27,7 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="itemtype">
+    <xs:complexType name="ItemType">
         <xs:sequence>
             <xs:element name="title" type="stringtype"/>
             <xs:element name="note" type="stringtype" minOccurs="0"/>
@@ -40,10 +40,17 @@
         <xs:sequence>
             <xs:element name="orderperson" type="stringtype"/>
             <xs:element name="shipto" type="shiptotype"/>
-            <xs:element name="item" maxOccurs="unbounded" type="itemtype"/>
+            <xs:element name="item" maxOccurs="unbounded" type="ItemType"/>
         </xs:sequence>
         <xs:attribute name="orderid" type="orderidtype" use="required"/>
     </xs:complexType>
 
     <xs:element name="ShipOrder2" type="ShipOrderType"/>
+
+    <xs:complexType name="OrderItemEnum">
+        <xs:choice>
+            <xs:element minOccurs="0" name="Order" type="ShipOrderType" />
+            <xs:element minOccurs="0" name="Item" type="ItemType" />
+        </xs:choice>
+    </xs:complexType>
 </xs:schema>
