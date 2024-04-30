@@ -17,13 +17,6 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let order = ShipOrderType {
-            orderperson: Default::default(),
-            shipto: Default::default(),
-            item: vec![],
-            orderid: Default::default(),
-        };
-        
         let result = add(2, 2);
         assert_eq!(result, 4);
     }
