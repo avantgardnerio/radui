@@ -34,9 +34,10 @@ fn main() {
                               ctx.transform, gl);
                 }
                 WidgetChoice::Label(lbl) => {
-                    let transform = ctx.transform.trans(lbl.x + 2.0, lbl.y + 21.0);
+                    let font_size = 24;
+                    let transform = ctx.transform.trans(lbl.x, lbl.y + font_size as f64);
                     let white = [1.0, 1.0, 1.0, 1.0];
-                    Text::new_color(white, 24)
+                    Text::new_color(white, font_size)
                         .draw(&lbl.text, &mut glyphs, &ctx.draw_state, transform, gl)
                         .unwrap();
                     glyphs.factory.encoder.flush(dev);
