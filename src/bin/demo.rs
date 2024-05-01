@@ -34,7 +34,7 @@ fn main() {
     let mut win: widgets::window::Window = win.into();
 
     let event_loop = EventLoop::new();
-    let (context, gl_display, window, surface) = create_window(&event_loop);
+    let (context, gl_display, window, surface) = create_window(&event_loop, win.model.title.as_str());
 
     let renderer = unsafe { OpenGl::new_from_function_cstr(|s| gl_display.get_proc_address(s) as *const _) }
         .expect("Cannot create renderer");
@@ -71,15 +71,6 @@ fn main() {
                 c.draw(&mut canvas);
             }
 
-            // Make smol red rectangle
-            canvas.clear_rect(
-                mouse_position.x as u32,
-                mouse_position.y as u32,
-                30,
-                30,
-                Color::rgbf(1., 0., 0.),
-            );
-
             canvas.flush();
             surface.swap_buffers(&context).expect("Could not swap buffers");
         }
@@ -87,10 +78,10 @@ fn main() {
     });
 }
 
-fn create_window(event_loop: &EventLoop<()>) -> (PossiblyCurrentContext, Display, Window, Surface<WindowSurface>) {
+fn create_window(event_loop: &EventLoop<()>, title: &str) -> (PossiblyCurrentContext, Display, Window, Surface<WindowSurface>) {
     let window_builder = WindowBuilder::new()
         .with_inner_size(PhysicalSize::new(1000., 600.))
-        .with_title("Femtovg");
+        .with_title(title);
 
     let template = ConfigTemplateBuilder::new().with_alpha_size(8);
 

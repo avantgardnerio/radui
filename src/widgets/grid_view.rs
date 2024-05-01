@@ -1,4 +1,4 @@
-use femtovg::Canvas;
+use femtovg::{Canvas, Color, Paint, Path};
 use femtovg::renderer::OpenGl;
 use crate::generated::models;
 use crate::widgets;
@@ -7,8 +7,8 @@ use crate::geom::Size;
 
 pub struct GridView {
     pub model: models::GridView,
-    pub width: f64,
-    pub height: f64,
+    pub width: u32,
+    pub height: u32,
 }
 
 impl IWidget for GridView {
@@ -16,11 +16,14 @@ impl IWidget for GridView {
         &self,
         canvas: &mut Canvas<OpenGl>
     ) {
-        let rect = [0.0, 0.0, self.width, self.height];
-        // rectangle(WHITE, rect, ctx.transform, gl);
+        let mut path = Path::new();
+        path.rect(0.0, 0.0, self.width as f32, self.height as f32);
+        canvas.fill_path(&path, &Paint::color(Color::white()));
     }
 
-    fn layout(&mut self, _width: u32, _height: u32) {
+    fn layout(&mut self, width: u32, height: u32) {
+        self.width = width;
+        self.height = height;
     }
 
     fn get_width(&self) -> Size {
@@ -34,7 +37,7 @@ impl IWidget for GridView {
 
 impl From<models::GridView> for Box<dyn IWidget> {
     fn from(value: models::GridView) -> Self {
-        let me = widgets::grid_view::GridView { model: value, width: 0.0, height: 0.0 };
+        let me = widgets::grid_view::GridView { model: value, width: 0, height: 0 };
         Box::new(me)
     }
 }

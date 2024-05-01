@@ -30,7 +30,6 @@ impl IWidget for Label {
     }
 
     fn layout(&mut self, width: u32, height: u32) {
-        println!("label width={width} height={height}");
         self.width = width;
         self.height = height;
     }
