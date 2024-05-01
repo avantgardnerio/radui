@@ -1,13 +1,13 @@
-use std::fs;
-use gfx_device_gl::{Factory, Resources, CommandBuffer};
+use gfx_device_gl::{CommandBuffer, Factory, Resources};
 use glfw_window::GlfwWindow;
-use piston_window::{clear, Glyphs, PistonWindow, TextureContext, TextureSettings, Window, WindowSettings};
 use piston_window::color::WHITE;
-use yaserde::de::{from_str};
+use piston_window::{clear, Glyphs, PistonWindow, TextureContext, TextureSettings, Window, WindowSettings};
 use radui::generated::models;
-use radui::generated::models::{Windows};
+use radui::generated::models::Windows;
 use radui::widgets;
 use radui::widgets::IWidget;
+use std::fs;
+use yaserde::de::from_str;
 
 fn main() {
     let filename = "resources/layout.xml";
@@ -18,13 +18,10 @@ fn main() {
     let mut win: widgets::window::Window = win.into();
 
     let mut window: PistonWindow<GlfwWindow> =
-        WindowSettings::new(win.model.title.as_str(), [win.model.width, win.model.height])
-            .build().unwrap();
+        WindowSettings::new(win.model.title.as_str(), [win.model.width, win.model.height]).build().unwrap();
     let font_data: &[u8] = include_bytes!("../../resources/FiraSans-Regular.ttf");
-    let factory: TextureContext<Factory, Resources, CommandBuffer> = TextureContext {
-        factory: window.factory.clone(),
-        encoder: window.factory.create_command_buffer().into(),
-    };
+    let factory: TextureContext<Factory, Resources, CommandBuffer> =
+        TextureContext { factory: window.factory.clone(), encoder: window.factory.create_command_buffer().into() };
     let mut glyphs = Glyphs::from_bytes(font_data, factory, TextureSettings::new()).unwrap();
 
     let mut first = true;

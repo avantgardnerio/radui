@@ -1,4 +1,4 @@
-use std::{fs};
+use std::fs;
 use std::fs::OpenOptions;
 use std::io::Write;
 use xsd_parser::generator::builder::GeneratorBuilder;
@@ -28,12 +28,7 @@ fn main() {
     let rs_file = parse(xsd.as_str()).unwrap();
     let gen = GeneratorBuilder::default().build();
     let code = gen.generate_rs_file(&rs_file);
-    let mut file = OpenOptions::new()
-        .write(true)
-        .truncate(true)
-        .create(true)
-        .open(dest_path)
-        .unwrap();
+    let mut file = OpenOptions::new().write(true).truncate(true).create(true).open(dest_path).unwrap();
 
     let imports = r#"use yaserde_derive::{YaDeserialize, YaSerialize};
 use xsd_types::types as xs;
