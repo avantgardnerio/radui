@@ -1,8 +1,9 @@
+use femtovg::{Canvas, Color, Paint, Path};
+use femtovg::renderer::OpenGl;
 use crate::generated::models;
 use crate::widgets::IWidget;
 use crate::geom::Size;
 
-const MENU_BACKGROUND: [f32; 4] = [246.0 / 255.0, 245.0 / 255.0, 244.0 / 255.0, 1.0];
 const FONT_SIZE: u32 = 14;
 
 pub struct Label {
@@ -14,9 +15,12 @@ pub struct Label {
 impl IWidget for Label {
     fn draw(
         &self,
+        canvas: &mut Canvas<OpenGl>
     ) {
-        // let rect = [0.0, 0.0, self.width, self.height];
-        // rectangle(MENU_BACKGROUND, rect, ctx.transform, gl);
+        let mut path = Path::new();
+        path.rect(0.0, 0.0, self.width as f32, self.height as f32);
+        canvas.fill_path(&path, &Paint::color(Color::rgb(246, 245, 244)));
+
         // line_from_to(WHITE, 1.0, [0.0, 0.0], [self.width - 1.0, 0.0], ctx.transform, gl); // top
         // line_from_to(WHITE, 1.0, [0.0, 0.0], [0.0, self.height - 1.0], ctx.transform, gl); // left
         // line_from_to(GRAY, 1.0, [self.width - 1.0, self.height * 2.0], [0.0, self.height - 1.0], ctx.transform, gl); // bottom

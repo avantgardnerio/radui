@@ -1,3 +1,5 @@
+use femtovg::Canvas;
+use femtovg::renderer::OpenGl;
 use crate::generated::models;
 use crate::widgets;
 use crate::widgets::IWidget;
@@ -12,6 +14,7 @@ pub struct GridView {
 impl IWidget for GridView {
     fn draw(
         &self,
+        canvas: &mut Canvas<OpenGl>
     ) {
         let rect = [0.0, 0.0, self.width, self.height];
         // rectangle(WHITE, rect, ctx.transform, gl);

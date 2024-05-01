@@ -67,6 +67,10 @@ fn main() {
 
             canvas.clear_rect(0, 0, size.width, size.height, Color::black());
 
+            if let Some(c) = win.child.as_ref() {
+                c.draw(&mut canvas);
+            }
+
             // Make smol red rectangle
             canvas.clear_rect(
                 mouse_position.x as u32,
@@ -76,26 +80,11 @@ fn main() {
                 Color::rgbf(1., 0., 0.),
             );
 
-            // Tell renderer to execute all drawing commands
             canvas.flush();
-            // Display what we've just rendered
             surface.swap_buffers(&context).expect("Could not swap buffers");
         }
         _ => {}
     });
-
-    // while let Some(e) = window.next() {
-    //     let width = window.window.size().width;
-    //     let height = window.window.size().height;
-    //
-    //     window.draw_2d(&e, |ctx, gl, dev| {
-    //         // clear(WHITE, gl);
-    //         if let Some(c) = win.child.as_ref() {
-    //             c.draw();
-    //         }
-    //         glyphs.factory.encoder.flush(dev);
-    //     });
-    // }
 }
 
 fn create_window(event_loop: &EventLoop<()>) -> (PossiblyCurrentContext, Display, Window, Surface<WindowSurface>) {

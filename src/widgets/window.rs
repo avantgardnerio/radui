@@ -1,3 +1,5 @@
+use femtovg::Canvas;
+use femtovg::renderer::OpenGl;
 use crate::generated::models;
 use crate::generated::models::WidgetChoice;
 use crate::widgets;
@@ -12,6 +14,7 @@ pub struct Window {
 impl IWidget for Window {
     fn draw(
         &self,
+        canvas: &mut Canvas<OpenGl>
     ) {
         todo!()
     }
