@@ -21,28 +21,31 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:complexType name="Grid">
+    <xs:complexType name="VBox">
         <xs:sequence>
-            <xs:element name="children" type="GridRow" />
+            <xs:element name="children" type="Widget" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="width" type="xs:string" use="required" />
-        <xs:attribute name="height" type="xs:string" use="required" />
-    </xs:complexType>
-
-    <xs:complexType name="GridRow">
-        <xs:sequence>
-            <xs:element name="child" type="Widget" />
-        </xs:sequence>
+        <xs:attribute name="width" type="xs:string" />
+        <xs:attribute name="height" type="xs:string" />
     </xs:complexType>
 
     <xs:complexType name="Label">
-        <xs:attribute name="id" type="xs:string" use="required" />
+        <xs:attribute name="id" type="xs:string" />
         <xs:attribute name="text" type="xs:string" use="required" />
+        <xs:attribute name="width" type="xs:string" />
+        <xs:attribute name="height" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="GridView">
+        <xs:attribute name="id" type="xs:string" />
+        <xs:attribute name="width" type="xs:string" />
+        <xs:attribute name="height" type="xs:string" />
     </xs:complexType>
 
     <xs:complexType name="Widget">
         <xs:choice>
-            <xs:element name="Grid" type="Grid" />
+            <xs:element name="GridView" type="GridView" />
+            <xs:element name="VBox" type="VBox" />
             <xs:element name="Label" type="Label" />
         </xs:choice>
     </xs:complexType>

@@ -1,12 +1,13 @@
 use std::fs;
+use gfx_device_gl::{Factory, Resources, CommandBuffer};
 use glfw_window::GlfwWindow;
 use piston_window::{clear, Glyphs, PistonWindow, Text, TextureContext, TextureSettings, Transformed, WindowSettings};
+use piston_window::color::WHITE;
 use yaserde::de::{from_str};
 use radui::generated::models::{WidgetChoice, Windows};
+use radui::widgets::IWidget;
 
 fn main() {
-    println!("hello world");
-
     let filename = "resources/layout.xml";
     let content = fs::read_to_string(filename).unwrap();
     let windows: Windows = from_str(&content).unwrap();
@@ -17,7 +18,7 @@ fn main() {
         WindowSettings::new(win.title.as_str(), [win.width, win.height])
             .build().unwrap();
     let font_data: &[u8] = include_bytes!("../../resources/FiraSans-Regular.ttf");
-    let factory = TextureContext {
+    let factory: TextureContext<Factory, Resources, CommandBuffer> = TextureContext {
         factory: window.factory.clone(),
         encoder: window.factory.create_command_buffer().into(),
     };
@@ -25,23 +26,14 @@ fn main() {
 
     while let Some(e) = window.next() {
         window.draw_2d(&e, |ctx, gl, dev| {
-            clear([0.5, 0.5, 0.5, 1.0], gl);
+            clear(WHITE, gl);
             match win.child.widget_choice.as_ref() {
-                WidgetChoice::Grid(_grid) => {
-                    // TODO: grid
-                }
-                WidgetChoice::Label(lbl) => {
-                    lbl.hi();
-                    let font_size = 24;
-                    let transform = ctx.transform.trans(0.0, font_size as f64);
-                    let white = [1.0, 1.0, 1.0, 1.0];
-                    Text::new_color(white, font_size)
-                        .draw(&lbl.text, &mut glyphs, &ctx.draw_state, transform, gl)
-                        .unwrap();
-                    glyphs.factory.encoder.flush(dev);
-                }
+                WidgetChoice::Vbox(vbox) => vbox.draw(&ctx, gl, &mut glyphs),
+                WidgetChoice::Label(lbl) => lbl.draw(&ctx, gl, &mut glyphs),
                 WidgetChoice::__Unknown__(_) => {}
+                WidgetChoice::GridView(_) => {}
             }
+            glyphs.factory.encoder.flush(dev);
         });
     }
 }
