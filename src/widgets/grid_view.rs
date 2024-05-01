@@ -1,4 +1,4 @@
-use femtovg::{Canvas, Color, Paint, Path};
+use femtovg::{Canvas, Color, FontId, Paint, Path};
 use femtovg::renderer::OpenGl;
 use crate::generated::models;
 use crate::widgets;
@@ -14,7 +14,8 @@ pub struct GridView {
 impl IWidget for GridView {
     fn draw(
         &self,
-        canvas: &mut Canvas<OpenGl>
+        canvas: &mut Canvas<OpenGl>,
+        font: &FontId,
     ) {
         let mut path = Path::new();
         path.rect(0.0, 0.0, self.width as f32, self.height as f32);

@@ -1,5 +1,5 @@
 use std::iter::once;
-use femtovg::Canvas;
+use femtovg::{Canvas, FontId};
 use femtovg::renderer::OpenGl;
 use crate::generated::models;
 use crate::generated::models::WidgetChoice;
@@ -17,7 +17,8 @@ pub struct Vbox {
 impl IWidget for Vbox {
     fn draw(
         &self,
-        canvas: &mut Canvas<OpenGl>
+        canvas: &mut Canvas<OpenGl>,
+        font: &FontId,
     ) {
         println!("draw");
         for (idx, (top, child)) in self.children.iter().enumerate() {
@@ -39,7 +40,7 @@ impl IWidget for Vbox {
             //     window_size: viewport.window_size
             // });
             // let clipped = Context { transform, viewport, draw_state, ..ctx.clone() };
-            child.draw(canvas);
+            child.draw(canvas, font);
             canvas.reset_transform();
         }
     }

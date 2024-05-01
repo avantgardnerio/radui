@@ -24,6 +24,7 @@ use glutin::{
     prelude::*,
     surface::{SurfaceAttributesBuilder, WindowSurface},
 };
+use resource::resource;
 
 fn main() {
     let filename = "resources/layout.xml";
@@ -40,7 +41,10 @@ fn main() {
         .expect("Cannot create renderer");
 
     let mut canvas = Canvas::new(renderer).expect("Cannot create canvas");
-    canvas.set_size(1000, 600, window.scale_factor() as f32);
+    canvas.set_size(1000, 600, window.scale_factor() as f32); // TODO: window size from model
+    let font = canvas
+        .add_font_mem(&resource!("resources/FiraSans-Regular.ttf"))
+        .expect("Cannot add font");
 
     let mut first = true;
     let mut mouse_position = PhysicalPosition::new(0., 0.);
@@ -68,7 +72,7 @@ fn main() {
             canvas.clear_rect(0, 0, size.width, size.height, Color::black());
 
             if let Some(c) = win.child.as_ref() {
-                c.draw(&mut canvas);
+                c.draw(&mut canvas, &font);
             }
 
             canvas.flush();

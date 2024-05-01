@@ -1,10 +1,10 @@
-use femtovg::{Canvas, Color, Paint, Path};
+use femtovg::{Canvas, Color, FontId, Paint, Path};
 use femtovg::renderer::OpenGl;
 use crate::generated::models;
 use crate::widgets::IWidget;
 use crate::geom::Size;
 
-const FONT_SIZE: u32 = 14;
+const FONT_SIZE: f32 = 14.0;
 
 pub struct Label {
     pub model: models::Label,
@@ -15,7 +15,8 @@ pub struct Label {
 impl IWidget for Label {
     fn draw(
         &self,
-        canvas: &mut Canvas<OpenGl>
+        canvas: &mut Canvas<OpenGl>,
+        font: &FontId,
     ) {
         let mut path = Path::new();
         path.rect(0.0, 0.0, self.width as f32, self.height as f32);
@@ -27,6 +28,11 @@ impl IWidget for Label {
         // line_from_to(GRAY, 1.0, [self.width - 1.0, self.height - 1.0], [self.width - 1.0, 0.0], ctx.transform, gl); // right
         // let text = Text::new_color(BLACK, FONT_SIZE);
         // text.draw_pos(&self.model.text, [2.0, FONT_SIZE as f64], glyphs, &ctx.draw_state, ctx.transform, gl).unwrap();
+
+        let mut paint = Paint::color(Color::black());
+        paint.set_font(&[*font]);
+        paint.set_font_size(FONT_SIZE);
+        canvas.fill_text(0.0, FONT_SIZE, self.model.text.as_str(), &paint).expect("Can't write");
     }
 
     fn layout(&mut self, width: u32, height: u32) {

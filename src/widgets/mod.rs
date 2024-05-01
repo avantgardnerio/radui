@@ -1,4 +1,4 @@
-use femtovg::Canvas;
+use femtovg::{Canvas, FontId};
 use femtovg::renderer::OpenGl;
 use crate::geom::Size;
 
@@ -11,7 +11,8 @@ pub mod window;
 pub trait IWidget {
     fn draw(
         &self,
-        canvas: &mut Canvas<OpenGl>
+        canvas: &mut Canvas<OpenGl>,
+        font: &FontId,
     );
 
     fn layout(&mut self, width: u32, height: u32);

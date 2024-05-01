@@ -1,4 +1,4 @@
-use femtovg::Canvas;
+use femtovg::{Canvas, FontId};
 use femtovg::renderer::OpenGl;
 use crate::generated::models;
 use crate::generated::models::WidgetChoice;
@@ -14,7 +14,8 @@ pub struct Window {
 impl IWidget for Window {
     fn draw(
         &self,
-        canvas: &mut Canvas<OpenGl>
+        canvas: &mut Canvas<OpenGl>,
+        font: &FontId,
     ) {
         todo!()
     }
