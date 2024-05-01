@@ -38,7 +38,7 @@ impl From<models::Window> for widgets::window::Window {
             };
             child
         });
-        let me = widgets::window::Window { model: value, child };
-        me
+
+        widgets::window::Window { model: value, child }
     }
 }

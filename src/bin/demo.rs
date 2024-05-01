@@ -28,13 +28,17 @@ fn main() {
         let width = window.window.size().width;
         let height = window.window.size().height;
         if first {
-            win.child.as_mut().map(|c| c.layout(width, height));
+            if let Some(c) = win.child.as_mut() {
+                c.layout(width, height)
+            }
             first = false;
         }
 
         window.draw_2d(&e, |ctx, gl, dev| {
             clear(WHITE, gl);
-            win.child.as_ref().map(|c| c.draw(&ctx, gl, &mut glyphs));
+            if let Some(c) = win.child.as_ref() {
+                c.draw(&ctx, gl, &mut glyphs)
+            }
             glyphs.factory.encoder.flush(dev);
         });
     }
