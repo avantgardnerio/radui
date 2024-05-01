@@ -7,9 +7,9 @@ use crate::geom::Size;
 
 pub struct Vbox {
     pub model: models::Vbox,
-    pub children: Vec<(f64, Box<dyn IWidget>)>,
-    pub width: f64,
-    pub height: f64,
+    pub children: Vec<(u32, Box<dyn IWidget>)>,
+    pub width: u32,
+    pub height: u32,
 }
 
 impl IWidget for Vbox {
@@ -49,7 +49,7 @@ impl IWidget for Vbox {
         }
     }
 
-    fn layout(&mut self, width: f64, height: f64) {
+    fn layout(&mut self, width: u32, height: u32) {
         self.width = width;
         self.height = height;
 
@@ -60,12 +60,12 @@ impl IWidget for Vbox {
                 Size::Relative(n) => Either::Right(n),
             }
         });
-        let abs_height: f64 = abs.iter().sum();
-        let rel_total: f64 = rel.iter().sum();
-        let remaining = (height - abs_height).abs();
+        let abs_height: u32 = abs.iter().sum();
+        let rel_total: u32 = rel.iter().sum();
+        let remaining = height - abs_height;
 
         // position tops
-        let mut cursor = 0.0;
+        let mut cursor = 0;
         for (top, child) in self.children.iter_mut() {
             *top = cursor;
             println!("top={top}");
@@ -96,7 +96,7 @@ impl IWidget for Vbox {
 impl From<models::Vbox> for Box<dyn IWidget> {
     fn from(mut value: models::Vbox) -> Self {
         println!("childrec={}", value.children.len());
-        let children: Vec<(f64, _)> = value
+        let children: Vec<(u32, _)> = value
             .children
             .drain(..)
             .map(|c| {
@@ -106,10 +106,10 @@ impl From<models::Vbox> for Box<dyn IWidget> {
                     WidgetChoice::Label(c) => c.into(),
                     WidgetChoice::__Unknown__(_) => panic!("Unknown element"),
                 };
-                (0.0, child)
+                (0, child)
             })
             .collect();
-        let me = Vbox { model: value, children, width: 0.0, height: 0.0 };
+        let me = Vbox { model: value, children, width: 0, height: 0 };
         Box::new(me)
     }
 }

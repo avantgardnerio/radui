@@ -16,7 +16,7 @@ impl IWidget for Window {
         todo!()
     }
 
-    fn layout(&mut self, _width: f64, _height: f64) {
+    fn layout(&mut self, _width: u32, _height: u32) {
         todo!()
     }
 

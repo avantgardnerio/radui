@@ -54,7 +54,32 @@ fn main() {
             _ => {}
         },
         Event::RedrawRequested(_) => {
-            render(&context, &surface, &window, &mut canvas, mouse_position);
+            // Make sure the canvas has the right size:
+            let size = window.inner_size();
+            canvas.set_size(size.width, size.height, window.scale_factor() as f32);
+
+            if first {
+                if let Some(c) = win.child.as_mut() {
+                    c.layout(size.width, size.height)
+                }
+                first = false;
+            }
+
+            canvas.clear_rect(0, 0, size.width, size.height, Color::black());
+
+            // Make smol red rectangle
+            canvas.clear_rect(
+                mouse_position.x as u32,
+                mouse_position.y as u32,
+                30,
+                30,
+                Color::rgbf(1., 0., 0.),
+            );
+
+            // Tell renderer to execute all drawing commands
+            canvas.flush();
+            // Display what we've just rendered
+            surface.swap_buffers(&context).expect("Could not swap buffers");
         }
         _ => {}
     });
@@ -62,12 +87,6 @@ fn main() {
     // while let Some(e) = window.next() {
     //     let width = window.window.size().width;
     //     let height = window.window.size().height;
-    //     if first {
-    //         if let Some(c) = win.child.as_mut() {
-    //             c.layout(width, height)
-    //         }
-    //         first = false;
-    //     }
     //
     //     window.draw_2d(&e, |ctx, gl, dev| {
     //         // clear(WHITE, gl);
@@ -77,34 +96,6 @@ fn main() {
     //         glyphs.factory.encoder.flush(dev);
     //     });
     // }
-}
-
-fn render<T: Renderer>(
-    context: &PossiblyCurrentContext,
-    surface: &Surface<WindowSurface>,
-    window: &Window,
-    canvas: &mut Canvas<T>,
-    square_position: PhysicalPosition<f64>,
-) {
-    // Make sure the canvas has the right size:
-    let size = window.inner_size();
-    canvas.set_size(size.width, size.height, window.scale_factor() as f32);
-
-    canvas.clear_rect(0, 0, size.width, size.height, Color::black());
-
-    // Make smol red rectangle
-    canvas.clear_rect(
-        square_position.x as u32,
-        square_position.y as u32,
-        30,
-        30,
-        Color::rgbf(1., 0., 0.),
-    );
-
-    // Tell renderer to execute all drawing commands
-    canvas.flush();
-    // Display what we've just rendered
-    surface.swap_buffers(context).expect("Could not swap buffers");
 }
 
 fn create_window(event_loop: &EventLoop<()>) -> (PossiblyCurrentContext, Display, Window, Surface<WindowSurface>) {

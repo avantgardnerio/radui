@@ -11,7 +11,7 @@ pub trait IWidget {
         &self,
     );
 
-    fn layout(&mut self, width: f64, height: f64);
+    fn layout(&mut self, width: u32, height: u32);
 
     fn get_width(&self) -> Size;
 
