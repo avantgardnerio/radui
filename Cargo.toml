@@ -4,9 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-piston_window = "0.131.0"
-pistoncore-glfw_window = "0.80.0"
-gfx_device_gl = "0.16.2"
+glutin = "0.30.0"
+glutin-winit = "0.3.0"
+winit = "0.28.1"
+raw-window-handle = "0.5.0"
+femtovg = "0.9.1"
 yaserde = "0.7.1"
 yaserde_derive = "0.7.1"
 xsd-types = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "b70a36b166947201a0073c9528815c39e3c72789"}

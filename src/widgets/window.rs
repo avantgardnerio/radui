@@ -2,9 +2,6 @@ use crate::generated::models;
 use crate::generated::models::WidgetChoice;
 use crate::widgets;
 use crate::widgets::IWidget;
-use gfx_device_gl::{CommandBuffer, Factory, Resources};
-use piston_window::glyph_cache::rusttype::GlyphCache;
-use piston_window::{Context, G2d, Texture, TextureContext};
 use crate::geom::Size;
 
 pub struct Window {
@@ -15,9 +12,6 @@ pub struct Window {
 impl IWidget for Window {
     fn draw(
         &self,
-        _ctx: &Context,
-        _gl: &mut G2d,
-        _glyphs: &mut GlyphCache<TextureContext<Factory, Resources, CommandBuffer>, Texture<Resources>>,
     ) {
         todo!()
     }

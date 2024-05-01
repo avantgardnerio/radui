@@ -2,10 +2,7 @@ use std::iter::once;
 use crate::generated::models;
 use crate::generated::models::WidgetChoice;
 use crate::widgets::IWidget;
-use gfx_device_gl::{CommandBuffer, Factory, Resources};
 use itertools::{Either, Itertools};
-use piston_window::glyph_cache::rusttype::GlyphCache;
-use piston_window::{Context, G2d, Texture, TextureContext, Transformed, Viewport};
 use crate::geom::Size;
 
 pub struct Vbox {
@@ -18,40 +15,37 @@ pub struct Vbox {
 impl IWidget for Vbox {
     fn draw(
         &self,
-        ctx: &Context,
-        gl: &mut G2d,
-        glyphs: &mut GlyphCache<TextureContext<Factory, Resources, CommandBuffer>, Texture<Resources>>,
     ) {
         println!("draw");
         for (idx, (top, child)) in self.children.iter().enumerate() {
             let bottom = self.children.get(idx + 1).map(|(t, _c)| *t).unwrap_or(self.height);
             let height = bottom - top;
-            let viewport = ctx.viewport.unwrap();
+            // let viewport = ctx.viewport.unwrap();
             let clip_rect = [0, *top as u32, self.width as u32, height as u32];
-            let scale_x = viewport.draw_size[0] as f64 / viewport.window_size[0];
-            let scale_y = viewport.draw_size[1] as f64 / viewport.window_size[1];
-            //println!("view={:?} trans={:?}", ctx.view, trans);
-            let clip_rect = [
-                ((0.0 + viewport.rect[0] as f64) * scale_x) as u32,
-                ((0.0 + viewport.rect[1] as f64) * scale_y) as u32,
-                (self.width * scale_x) as u32,
-                (self.height * scale_y) as u32
-            ];
+            // let scale_x = viewport.draw_size[0] as f64 / viewport.window_size[0];
+            // let scale_y = viewport.draw_size[1] as f64 / viewport.window_size[1];
+            // //println!("view={:?} trans={:?}", ctx.view, trans);
+            // let clip_rect = [
+            //     ((0.0 + viewport.rect[0] as f64) * scale_x) as u32,
+            //     ((0.0 + viewport.rect[1] as f64) * scale_y) as u32,
+            //     (self.width * scale_x) as u32,
+            //     (self.height * scale_y) as u32
+            // ];
             println!("child={idx} rect={clip_rect:?}");
-            let transform = ctx.transform.trans(0.0, *top);
-            let draw_state = ctx.draw_state.scissor(clip_rect);
-            let viewport = Some(Viewport {
-                rect: [
-                    0 + viewport.rect[0],
-                    0 + viewport.rect[1],
-                    self.width as i32 + viewport.rect[2],
-                    height as i32 + viewport.rect[3],
-                ],
-                draw_size: viewport.draw_size,
-                window_size: viewport.window_size
-            });
-            let clipped = Context { transform, viewport, draw_state, ..ctx.clone() };
-            child.draw(&clipped, gl, glyphs);
+            // let transform = ctx.transform.trans(0.0, *top);
+            // let draw_state = ctx.draw_state.scissor(clip_rect);
+            // let viewport = Some(Viewport {
+            //     rect: [
+            //         0 + viewport.rect[0],
+            //         0 + viewport.rect[1],
+            //         self.width as i32 + viewport.rect[2],
+            //         height as i32 + viewport.rect[3],
+            //     ],
+            //     draw_size: viewport.draw_size,
+            //     window_size: viewport.window_size
+            // });
+            // let clipped = Context { transform, viewport, draw_state, ..ctx.clone() };
+            // child.draw(&clipped, gl, glyphs);
         }
     }
 
