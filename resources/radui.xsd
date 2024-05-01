@@ -12,7 +12,7 @@
     <xs:element name="Window">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="child" type="Widget" />
+                <xs:element name="child" type="Widget" minOccurs="0" />
             </xs:sequence>
             <xs:attribute name="id" type="xs:string" use="required" />
             <xs:attribute name="title" type="xs:string" use="required"/>

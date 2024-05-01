@@ -9,10 +9,10 @@ pistoncore-glfw_window = "0.80.0"
 gfx_device_gl = "0.16.2"
 yaserde = "0.7.1"
 yaserde_derive = "0.7.1"
-xsd-types = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "3049b6634962d51a6e83998ca9b51d0b7fc580a4"}
-xsd-parser = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "3049b6634962d51a6e83998ca9b51d0b7fc580a4"}
-xsd-macro-utils = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "3049b6634962d51a6e83998ca9b51d0b7fc580a4"}
+xsd-types = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "b70a36b166947201a0073c9528815c39e3c72789"}
+xsd-parser = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "b70a36b166947201a0073c9528815c39e3c72789"}
+xsd-macro-utils = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "b70a36b166947201a0073c9528815c39e3c72789"}
 xml-rs = "0.8"
 
 [build-dependencies]
-xsd-parser = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "3049b6634962d51a6e83998ca9b51d0b7fc580a4"}
+xsd-parser = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "b70a36b166947201a0073c9528815c39e3c72789"}
