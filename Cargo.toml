@@ -13,6 +13,7 @@ xsd-types = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = 
 xsd-parser = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "b70a36b166947201a0073c9528815c39e3c72789"}
 xsd-macro-utils = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "b70a36b166947201a0073c9528815c39e3c72789"}
 xml-rs = "0.8"
+itertools = "0.12.1"
 
 [build-dependencies]
 xsd-parser = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "b70a36b166947201a0073c9528815c39e3c72789"}

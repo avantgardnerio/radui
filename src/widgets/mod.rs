@@ -1,6 +1,7 @@
 use gfx_device_gl::{CommandBuffer, Factory, Resources};
 use piston_window::glyph_cache::rusttype::GlyphCache;
 use piston_window::{Context, G2d, Texture, TextureContext};
+use crate::geom::Size;
 
 pub mod colors;
 pub mod grid_view;
@@ -17,4 +18,8 @@ pub trait IWidget {
     );
 
     fn layout(&mut self, width: f64, height: f64);
+
+    fn get_width(&self) -> Size;
+
+    fn get_height(&self) -> Size;
 }

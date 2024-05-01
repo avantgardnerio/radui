@@ -5,6 +5,7 @@ use crate::widgets::IWidget;
 use gfx_device_gl::{CommandBuffer, Factory, Resources};
 use piston_window::glyph_cache::rusttype::GlyphCache;
 use piston_window::{Context, G2d, Texture, TextureContext};
+use crate::geom::Size;
 
 pub struct Window {
     pub model: models::Window,
@@ -22,6 +23,14 @@ impl IWidget for Window {
     }
 
     fn layout(&mut self, _width: f64, _height: f64) {
+        todo!()
+    }
+
+    fn get_width(&self) -> Size {
+        todo!()
+    }
+
+    fn get_height(&self) -> Size {
         todo!()
     }
 }
