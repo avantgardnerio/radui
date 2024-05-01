@@ -11,7 +11,7 @@ fn main() {
     println!("cargo::rerun-if-changed={input}");
 
     let dest_path = "src/generated/models.rs";
-    println!("cargo:warning=generating {}", dest_path);
+    // println!("cargo:warning=generating {}", dest_path); // example log statement
 
     let gen = GeneratorBuilder::default().build();
     let mut rs_file = RsFile::default();

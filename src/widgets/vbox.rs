@@ -17,13 +17,13 @@ impl IWidget for Vbox {
         gl: &mut G2d,
         glyphs: &mut GlyphCache<TextureContext<Factory, Resources, CommandBuffer>, Texture<Resources>>,
     ) {
-        for (offset, child) in self.children.iter() {
+        for (_offset, child) in self.children.iter() {
             // TODO: translate by vertical offset and clip
             child.draw(ctx, gl, glyphs);
         }
     }
 
-    fn layout(&mut self, width: f64, height: f64) {
+    fn layout(&mut self, _width: f64, _height: f64) {
         todo!()
     }
 }

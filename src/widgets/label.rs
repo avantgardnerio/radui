@@ -25,7 +25,7 @@ impl IWidget for Label {
         Text::new_color(BLACK, FONT_SIZE).draw(&self.model.text, glyphs, &ctx.draw_state, transform, gl).unwrap();
     }
 
-    fn layout(&mut self, width: f64, height: f64) {
+    fn layout(&mut self, _width: f64, _height: f64) {
         todo!()
     }
 }

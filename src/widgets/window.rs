@@ -14,14 +14,14 @@ pub struct Window {
 impl IWidget for Window {
     fn draw(
         &self,
-        ctx: &Context,
-        gl: &mut G2d,
-        glyphs: &mut GlyphCache<TextureContext<Factory, Resources, CommandBuffer>, Texture<Resources>>,
+        _ctx: &Context,
+        _gl: &mut G2d,
+        _glyphs: &mut GlyphCache<TextureContext<Factory, Resources, CommandBuffer>, Texture<Resources>>,
     ) {
         todo!()
     }
 
-    fn layout(&mut self, width: f64, height: f64) {
+    fn layout(&mut self, _width: f64, _height: f64) {
         todo!()
     }
 }

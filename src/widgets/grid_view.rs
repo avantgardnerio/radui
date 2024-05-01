@@ -13,14 +13,14 @@ pub struct GridView {
 impl IWidget for GridView {
     fn draw(
         &self,
-        ctx: &Context,
+        _ctx: &Context,
         gl: &mut G2d,
-        glyphs: &mut GlyphCache<TextureContext<Factory, Resources, CommandBuffer>, Texture<Resources>>,
+        _glyphs: &mut GlyphCache<TextureContext<Factory, Resources, CommandBuffer>, Texture<Resources>>,
     ) {
         clear(WHITE, gl);
     }
 
-    fn layout(&mut self, width: f64, height: f64) {
+    fn layout(&mut self, _width: f64, _height: f64) {
         todo!()
     }
 }

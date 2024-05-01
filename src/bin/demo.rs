@@ -5,7 +5,6 @@ use piston_window::{clear, Glyphs, PistonWindow, TextureContext, TextureSettings
 use radui::generated::models;
 use radui::generated::models::Windows;
 use radui::widgets;
-use radui::widgets::IWidget;
 use std::fs;
 use yaserde::de::from_str;
 
