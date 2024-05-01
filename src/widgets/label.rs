@@ -1,9 +1,9 @@
 use crate::generated::models;
 use crate::widgets::IWidget;
 use gfx_device_gl::{CommandBuffer, Factory, Resources};
-use piston_window::color::BLACK;
+use piston_window::color::{BLACK, GRAY, WHITE};
 use piston_window::glyph_cache::rusttype::GlyphCache;
-use piston_window::{clear, Context, G2d, rectangle, Text, Texture, TextureContext, Transformed};
+use piston_window::{clear, Context, G2d, line_from_to, rectangle, Text, Texture, TextureContext, Transformed};
 use crate::geom::Size;
 
 const MENU_BACKGROUND: [f32; 4] = [246.0 / 255.0, 245.0 / 255.0, 244.0 / 255.0, 1.0];
@@ -24,8 +24,12 @@ impl IWidget for Label {
     ) {
         let rect = [0.0, 0.0, self.width, self.height];
         rectangle(MENU_BACKGROUND, rect, ctx.transform, gl);
-        let transform = ctx.transform.trans(0.0, FONT_SIZE as f64);
-        Text::new_color(BLACK, FONT_SIZE).draw(&self.model.text, glyphs, &ctx.draw_state, transform, gl).unwrap();
+        line_from_to(WHITE, 1.0, [0.0, 0.0], [self.width - 1.0, 0.0], ctx.transform, gl); // top
+        line_from_to(WHITE, 1.0, [0.0, 0.0], [0.0, self.height - 1.0], ctx.transform, gl); // left
+        line_from_to(GRAY, 1.0, [self.width - 1.0, self.height * 2.0], [0.0, self.height - 1.0], ctx.transform, gl); // bottom
+        line_from_to(GRAY, 1.0, [self.width - 1.0, self.height - 1.0], [self.width - 1.0, 0.0], ctx.transform, gl); // right
+        let text = Text::new_color(BLACK, FONT_SIZE);
+        text.draw_pos(&self.model.text, [2.0, FONT_SIZE as f64], glyphs, &ctx.draw_state, ctx.transform, gl).unwrap();
     }
 
     fn layout(&mut self, width: f64, height: f64) {
