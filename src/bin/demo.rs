@@ -53,34 +53,12 @@ fn main() {
                 window.request_redraw();
             }
             WindowEvent::CloseRequested => *control_flow = ControlFlow::Exit,
-            WindowEvent::Resized(_) => {}
-            WindowEvent::Moved(_) => {}
-            WindowEvent::Destroyed => {}
-            WindowEvent::DroppedFile(_) => {}
-            WindowEvent::HoveredFile(_) => {}
-            WindowEvent::HoveredFileCancelled => {}
-            WindowEvent::ReceivedCharacter(_) => {}
-            WindowEvent::Focused(_) => {}
-            WindowEvent::KeyboardInput { .. } => {}
-            WindowEvent::ModifiersChanged(_) => {}
-            WindowEvent::Ime(_) => {}
-            WindowEvent::CursorEntered { .. } => {}
-            WindowEvent::CursorLeft { .. } => {}
-            WindowEvent::MouseWheel { .. } => {}
             WindowEvent::MouseInput { .. } => {
                 if let Some(c) = win.child.as_mut() {
                     c.handle_event(&ev, &mouse_position);
                 }
             }
-            WindowEvent::TouchpadMagnify { .. } => {}
-            WindowEvent::SmartMagnify { .. } => {}
-            WindowEvent::TouchpadRotate { .. } => {}
-            WindowEvent::TouchpadPressure { .. } => {}
-            WindowEvent::AxisMotion { .. } => {}
-            WindowEvent::Touch(_) => {}
-            WindowEvent::ScaleFactorChanged { .. } => {}
-            WindowEvent::ThemeChanged(_) => {}
-            WindowEvent::Occluded(_) => {}
+            _ => {}
         },
         Event::RedrawRequested(_) => {
             // Make sure the canvas has the right size:
@@ -89,7 +67,7 @@ fn main() {
 
             if first {
                 if let Some(c) = win.child.as_mut() {
-                    c.layout(size.width, size.height)
+                    c.layout(size.width, size.height);
                 }
                 first = false;
             }
@@ -103,14 +81,7 @@ fn main() {
             canvas.flush();
             surface.swap_buffers(&context).expect("Could not swap buffers");
         }
-        Event::NewEvents(_) => {}
-        Event::DeviceEvent { .. } => {}
-        Event::UserEvent(_) => {}
-        Event::Suspended => {}
-        Event::Resumed => {}
-        Event::MainEventsCleared => {}
-        Event::RedrawEventsCleared => {}
-        Event::LoopDestroyed => {}
+        _ => {}
     });
 }
 
