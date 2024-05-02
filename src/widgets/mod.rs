@@ -25,9 +25,9 @@ pub trait IWidget {
 
     fn layout(&mut self, _width: u32, _height: u32) {}
 
-    fn handle_event(&mut self, _event: &Event<'_, ()>, _cursor_pos: &PhysicalPosition<f64>) {}
-
-    fn on_signal(&mut self, _handler: fn(&Signal)) {}
+    fn handle_event(&mut self, _event: &Event<'_, ()>, _cursor_pos: &PhysicalPosition<f64>) -> Option<Signal> {
+        None
+    }
 
     fn find_by_id(&mut self, id: &str) -> Option<&mut Box<dyn IWidget>> {
         for (_bounds, child) in self.get_children() {

@@ -1,3 +1,4 @@
+use crate::events::Signal;
 use crate::generated::models;
 use crate::generated::models::WidgetChoice;
 use crate::geom::{Bounds2d, Size};
@@ -81,7 +82,7 @@ impl IWidget for Vbox {
         todo!()
     }
 
-    fn handle_event(&mut self, ev: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>) {
+    fn handle_event(&mut self, ev: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>) -> Option<Signal> {
         match ev {
             Event::WindowEvent { event, .. } => match event {
                 WindowEvent::MouseInput { .. } => {
@@ -91,14 +92,14 @@ impl IWidget for Vbox {
                             continue;
                         }
                         let pos = PhysicalPosition::new(cursor_pos.x, cursor_pos.y - top);
-                        child.handle_event(ev, &pos);
-                        break;
+                        return child.handle_event(ev, &pos);
                     }
                 }
                 _ => {}
             },
             _ => {}
         }
+        None
     }
 
     fn get_id(&self) -> Option<&str> {

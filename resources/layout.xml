@@ -2,7 +2,7 @@
 <Windows xmlns:xsd="http://www.w3.org/2001/XMLSchema"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:noNamespaceSchemaLocation="radui.xsd">
-    <Window id="window1" title="RadUI" width="640" height="480">
+    <Window id="appWindow" title="RadUI" width="640" height="480">
         <child>
             <VBox width="100%" height="100%">
                 <children>
@@ -10,6 +10,18 @@
                 </children>
                 <children>
                     <Label id="lblClose" text="Close" />
+                </children>
+                <children>
+                    <GridView width="100%" height="100%" />
+                </children>
+            </VBox>
+        </child>
+    </Window>
+    <Window id="file_chooser" title="Choose a File" width="640" height="480">
+        <child>
+            <VBox width="100%" height="100%">
+                <children>
+                    <Label id="lblPath" text="" />
                 </children>
                 <children>
                     <GridView width="100%" height="100%" />

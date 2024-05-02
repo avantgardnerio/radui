@@ -1681,7 +1681,7 @@ checksum = "791978798f0597cfc70478424c2b4fdc2b7a8024aaff78497ef00f24ef674193"
 [[package]]
 name = "xsd-macro-utils"
 version = "0.1.0"
-source = "git+https://github.com/avantgardnerio/xsd-parser-rs.git?rev=b70a36b166947201a0073c9528815c39e3c72789#b70a36b166947201a0073c9528815c39e3c72789"
+source = "git+https://github.com/avantgardnerio/xsd-parser-rs.git?rev=c5099f9e865cdbb916465a62f16f6eb2013f1c06#c5099f9e865cdbb916465a62f16f6eb2013f1c06"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1691,7 +1691,7 @@ dependencies = [
 [[package]]
 name = "xsd-parser"
 version = "0.1.0"
-source = "git+https://github.com/avantgardnerio/xsd-parser-rs.git?rev=b70a36b166947201a0073c9528815c39e3c72789#b70a36b166947201a0073c9528815c39e3c72789"
+source = "git+https://github.com/avantgardnerio/xsd-parser-rs.git?rev=c5099f9e865cdbb916465a62f16f6eb2013f1c06#c5099f9e865cdbb916465a62f16f6eb2013f1c06"
 dependencies = [
  "Inflector",
  "roxmltree",
@@ -1700,7 +1700,7 @@ dependencies = [
 [[package]]
 name = "xsd-types"
 version = "0.1.0"
-source = "git+https://github.com/avantgardnerio/xsd-parser-rs.git?rev=b70a36b166947201a0073c9528815c39e3c72789#b70a36b166947201a0073c9528815c39e3c72789"
+source = "git+https://github.com/avantgardnerio/xsd-parser-rs.git?rev=c5099f9e865cdbb916465a62f16f6eb2013f1c06#c5099f9e865cdbb916465a62f16f6eb2013f1c06"
 dependencies = [
  "bigdecimal",
  "chrono",

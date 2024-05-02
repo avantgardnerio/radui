@@ -11,12 +11,12 @@ raw-window-handle = "0.5.0"
 femtovg = "0.9.1"
 yaserde = "0.7.1"
 yaserde_derive = "0.7.1"
-xsd-types = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "b70a36b166947201a0073c9528815c39e3c72789"}
-xsd-parser = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "b70a36b166947201a0073c9528815c39e3c72789"}
-xsd-macro-utils = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "b70a36b166947201a0073c9528815c39e3c72789"}
+xsd-types = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "c5099f9e865cdbb916465a62f16f6eb2013f1c06"}
+xsd-parser = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "c5099f9e865cdbb916465a62f16f6eb2013f1c06"}
+xsd-macro-utils = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "c5099f9e865cdbb916465a62f16f6eb2013f1c06"}
 xml-rs = "0.8"
 itertools = "0.12.1"
 resource = "0.5.0"
 
 [build-dependencies]
-xsd-parser = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "b70a36b166947201a0073c9528815c39e3c72789"}
+xsd-parser = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "c5099f9e865cdbb916465a62f16f6eb2013f1c06"}

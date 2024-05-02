@@ -1,6 +1,7 @@
-mod events;
+pub mod app;
+pub mod events;
 pub mod generated;
-mod geom;
+pub mod geom;
 pub mod widgets;
 
 pub fn add(left: usize, right: usize) -> usize {

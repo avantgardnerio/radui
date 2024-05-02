@@ -1,6 +1,6 @@
+use crate::events::Signal;
 use crate::generated::models;
 use crate::geom::{Bounds2d, Size};
-use crate::widgets;
 use crate::widgets::IWidget;
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, Color, FontId, Paint, Path};
@@ -35,7 +35,7 @@ impl IWidget for GridView {
         self.model.height.as_ref().map(|h| h.as_str()).unwrap_or("100%").parse().unwrap()
     }
 
-    fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>) {
+    fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>) -> Option<Signal> {
         match event {
             Event::WindowEvent { event, .. } => match event {
                 WindowEvent::MouseInput { state, button, .. } => {
@@ -45,6 +45,7 @@ impl IWidget for GridView {
             },
             _ => {}
         }
+        None
     }
 
     fn get_id(&self) -> Option<&str> {
