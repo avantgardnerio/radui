@@ -1,11 +1,11 @@
-use std::iter::once;
-use femtovg::{Canvas, FontId};
-use femtovg::renderer::OpenGl;
 use crate::generated::models;
 use crate::generated::models::WidgetChoice;
-use crate::widgets::IWidget;
-use itertools::{Either, Itertools};
 use crate::geom::Size;
+use crate::widgets::IWidget;
+use femtovg::renderer::OpenGl;
+use femtovg::{Canvas, FontId};
+use itertools::{Either, Itertools};
+use std::iter::once;
 
 pub struct Vbox {
     pub model: models::Vbox,
@@ -15,33 +15,19 @@ pub struct Vbox {
 }
 
 impl IWidget for Vbox {
-    fn draw(
-        &self,
-        canvas: &mut Canvas<OpenGl>,
-        font: &FontId,
-    ) {
+    fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId) {
         println!("draw");
         for (idx, (top, child)) in self.children.iter().enumerate() {
             let bottom = self.children.get(idx + 1).map(|(t, _c)| *t).unwrap_or(self.height);
             let height = bottom - top;
-            let clip_rect = [0, *top as u32, self.width as u32, height as u32];
+
+            canvas.save();
             canvas.translate(0.0, *top as f32);
-            println!("child={idx} rect={clip_rect:?}");
-            // let transform = ctx.transform.trans(0.0, *top);
-            // let draw_state = ctx.draw_state.scissor(clip_rect);
-            // let viewport = Some(Viewport {
-            //     rect: [
-            //         0 + viewport.rect[0],
-            //         0 + viewport.rect[1],
-            //         self.width as i32 + viewport.rect[2],
-            //         height as i32 + viewport.rect[3],
-            //     ],
-            //     draw_size: viewport.draw_size,
-            //     window_size: viewport.window_size
-            // });
-            // let clipped = Context { transform, viewport, draw_state, ..ctx.clone() };
+            canvas.scissor(0.0, 0.0, self.width as f32, height as f32);
+
             child.draw(canvas, font);
-            canvas.reset_transform();
+
+            canvas.restore();
         }
     }
 
@@ -50,12 +36,11 @@ impl IWidget for Vbox {
         self.height = height;
 
         // calculate size of pie
-        let (abs, rel): (Vec<_>, Vec<_>) = self.children.iter().map(|(_top, c)| c.get_height()).partition_map(|h| {
-            match h {
+        let (abs, rel): (Vec<_>, Vec<_>) =
+            self.children.iter().map(|(_top, c)| c.get_height()).partition_map(|h| match h {
                 Size::Absolute(n) => Either::Left(n as f32),
                 Size::Relative(n) => Either::Right(n as f32),
-            }
-        });
+            });
         let abs_height: f32 = abs.iter().sum();
         let rel_total: f32 = rel.iter().sum();
         let remaining = height as f32 - abs_height as f32;

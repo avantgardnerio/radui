@@ -2,8 +2,8 @@ use radui::generated::models;
 use radui::generated::models::Windows;
 use radui::widgets;
 use std::fs;
-use yaserde::de::from_str;
 use std::num::NonZeroU32;
+use yaserde::de::from_str;
 
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, Color, Renderer};
@@ -42,9 +42,7 @@ fn main() {
 
     let mut canvas = Canvas::new(renderer).expect("Cannot create canvas");
     canvas.set_size(1000, 600, window.scale_factor() as f32); // TODO: window size from model
-    let font = canvas
-        .add_font_mem(&resource!("resources/FiraSans-Regular.ttf"))
-        .expect("Cannot add font");
+    let font = canvas.add_font_mem(&resource!("resources/FiraSans-Regular.ttf")).expect("Cannot add font");
 
     let mut first = true;
     let mut mouse_position = PhysicalPosition::new(0., 0.);
@@ -82,18 +80,18 @@ fn main() {
     });
 }
 
-fn create_window(event_loop: &EventLoop<()>, title: &str) -> (PossiblyCurrentContext, Display, Window, Surface<WindowSurface>) {
-    let window_builder = WindowBuilder::new()
-        .with_inner_size(PhysicalSize::new(1000., 600.))
-        .with_title(title);
+fn create_window(
+    event_loop: &EventLoop<()>,
+    title: &str,
+) -> (PossiblyCurrentContext, Display, Window, Surface<WindowSurface>) {
+    let window_builder = WindowBuilder::new().with_inner_size(PhysicalSize::new(1000., 600.)).with_title(title);
 
     let template = ConfigTemplateBuilder::new().with_alpha_size(8);
 
     let display_builder = DisplayBuilder::new().with_window_builder(Some(window_builder));
 
-    let (window, gl_config) = display_builder
-        .build(event_loop, template, |mut configs| configs.next().unwrap())
-        .unwrap();
+    let (window, gl_config) =
+        display_builder.build(event_loop, template, |mut configs| configs.next().unwrap()).unwrap();
 
     let window = window.unwrap();
 
@@ -112,10 +110,5 @@ fn create_window(event_loop: &EventLoop<()>, title: &str) -> (PossiblyCurrentCon
 
     let surface = unsafe { gl_config.display().create_window_surface(&gl_config, &attrs).unwrap() };
 
-    (
-        not_current_gl_context.take().unwrap().make_current(&surface).unwrap(),
-        gl_display,
-        window,
-        surface,
-    )
+    (not_current_gl_context.take().unwrap().make_current(&surface).unwrap(), gl_display, window, surface)
 }
