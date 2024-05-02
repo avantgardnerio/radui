@@ -1,5 +1,6 @@
 use crate::events::Signal;
 use crate::geom::{Bounds2d, Size};
+use as_any::AsAny;
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, FontId};
 use std::slice::IterMut;
@@ -12,7 +13,7 @@ pub mod label;
 pub mod vbox;
 pub mod window;
 
-pub trait IWidget {
+pub trait IWidget: AsAny {
     fn get_width(&self) -> Size;
 
     fn get_height(&self) -> Size;

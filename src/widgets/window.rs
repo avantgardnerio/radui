@@ -3,14 +3,26 @@ use crate::generated::models::WidgetChoice;
 use crate::geom::{Bounds2d, Size};
 use crate::widgets;
 use crate::widgets::IWidget;
+use femtovg::renderer::OpenGl;
+use femtovg::{Canvas, FontId};
 use std::slice::IterMut;
 
 pub struct Window {
     pub model: models::Window,
     pub children: Vec<(Bounds2d<u32>, Box<dyn IWidget>)>,
+    pub width: u32,
+    pub height: u32,
 }
 
 impl IWidget for Window {
+    fn layout(&mut self, width: u32, height: u32) {
+        self.width = width;
+        self.height = height;
+        for (_bounds, c) in &mut self.children {
+            c.layout(width, height);
+        }
+    }
+
     fn get_width(&self) -> Size {
         todo!()
     }
@@ -25,6 +37,17 @@ impl IWidget for Window {
 
     fn get_children(&mut self) -> IterMut<'_, (Bounds2d<u32>, Box<dyn IWidget>)> {
         self.children.iter_mut()
+    }
+
+    fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId) {
+        for (bounds, c) in &self.children {
+            canvas.save();
+            canvas.translate(bounds[0] as f32, bounds[1] as f32);
+
+            c.draw(canvas, &font);
+
+            canvas.restore();
+        }
     }
 }
 
@@ -42,6 +65,6 @@ impl From<models::Window> for widgets::window::Window {
             vec![(bounds, child)]
         });
 
-        widgets::window::Window { model: value, children }
+        widgets::window::Window { model: value, children, width: 0, height: 0 }
     }
 }

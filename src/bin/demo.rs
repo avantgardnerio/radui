@@ -1,11 +1,14 @@
+use as_any::AsAny;
 use radui::generated::models::Windows;
 use radui::widgets;
-use std::fs;
+use std::any::Any;
+use std::{env, fs};
 use yaserde::de::from_str;
 
 use radui::app::App;
 use radui::events::SignalType;
 use radui::geom::Bounds2d;
+use radui::widgets::label::Label;
 use radui::widgets::IWidget;
 
 fn main() {
@@ -25,11 +28,15 @@ fn main() {
     App::run(win, move |win, signal| match signal.typ {
         SignalType::Activated => {
             if signal.source == "lblOpen" {
-                if let Some(file_chooser) = file_chooser.take() {
+                if let Some(mut file_chooser) = file_chooser.take() {
                     println!("showing dialog");
-                    let bounds: Bounds2d<u32> = [20, 20, 400, 300];
+                    let mut lbl_path = file_chooser.find_by_id("lblPath").unwrap();
+                    let mut lbl_path = lbl_path.as_mut().as_any_mut().downcast_mut::<Label>().unwrap();
+                    lbl_path.model.text = env::current_dir().unwrap().to_str().unwrap().to_string();
+                    let bounds: Bounds2d<u32> = [100, 100, 200, 200];
                     let child: ([u32; 4], Box<dyn IWidget>) = (bounds, Box::new(file_chooser));
                     win.children.push(child);
+                    win.layout(win.width, win.height);
                 }
             }
         }

@@ -13,7 +13,7 @@ use winit::window::WindowBuilder;
 use winit::{dpi::PhysicalSize, window::Window};
 
 use crate::events::Signal;
-use crate::widgets::window;
+use crate::widgets::{window, IWidget};
 use glutin::{
     config::ConfigTemplateBuilder,
     context::ContextAttributesBuilder,
@@ -52,6 +52,7 @@ impl App {
                         c.handle_event(&ev, &mouse_position)
                     });
                     signal.map(|sig| callback(&mut win, &sig));
+                    window.request_redraw();
                 }
                 _ => {}
             },
@@ -61,17 +62,13 @@ impl App {
                 canvas.set_size(size.width, size.height, window.scale_factor() as f32);
 
                 if first {
-                    for (_bounds, c) in &mut win.children {
-                        c.layout(size.width, size.height);
-                    }
+                    win.layout(size.width, size.height);
                     first = false;
                 }
 
                 canvas.clear_rect(0, 0, size.width, size.height, Color::black());
 
-                for (_bounds, c) in &mut win.children {
-                    c.draw(&mut canvas, &font);
-                }
+                win.draw(&mut canvas, &font);
 
                 canvas.flush();
                 surface.swap_buffers(&context).expect("Could not swap buffers");
