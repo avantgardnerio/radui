@@ -1,12 +1,8 @@
 use crate::generated::models;
 use crate::generated::models::WidgetChoice;
-use crate::geom::Size;
+use crate::geom::{Bounds2d, Size};
 use crate::widgets;
 use crate::widgets::IWidget;
-use femtovg::renderer::OpenGl;
-use femtovg::{Canvas, FontId};
-use winit::dpi::PhysicalPosition;
-use winit::event::Event;
 
 pub struct Window {
     pub model: models::Window,
@@ -14,14 +10,6 @@ pub struct Window {
 }
 
 impl IWidget for Window {
-    fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId) {
-        todo!()
-    }
-
-    fn layout(&mut self, _width: u32, _height: u32) {
-        todo!()
-    }
-
     fn get_width(&self) -> Size {
         todo!()
     }
@@ -30,7 +18,13 @@ impl IWidget for Window {
         todo!()
     }
 
-    fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>) {}
+    fn get_id(&self) -> Option<&str> {
+        Some(self.model.id.as_ref())
+    }
+
+    fn get_children(&self) -> &[(Bounds2d<u32>, Box<dyn IWidget>)] {
+        todo!()
+    }
 }
 
 impl From<models::Window> for widgets::window::Window {

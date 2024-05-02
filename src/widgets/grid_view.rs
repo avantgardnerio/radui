@@ -1,5 +1,5 @@
 use crate::generated::models;
-use crate::geom::Size;
+use crate::geom::{Bounds2d, Size};
 use crate::widgets;
 use crate::widgets::IWidget;
 use femtovg::renderer::OpenGl;
@@ -14,7 +14,7 @@ pub struct GridView {
 }
 
 impl IWidget for GridView {
-    fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId) {
+    fn draw(&self, canvas: &mut Canvas<OpenGl>, _font: &FontId) {
         let mut path = Path::new();
         path.rect(0.0, 0.0, self.width as f32, self.height as f32);
         canvas.fill_path(&path, &Paint::color(Color::white()));
@@ -43,6 +43,14 @@ impl IWidget for GridView {
             },
             _ => {}
         }
+    }
+
+    fn get_id(&self) -> Option<&str> {
+        self.model.id.as_ref().map(|s| s.as_str())
+    }
+
+    fn get_children(&self) -> &[(Bounds2d<u32>, Box<dyn IWidget>)] {
+        todo!()
     }
 }
 

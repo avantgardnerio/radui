@@ -6,7 +6,7 @@ use std::num::NonZeroU32;
 use yaserde::de::from_str;
 
 use femtovg::renderer::OpenGl;
-use femtovg::{Canvas, Color, Renderer};
+use femtovg::{Canvas, Color};
 use glutin::surface::Surface;
 use glutin::{context::PossiblyCurrentContext, display::Display};
 use glutin_winit::DisplayBuilder;

@@ -1,6 +1,6 @@
 use crate::generated::models;
 use crate::generated::models::WidgetChoice;
-use crate::geom::Size;
+use crate::geom::{Bounds2d, Size};
 use crate::widgets::IWidget;
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, FontId};
@@ -100,6 +100,14 @@ impl IWidget for Vbox {
             Event::RedrawEventsCleared => {}
             Event::LoopDestroyed => {}
         }
+    }
+
+    fn get_id(&self) -> Option<&str> {
+        None
+    }
+
+    fn get_children(&self) -> &[(Bounds2d<u32>, Box<dyn IWidget>)] {
+        todo!()
     }
 }
 

@@ -1,4 +1,4 @@
-use crate::geom::Size;
+use crate::geom::{Bounds2d, Size};
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, FontId};
 use winit::dpi::PhysicalPosition;
@@ -11,13 +11,29 @@ pub mod vbox;
 pub mod window;
 
 pub trait IWidget {
-    fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId);
-
-    fn layout(&mut self, width: u32, height: u32);
-
     fn get_width(&self) -> Size;
 
     fn get_height(&self) -> Size;
 
-    fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>);
+    fn get_id(&self) -> Option<&str>;
+
+    fn get_children(&self) -> &[(Bounds2d<u32>, Box<dyn IWidget>)];
+
+    fn draw(&self, _canvas: &mut Canvas<OpenGl>, _font: &FontId) {}
+
+    fn layout(&mut self, _width: u32, _height: u32) {}
+
+    fn handle_event(&mut self, _event: &Event<'_, ()>, _cursor_pos: &PhysicalPosition<f64>) {}
+
+    fn find_by_id(&self, id: &str) -> Option<&Box<dyn IWidget>> {
+        for (_bounds, child) in self.get_children() {
+            if Some(id) == child.get_id() {
+                return Some(child);
+            }
+            if let Some(child) = child.find_by_id(id) {
+                return Some(child);
+            }
+        }
+        None
+    }
 }

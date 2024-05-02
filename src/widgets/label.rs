@@ -1,5 +1,5 @@
 use crate::generated::models;
-use crate::geom::Size;
+use crate::geom::{Bounds2d, Size};
 use crate::widgets::IWidget;
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, Color, FontId, Paint, Path};
@@ -49,6 +49,14 @@ impl IWidget for Label {
             },
             _ => {}
         }
+    }
+
+    fn get_id(&self) -> Option<&str> {
+        self.model.id.as_ref().map(|s| s.as_str())
+    }
+
+    fn get_children(&self) -> &[(Bounds2d<u32>, Box<dyn IWidget>)] {
+        todo!()
     }
 }
 
