@@ -16,7 +16,6 @@ pub struct Vbox {
 
 impl IWidget for Vbox {
     fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId) {
-        println!("draw");
         for (idx, (top, child)) in self.children.iter().enumerate() {
             let bottom = self.children.get(idx + 1).map(|(t, _c)| *t).unwrap_or(self.height);
             let height = bottom - top;

@@ -53,7 +53,32 @@ fn main() {
                 window.request_redraw();
             }
             WindowEvent::CloseRequested => *control_flow = ControlFlow::Exit,
-            _ => {}
+            WindowEvent::Resized(_) => {}
+            WindowEvent::Moved(_) => {}
+            WindowEvent::Destroyed => {}
+            WindowEvent::DroppedFile(_) => {}
+            WindowEvent::HoveredFile(_) => {}
+            WindowEvent::HoveredFileCancelled => {}
+            WindowEvent::ReceivedCharacter(_) => {}
+            WindowEvent::Focused(_) => {}
+            WindowEvent::KeyboardInput { .. } => {}
+            WindowEvent::ModifiersChanged(_) => {}
+            WindowEvent::Ime(_) => {}
+            WindowEvent::CursorEntered { .. } => {}
+            WindowEvent::CursorLeft { .. } => {}
+            WindowEvent::MouseWheel { .. } => {}
+            WindowEvent::MouseInput { state, button, .. } => {
+                println!("mouse {button:?} is {state:?}");
+            }
+            WindowEvent::TouchpadMagnify { .. } => {}
+            WindowEvent::SmartMagnify { .. } => {}
+            WindowEvent::TouchpadRotate { .. } => {}
+            WindowEvent::TouchpadPressure { .. } => {}
+            WindowEvent::AxisMotion { .. } => {}
+            WindowEvent::Touch(_) => {}
+            WindowEvent::ScaleFactorChanged { .. } => {}
+            WindowEvent::ThemeChanged(_) => {}
+            WindowEvent::Occluded(_) => {}
         },
         Event::RedrawRequested(_) => {
             // Make sure the canvas has the right size:
@@ -76,7 +101,14 @@ fn main() {
             canvas.flush();
             surface.swap_buffers(&context).expect("Could not swap buffers");
         }
-        _ => {}
+        Event::NewEvents(_) => {}
+        Event::DeviceEvent { .. } => {}
+        Event::UserEvent(_) => {}
+        Event::Suspended => {}
+        Event::Resumed => {}
+        Event::MainEventsCleared => {}
+        Event::RedrawEventsCleared => {}
+        Event::LoopDestroyed => {}
     });
 }
 
