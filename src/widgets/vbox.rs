@@ -6,24 +6,26 @@ use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, FontId};
 use itertools::{Either, Itertools};
 use std::iter::once;
+use std::slice::IterMut;
 use winit::dpi::PhysicalPosition;
 use winit::event::{Event, WindowEvent};
 
 pub struct Vbox {
     pub model: models::Vbox,
-    pub children: Vec<(u32, Box<dyn IWidget>)>,
+    pub children: Vec<(Bounds2d<u32>, Box<dyn IWidget>)>,
     pub width: u32,
     pub height: u32,
 }
 
 impl IWidget for Vbox {
     fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId) {
-        for (idx, (top, child)) in self.children.iter().enumerate() {
-            let bottom = self.children.get(idx + 1).map(|(t, _c)| *t).unwrap_or(self.height);
+        for (idx, (bounds, child)) in self.children.iter().enumerate() {
+            let top = bounds[1];
+            let bottom = self.children.get(idx + 1).map(|(b, _c)| b[1]).unwrap_or(self.height);
             let height = bottom - top;
 
             canvas.save();
-            canvas.translate(0.0, *top as f32);
+            canvas.translate(0.0, top as f32);
             canvas.scissor(0.0, 0.0, self.width as f32, height as f32);
 
             child.draw(canvas, font);
@@ -48,9 +50,10 @@ impl IWidget for Vbox {
 
         // position tops
         let mut cursor = 0;
-        for (top, child) in self.children.iter_mut() {
-            *top = cursor;
-            println!("top={top}");
+        for (bounds, child) in self.children.iter_mut() {
+            bounds[0] = 0;
+            bounds[1] = cursor;
+            bounds[2] = width;
             let height = match child.get_height() {
                 Size::Absolute(h) => h,
                 Size::Relative(h) => (h as f32 * remaining / rel_total) as u32,
@@ -59,9 +62,13 @@ impl IWidget for Vbox {
         }
 
         // layout children
-        let bottoms = self.children.iter().map(|(top, _c)| *top).skip(1).chain(once(height)).collect::<Vec<_>>();
-        for (idx, (top, child)) in self.children.iter_mut().enumerate() {
-            let height = bottoms[idx] - *top;
+        let bottoms =
+            self.children.iter().map(|(bounds, _c)| bounds[1]).skip(1).chain(once(height)).collect::<Vec<_>>();
+        for (idx, (bounds, child)) in self.children.iter_mut().enumerate() {
+            let top = bounds[1];
+            let height = bottoms[idx] - top;
+            bounds[3] = height;
+            println!("bounds={bounds:?}");
             child.layout(width, height);
         }
     }
@@ -76,11 +83,10 @@ impl IWidget for Vbox {
 
     fn handle_event(&mut self, ev: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>) {
         match ev {
-            Event::NewEvents(_) => {}
             Event::WindowEvent { event, .. } => match event {
                 WindowEvent::MouseInput { .. } => {
-                    for (top, child) in self.children.iter_mut().rev() {
-                        let top = *top as f64;
+                    for (bounds, child) in self.children.iter_mut().rev() {
+                        let top = bounds[1] as f64;
                         if cursor_pos.y < top {
                             continue;
                         }
@@ -91,14 +97,7 @@ impl IWidget for Vbox {
                 }
                 _ => {}
             },
-            Event::DeviceEvent { .. } => {}
-            Event::UserEvent(_) => {}
-            Event::Suspended => {}
-            Event::Resumed => {}
-            Event::MainEventsCleared => {}
-            Event::RedrawRequested(_) => {}
-            Event::RedrawEventsCleared => {}
-            Event::LoopDestroyed => {}
+            _ => {}
         }
     }
 
@@ -106,15 +105,15 @@ impl IWidget for Vbox {
         None
     }
 
-    fn get_children(&self) -> &[(Bounds2d<u32>, Box<dyn IWidget>)] {
-        todo!()
+    fn get_children(&mut self) -> IterMut<'_, (Bounds2d<u32>, Box<dyn IWidget>)> {
+        self.children.iter_mut()
     }
 }
 
 impl From<models::Vbox> for Box<dyn IWidget> {
     fn from(mut value: models::Vbox) -> Self {
         println!("childrec={}", value.children.len());
-        let children: Vec<(u32, _)> = value
+        let children: Vec<(Bounds2d<u32>, _)> = value
             .children
             .drain(..)
             .map(|c| {
@@ -124,7 +123,7 @@ impl From<models::Vbox> for Box<dyn IWidget> {
                     WidgetChoice::Label(c) => c.into(),
                     WidgetChoice::__Unknown__(_) => panic!("Unknown element"),
                 };
-                (0, child)
+                ([0, 0, 0, 0], child)
             })
             .collect();
         let me = Vbox { model: value, children, width: 0, height: 0 };

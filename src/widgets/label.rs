@@ -1,8 +1,10 @@
+use crate::events::Signal;
 use crate::generated::models;
 use crate::geom::{Bounds2d, Size};
 use crate::widgets::IWidget;
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, Color, FontId, Paint, Path};
+use std::slice::IterMut;
 use winit::dpi::PhysicalPosition;
 use winit::event::{Event, WindowEvent};
 
@@ -12,9 +14,15 @@ pub struct Label {
     pub model: models::Label,
     pub width: u32,
     pub height: u32,
+    pub children: Vec<(Bounds2d<u32>, Box<dyn IWidget>)>,
+    pub handlers: Vec<fn(&Signal)>,
 }
 
 impl IWidget for Label {
+    fn on_signal(&mut self, handler: fn(&Signal)) {
+        self.handlers.push(handler);
+    }
+
     fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId) {
         let mut path = Path::new();
         path.rect(0.0, 0.0, self.width as f32, self.height as f32);
@@ -43,7 +51,7 @@ impl IWidget for Label {
         match event {
             Event::WindowEvent { event, .. } => match event {
                 WindowEvent::MouseInput { state, button, .. } => {
-                    println!("label {state:?} {button:?} {cursor_pos:?}");
+                    self.handlers.iter_mut().for_each(|h| h(&Signal::Activated));
                 }
                 _ => {}
             },
@@ -55,14 +63,14 @@ impl IWidget for Label {
         self.model.id.as_ref().map(|s| s.as_str())
     }
 
-    fn get_children(&self) -> &[(Bounds2d<u32>, Box<dyn IWidget>)] {
-        todo!()
+    fn get_children(&mut self) -> IterMut<'_, (Bounds2d<u32>, Box<dyn IWidget>)> {
+        self.children.iter_mut()
     }
 }
 
 impl From<models::Label> for Box<dyn IWidget> {
     fn from(value: models::Label) -> Self {
-        let me = Label { model: value, width: 0, height: 0 };
+        let me = Label { model: value, width: 0, height: 0, children: vec![], handlers: vec![] };
         Box::new(me)
     }
 }

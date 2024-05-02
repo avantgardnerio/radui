@@ -4,6 +4,7 @@ use crate::widgets;
 use crate::widgets::IWidget;
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, Color, FontId, Paint, Path};
+use std::slice::IterMut;
 use winit::dpi::PhysicalPosition;
 use winit::event::{Event, WindowEvent};
 
@@ -11,6 +12,7 @@ pub struct GridView {
     pub model: models::GridView,
     pub width: u32,
     pub height: u32,
+    pub children: Vec<(Bounds2d<u32>, Box<dyn IWidget>)>,
 }
 
 impl IWidget for GridView {
@@ -49,14 +51,14 @@ impl IWidget for GridView {
         self.model.id.as_ref().map(|s| s.as_str())
     }
 
-    fn get_children(&self) -> &[(Bounds2d<u32>, Box<dyn IWidget>)] {
-        todo!()
+    fn get_children(&mut self) -> IterMut<'_, (Bounds2d<u32>, Box<dyn IWidget>)> {
+        self.children.iter_mut()
     }
 }
 
 impl From<models::GridView> for Box<dyn IWidget> {
     fn from(value: models::GridView) -> Self {
-        let me = widgets::grid_view::GridView { model: value, width: 0, height: 0 };
+        let me = GridView { model: value, width: 0, height: 0, children: vec![] };
         Box::new(me)
     }
 }

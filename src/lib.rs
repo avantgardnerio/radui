@@ -1,3 +1,4 @@
+mod events;
 pub mod generated;
 mod geom;
 pub mod widgets;

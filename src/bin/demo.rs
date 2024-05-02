@@ -24,6 +24,7 @@ use glutin::{
     prelude::*,
     surface::{SurfaceAttributesBuilder, WindowSurface},
 };
+use radui::widgets::IWidget;
 use resource::resource;
 
 fn main() {
@@ -33,6 +34,12 @@ fn main() {
 
     let win: models::Window = windows.window.drain(..).last().expect("Expected at least 1 window");
     let mut win: widgets::window::Window = win.into();
+
+    if let Some(lbl_open) = win.find_by_id("lblOpen") {
+        lbl_open.on_signal(|signal| {
+            println!("got signal!");
+        })
+    }
 
     let event_loop = EventLoop::new();
     let (context, gl_display, window, surface) = create_window(&event_loop, win.model.title.as_str());
@@ -54,7 +61,7 @@ fn main() {
             }
             WindowEvent::CloseRequested => *control_flow = ControlFlow::Exit,
             WindowEvent::MouseInput { .. } => {
-                if let Some(c) = win.child.as_mut() {
+                for (_bounds, c) in &mut win.children {
                     c.handle_event(&ev, &mouse_position);
                 }
             }
@@ -66,7 +73,7 @@ fn main() {
             canvas.set_size(size.width, size.height, window.scale_factor() as f32);
 
             if first {
-                if let Some(c) = win.child.as_mut() {
+                for (_bounds, c) in &mut win.children {
                     c.layout(size.width, size.height);
                 }
                 first = false;
@@ -74,7 +81,7 @@ fn main() {
 
             canvas.clear_rect(0, 0, size.width, size.height, Color::black());
 
-            if let Some(c) = win.child.as_ref() {
+            for (_bounds, c) in &mut win.children {
                 c.draw(&mut canvas, &font);
             }
 
