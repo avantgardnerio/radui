@@ -1,6 +1,8 @@
 use crate::geom::Size;
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, FontId};
+use winit::dpi::PhysicalPosition;
+use winit::event::Event;
 
 pub mod colors;
 pub mod grid_view;
@@ -16,4 +18,6 @@ pub trait IWidget {
     fn get_width(&self) -> Size;
 
     fn get_height(&self) -> Size;
+
+    fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>);
 }

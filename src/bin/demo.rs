@@ -46,10 +46,10 @@ fn main() {
 
     let mut first = true;
     let mut mouse_position = PhysicalPosition::new(0., 0.);
-    event_loop.run(move |event, _target, control_flow| match event {
+    event_loop.run(move |ev, _target, control_flow| match &ev {
         Event::WindowEvent { event, .. } => match event {
             WindowEvent::CursorMoved { position, .. } => {
-                mouse_position = position;
+                mouse_position = *position;
                 window.request_redraw();
             }
             WindowEvent::CloseRequested => *control_flow = ControlFlow::Exit,
@@ -67,8 +67,10 @@ fn main() {
             WindowEvent::CursorEntered { .. } => {}
             WindowEvent::CursorLeft { .. } => {}
             WindowEvent::MouseWheel { .. } => {}
-            WindowEvent::MouseInput { state, button, .. } => {
-                println!("mouse {button:?} is {state:?}");
+            WindowEvent::MouseInput { .. } => {
+                if let Some(c) = win.child.as_mut() {
+                    c.handle_event(&ev, &mouse_position);
+                }
             }
             WindowEvent::TouchpadMagnify { .. } => {}
             WindowEvent::SmartMagnify { .. } => {}

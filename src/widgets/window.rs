@@ -5,6 +5,8 @@ use crate::widgets;
 use crate::widgets::IWidget;
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, FontId};
+use winit::dpi::PhysicalPosition;
+use winit::event::Event;
 
 pub struct Window {
     pub model: models::Window,
@@ -27,6 +29,8 @@ impl IWidget for Window {
     fn get_height(&self) -> Size {
         todo!()
     }
+
+    fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>) {}
 }
 
 impl From<models::Window> for widgets::window::Window {

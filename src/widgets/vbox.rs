@@ -6,6 +6,8 @@ use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, FontId};
 use itertools::{Either, Itertools};
 use std::iter::once;
+use winit::dpi::PhysicalPosition;
+use winit::event::{Event, WindowEvent};
 
 pub struct Vbox {
     pub model: models::Vbox,
@@ -70,6 +72,34 @@ impl IWidget for Vbox {
 
     fn get_height(&self) -> Size {
         todo!()
+    }
+
+    fn handle_event(&mut self, ev: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>) {
+        match ev {
+            Event::NewEvents(_) => {}
+            Event::WindowEvent { event, .. } => match event {
+                WindowEvent::MouseInput { .. } => {
+                    for (top, child) in self.children.iter_mut().rev() {
+                        let top = *top as f64;
+                        if cursor_pos.y < top {
+                            continue;
+                        }
+                        let pos = PhysicalPosition::new(cursor_pos.x, cursor_pos.y - top);
+                        child.handle_event(ev, &pos);
+                        break;
+                    }
+                }
+                _ => {}
+            },
+            Event::DeviceEvent { .. } => {}
+            Event::UserEvent(_) => {}
+            Event::Suspended => {}
+            Event::Resumed => {}
+            Event::MainEventsCleared => {}
+            Event::RedrawRequested(_) => {}
+            Event::RedrawEventsCleared => {}
+            Event::LoopDestroyed => {}
+        }
     }
 }
 

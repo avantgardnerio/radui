@@ -3,6 +3,8 @@ use crate::geom::Size;
 use crate::widgets::IWidget;
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, Color, FontId, Paint, Path};
+use winit::dpi::PhysicalPosition;
+use winit::event::{Event, WindowEvent};
 
 const FONT_SIZE: f32 = 22.0;
 
@@ -35,6 +37,18 @@ impl IWidget for Label {
 
     fn get_height(&self) -> Size {
         Size::Absolute(FONT_SIZE as u32 * 2)
+    }
+
+    fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>) {
+        match event {
+            Event::WindowEvent { event, .. } => match event {
+                WindowEvent::MouseInput { state, button, .. } => {
+                    println!("label {state:?} {button:?} {cursor_pos:?}");
+                }
+                _ => {}
+            },
+            _ => {}
+        }
     }
 }
 
