@@ -1,4 +1,4 @@
-use std::{env, fs};
+use std::{env};
 use std::path::PathBuf;
 use yaserde::de::from_str;
 use crate::events::Signal;
@@ -15,8 +15,8 @@ pub struct FileChooser {
 
 impl FileChooser {
     pub fn new() -> Self {
-        let filename = "resources/lib.xml";
-        let content = fs::read_to_string(filename).unwrap();
+        let bytes = include_bytes!("../../resources/lib.xml");
+        let content = String::from_utf8_lossy(bytes);
         let mut windows: Windows = from_str(&content).unwrap();
 
         let idx = windows.window.iter().position(|w| w.id == "file_chooser").unwrap();
