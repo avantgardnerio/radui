@@ -1,3 +1,4 @@
+use std::{env};
 use std::num::NonZeroU32;
 
 use femtovg::renderer::OpenGl;
@@ -23,10 +24,14 @@ use glutin::{
 };
 use resource::resource;
 
-pub struct App {}
+pub struct App {
+}
 
 impl App {
-    pub fn run(mut win: window::Window, mut callback: impl FnMut(&mut window::Window, &Signal) + 'static) {
+    pub fn run(
+        mut win: window::Window,
+        mut callback: impl FnMut(&mut window::Window, &Signal) + 'static
+    ) {
         let event_loop = EventLoop::new();
         let (context, gl_display, window, surface) = create_window(&event_loop, win.model.title.as_str());
 
@@ -51,7 +56,9 @@ impl App {
                         // TODO: check Bounds::contains
                         c.handle_event(&ev, &mouse_position)
                     });
-                    signal.map(|sig| callback(&mut win, &sig));
+                    signal.map(|sig| {
+                        callback(&mut win, &sig);
+                    });
                     window.request_redraw();
                 }
                 _ => {}

@@ -12,6 +12,7 @@ pub mod grid_view;
 pub mod label;
 pub mod vbox;
 pub mod window;
+pub mod file_chooser;
 
 pub trait IWidget: AsAny {
     fn get_width(&self) -> Size;
