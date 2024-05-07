@@ -11,8 +11,9 @@ license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/avantgardnerio/radui"
 version = "0.1.0"
+description = "A rapid application development graphical user interface"
+homepage = "https://github.com/avantgardnerio/radui"
 
 [workspace.dependencies]
 radui = { path = "radui" }
 yaserde = "0.7.1"
-
