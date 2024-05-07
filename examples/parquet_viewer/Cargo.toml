@@ -1,0 +1,8 @@
+[package]
+name = "parquet_viewer"
+version = { workspace = true }
+edition = { workspace = true }
+
+[dependencies]
+radui = { workspace = true }
+yaserde = { workspace = true }

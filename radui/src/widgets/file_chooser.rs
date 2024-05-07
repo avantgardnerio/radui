@@ -34,7 +34,7 @@ impl FileChooser {
         }
     }
 
-    pub fn on_signal(&self, win: &mut window::Window, signal: &Signal) {
+    pub fn on_signal(&self, _win: &mut window::Window, _signal: &Signal) {
 
     }
 }

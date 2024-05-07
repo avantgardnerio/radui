@@ -6,7 +6,7 @@ use radui::app::App;
 use radui::events::SignalType;
 
 fn main() {
-    let bytes = include_bytes!("../../resources/app.xml");
+    let bytes = include_bytes!("../resources/app.xml");
     let content = String::from_utf8_lossy(bytes);
     let mut windows: Windows = from_str(&content).unwrap();
 
