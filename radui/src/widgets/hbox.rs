@@ -11,23 +11,23 @@ use std::slice::{Iter, IterMut};
 use winit::dpi::PhysicalPosition;
 use winit::event::{Event, WindowEvent};
 
-pub struct Vbox {
-    pub model: models::Vbox,
+pub struct Hbox {
+    pub model: models::Hbox,
     pub children: Vec<(Bounds2d<u32>, Box<dyn IWidget>)>,
     pub width: u32,
     pub height: u32,
 }
 
-impl IWidget for Vbox {
+impl IWidget for Hbox {
     fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId) {
         for (idx, (bounds, child)) in self.children.iter().enumerate() {
-            let top = bounds[1];
-            let bottom = self.children.get(idx + 1).map(|(b, _c)| b[1]).unwrap_or(self.height);
-            let height = bottom - top;
+            let left = bounds[0];
+            let right = self.children.get(idx + 1).map(|(b, _c)| b[0]).unwrap_or(self.width);
+            let width = right - left;
 
             canvas.save();
-            canvas.translate(0.0, top as f32);
-            canvas.scissor(0.0, 0.0, self.width as f32, height as f32);
+            canvas.translate(left as f32, 0.0);
+            canvas.scissor(0.0, 0.0, width as f32, self.height as f32);
 
             child.draw(canvas, font);
 
@@ -41,36 +41,35 @@ impl IWidget for Vbox {
 
         // calculate size of pie
         let (abs, rel): (Vec<_>, Vec<_>) =
-            self.children.iter().map(|(_top, c)| c.get_height()).partition_map(|h| match h {
+            self.children.iter().map(|(_left, c)| c.get_width(canvas, font)).partition_map(|w| match w {
                 Size::Absolute(n) => Either::Left(n as f32),
                 Size::Relative(n) => Either::Right(n as f32),
             });
-        let abs_height: f32 = abs.iter().sum();
+        let abs_width: f32 = abs.iter().sum();
         let rel_total: f32 = rel.iter().sum();
-        let remaining = height as f32 - abs_height as f32;
+        let remaining = width as f32 - abs_width as f32;
 
         // position tops
         let mut cursor = 0;
         for (bounds, child) in self.children.iter_mut() {
-            bounds[0] = 0;
-            bounds[1] = cursor;
-            bounds[2] = width;
-            let height = match child.get_height() {
-                Size::Absolute(h) => h,
-                Size::Relative(h) => (h as f32 * remaining / rel_total) as u32,
+            bounds[0] = cursor;
+            bounds[1] = 0;
+            bounds[3] = height;
+            let width = match child.get_width(canvas, font) {
+                Size::Absolute(w) => w,
+                Size::Relative(w) => (w as f32 * remaining / rel_total) as u32,
             };
-            cursor += height;
+            cursor += width;
         }
 
         // layout children
-        let bottoms =
-            self.children.iter().map(|(bounds, _c)| bounds[1]).skip(1).chain(once(height)).collect::<Vec<_>>();
+        let rights = self.children.iter().map(|(bounds, _c)| bounds[0]).skip(1).chain(once(width)).collect::<Vec<_>>();
         for (idx, (bounds, child)) in self.children.iter_mut().enumerate() {
-            let top = bounds[1];
-            let height = bottoms[idx] - top;
-            bounds[3] = height;
-            println!("bounds={bounds:?}");
-            child.layout(width, height, canvas, font);
+            let left = bounds[0];
+            let width = rights[idx] - left;
+            bounds[2] = width;
+            println!("Hbox bounds={bounds:?}");
+            child.layout(width, width, canvas, font);
         }
     }
 
@@ -107,8 +106,8 @@ impl IWidget for Vbox {
     }
 }
 
-impl From<models::Vbox> for Box<dyn IWidget> {
-    fn from(mut value: models::Vbox) -> Self {
+impl From<models::Hbox> for Box<dyn IWidget> {
+    fn from(mut value: models::Hbox) -> Self {
         println!("childrec={}", value.children.len());
         let children: Vec<(Bounds2d<u32>, _)> = value
             .children
@@ -124,7 +123,7 @@ impl From<models::Vbox> for Box<dyn IWidget> {
                 ([0, 0, 0, 0], child)
             })
             .collect();
-        let me = Vbox { model: value, children, width: 0, height: 0 };
+        let me = Hbox { model: value, children, width: 0, height: 0 };
         Box::new(me)
     }
 }

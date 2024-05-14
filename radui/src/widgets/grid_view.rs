@@ -4,7 +4,7 @@ use crate::geom::{Bounds2d, Size};
 use crate::widgets::IWidget;
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, Color, FontId, Paint, Path};
-use std::slice::IterMut;
+use std::slice::{Iter, IterMut};
 use winit::dpi::PhysicalPosition;
 use winit::event::{Event, WindowEvent};
 
@@ -22,13 +22,9 @@ impl IWidget for GridView {
         canvas.fill_path(&path, &Paint::color(Color::white()));
     }
 
-    fn layout(&mut self, width: u32, height: u32) {
+    fn layout(&mut self, width: u32, height: u32, _canvas: &Canvas<OpenGl>, _font: &FontId) {
         self.width = width;
         self.height = height;
-    }
-
-    fn get_width(&self) -> Size {
-        todo!()
     }
 
     fn get_height(&self) -> Size {
@@ -52,7 +48,11 @@ impl IWidget for GridView {
         self.model.id.as_ref().map(|s| s.as_str())
     }
 
-    fn get_children(&mut self) -> IterMut<'_, (Bounds2d<u32>, Box<dyn IWidget>)> {
+    fn get_children(&self) -> Iter<'_, (Bounds2d<u32>, Box<dyn IWidget>)> {
+        self.children.iter()
+    }
+
+    fn get_children_mut(&mut self) -> IterMut<'_, (Bounds2d<u32>, Box<dyn IWidget>)> {
         self.children.iter_mut()
     }
 }

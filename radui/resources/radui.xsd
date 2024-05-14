@@ -29,6 +29,14 @@
         <xs:attribute name="height" type="xs:string" />
     </xs:complexType>
 
+    <xs:complexType name="HBox">
+        <xs:sequence>
+            <xs:element name="children" type="Widget" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="width" type="xs:string" />
+        <xs:attribute name="height" type="xs:string" />
+    </xs:complexType>
+
     <xs:complexType name="Label">
         <xs:attribute name="id" type="xs:string" />
         <xs:attribute name="text" type="xs:string" use="required" />
@@ -46,6 +54,7 @@
         <xs:choice>
             <xs:element name="GridView" type="GridView" />
             <xs:element name="VBox" type="VBox" />
+            <xs:element name="HBox" type="HBox" />
             <xs:element name="Label" type="Label" />
         </xs:choice>
     </xs:complexType>

@@ -1,4 +1,4 @@
-use std::{env};
+use std::env;
 use std::num::NonZeroU32;
 
 use femtovg::renderer::OpenGl;
@@ -24,14 +24,10 @@ use glutin::{
 };
 use resource::resource;
 
-pub struct App {
-}
+pub struct App {}
 
 impl App {
-    pub fn run(
-        mut win: window::Window,
-        mut callback: impl FnMut(&mut window::Window, &Signal) + 'static
-    ) {
+    pub fn run(mut win: window::Window, mut callback: impl FnMut(&mut window::Window, &Signal) + 'static) {
         let event_loop = EventLoop::new();
         let (context, gl_display, window, surface) = create_window(&event_loop, win.model.title.as_str());
 
@@ -69,7 +65,7 @@ impl App {
                 canvas.set_size(size.width, size.height, window.scale_factor() as f32);
 
                 if first {
-                    win.layout(size.width, size.height);
+                    win.layout(size.width, size.height, &canvas, &font);
                     first = false;
                 }
 
