@@ -41,9 +41,7 @@ impl IWidget for Vbox {
 
         // calculate size of pie
         let (abs, rel): (Vec<_>, Vec<_>) =
-            self.children.iter()
-                .map(|(_top, c)| c.get_height(canvas, font))
-                .partition_map(|h| match h {
+            self.children.iter().map(|(_top, c)| c.get_height(canvas, font)).partition_map(|h| match h {
                 Size::Absolute(n) => Either::Left(n as f32),
                 Size::Relative(n) => Either::Right(n as f32),
             });

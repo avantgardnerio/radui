@@ -74,15 +74,16 @@ impl IWidget for Hbox {
     }
 
     fn handle_event(&mut self, ev: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>) -> Option<Signal> {
+        println!("HBox event");
         match ev {
             Event::WindowEvent { event, .. } => match event {
                 WindowEvent::MouseInput { .. } => {
                     for (bounds, child) in self.children.iter_mut().rev() {
-                        let top = bounds[1] as f64;
-                        if cursor_pos.y < top {
+                        let left = bounds[0] as f64;
+                        if cursor_pos.x < left {
                             continue;
                         }
-                        let pos = PhysicalPosition::new(cursor_pos.x, cursor_pos.y - top);
+                        let pos = PhysicalPosition::new(cursor_pos.x - left, cursor_pos.y);
                         return child.handle_event(ev, &pos);
                     }
                 }

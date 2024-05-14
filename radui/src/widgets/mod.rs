@@ -51,7 +51,12 @@ pub trait IWidget: AsAny {
 
     fn layout(&mut self, _width: u32, _height: u32, _canvas: &Canvas<OpenGl>, _font: &FontId) {}
 
-    fn handle_event(&mut self, _event: &Event<'_, ()>, _cursor_pos: &PhysicalPosition<f64>) -> Option<Signal> {
+    fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>) -> Option<Signal> {
+        for (_bounds, child) in self.get_children_mut() {
+            if let Some(signal) = child.handle_event(event, cursor_pos) {
+                return Some(signal);
+            }
+        }
         None
     }
 

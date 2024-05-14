@@ -54,6 +54,7 @@ impl IWidget for Label {
     }
 
     fn handle_event(&mut self, event: &Event<'_, ()>, _cursor_pos: &PhysicalPosition<f64>) -> Option<Signal> {
+        println!("Label event");
         match event {
             Event::WindowEvent { event, .. } => match event {
                 WindowEvent::MouseInput { .. } => {
