@@ -29,10 +29,10 @@ pub trait IWidget: AsAny {
         Size::Absolute(size)
     }
 
-    fn get_height(&self) -> Size {
+    fn get_height(&self, canvas: &Canvas<OpenGl>, font: &FontId) -> Size {
         let size = self.get_children().fold(0u32, |acc, cur| {
             let (_bounds, widget) = cur;
-            let cur = match widget.get_height() {
+            let cur = match widget.get_height(canvas, font) {
                 Size::Absolute(h) => h,
                 Size::Relative(_) => 0,
             };

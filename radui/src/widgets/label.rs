@@ -9,6 +9,7 @@ use winit::dpi::PhysicalPosition;
 use winit::event::{Event, WindowEvent};
 
 const FONT_SIZE: f32 = 22.0;
+const PADDING: f32 = 2.0;
 
 pub struct Label {
     pub model: models::Label,
@@ -39,12 +40,17 @@ impl IWidget for Label {
         paint.set_font(&[*font]);
         paint.set_font_size(FONT_SIZE);
         let metrics = canvas.measure_text(0.0, 0.0, self.model.text.as_str(), &paint).unwrap();
-        let width = metrics.width();
+        let width = metrics.width() + PADDING * 2.0;
         Size::Absolute(width as u32)
     }
 
-    fn get_height(&self) -> Size {
-        Size::Absolute(FONT_SIZE as u32 * 2)
+    fn get_height(&self, canvas: &Canvas<OpenGl>, font: &FontId) -> Size {
+        let mut paint = Paint::color(Color::black());
+        paint.set_font(&[*font]);
+        paint.set_font_size(FONT_SIZE);
+        let metrics = canvas.measure_text(0.0, 0.0, self.model.text.as_str(), &paint).unwrap();
+        let width = metrics.height() + PADDING * 2.0;
+        Size::Absolute(width as u32)
     }
 
     fn handle_event(&mut self, event: &Event<'_, ()>, _cursor_pos: &PhysicalPosition<f64>) -> Option<Signal> {

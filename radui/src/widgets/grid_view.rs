@@ -27,7 +27,7 @@ impl IWidget for GridView {
         self.height = height;
     }
 
-    fn get_height(&self) -> Size {
+    fn get_height(&self, _canvas: &Canvas<OpenGl>, _font: &FontId) -> Size {
         self.model.height.as_ref().map(|h| h.as_str()).unwrap_or("100%").parse().unwrap()
     }
 
