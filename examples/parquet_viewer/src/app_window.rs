@@ -26,7 +26,6 @@ impl AppWindow {
         let mut win: widgets::window::Window = win.into();
 
         let label = win.find_by_id("lblOpen").unwrap();
-        let label = label.as_any_mut().downcast_mut::<Label>().unwrap();
         label.add_event_listener(SignalType::Activated);
 
         Self { children: vec![([0, 0, 0, 0], Box::new(win))] }

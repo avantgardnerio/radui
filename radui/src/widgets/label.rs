@@ -64,6 +64,7 @@ impl IWidget for Label {
         match event {
             Event::WindowEvent { event, .. } => match event {
                 WindowEvent::MouseInput { state: ElementState::Released, .. } => {
+                    println!("release");
                     if self.listeners.contains(&SignalType::Activated) {
                         signals.push(Signal {
                             source: self.get_id().unwrap_or("").to_string(),
