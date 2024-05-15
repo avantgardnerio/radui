@@ -2,6 +2,7 @@ use radui::events::{Signal, SignalType};
 use radui::generated::models::Windows;
 use radui::geom::Bounds2d;
 use radui::widgets;
+use radui::widgets::file_chooser::FileChooser;
 use radui::widgets::label::Label;
 use radui::widgets::window::IWindow;
 use radui::widgets::IWidget;
@@ -35,12 +36,15 @@ impl AppWindow {
 impl IWidget for AppWindow {
     fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>, signals: &mut Vec<Signal>) {
         self.get_children_mut().for_each(|(_bounds, child)| child.handle_event(event, cursor_pos, signals));
-        signals.iter().for_each(|signal| match signal.typ {
-            SignalType::Activated => {
-                if signal.source == "lblOpen" {
-                    println!("clicked");
-                }
+        signals.iter().for_each(|signal| match (&signal.typ, signal.source.as_str()) {
+            (SignalType::Activated, "lblOpen") => {
+                println!("showing file dialog");
+                let mut file_chooser = FileChooser::new("fcMain");
+                let bounds: Bounds2d<u32> = [100, 100, 200, 200];
+                let child: ([u32; 4], Box<dyn IWidget>) = (bounds, Box::new(file_chooser));
+                self.children.push(child);
             }
+            _ => {}
         })
     }
 

@@ -15,24 +15,6 @@ pub struct Window {
     pub children: Vec<(Bounds2d<u32>, Box<dyn IWidget>)>,
     pub width: u32,
     pub height: u32,
-    pub file_chooser: Option<FileChooser>,
-}
-
-impl Window {
-    pub fn file_chooser(&mut self) {
-        // if self.file_chooser.is_some() {
-        //     return;
-        // }
-        //
-        // let mut file_chooser = FileChooser::new();
-        //
-        // println!("showing file dialog");
-        // let window = file_chooser.window.take().unwrap();
-        // let bounds: Bounds2d<u32> = [100, 100, 200, 200];
-        // let child: ([u32; 4], Box<dyn IWidget>) = (bounds, window);
-        // self.children.push(child);
-        // self.layout(self.width, self.height);
-    }
 }
 
 impl IWindow for Window {
@@ -70,6 +52,6 @@ impl From<models::Window> for widgets::window::Window {
             vec![(bounds, child)]
         });
 
-        widgets::window::Window { model: value, children, width: 0, height: 0, file_chooser: None }
+        widgets::window::Window { model: value, children, width: 0, height: 0 }
     }
 }

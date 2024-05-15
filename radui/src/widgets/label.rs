@@ -7,7 +7,7 @@ use femtovg::{Canvas, Color, FontId, Paint, Path};
 use std::collections::{HashMap, HashSet};
 use std::slice::{Iter, IterMut};
 use winit::dpi::PhysicalPosition;
-use winit::event::{Event, WindowEvent};
+use winit::event::{ElementState, Event, WindowEvent};
 
 const FONT_SIZE: f32 = 24.0;
 const PADDING: f32 = 2.0;
@@ -63,7 +63,7 @@ impl IWidget for Label {
         println!("Label event");
         match event {
             Event::WindowEvent { event, .. } => match event {
-                WindowEvent::MouseInput { .. } => {
+                WindowEvent::MouseInput { state: ElementState::Released, .. } => {
                     if self.listeners.contains(&SignalType::Activated) {
                         signals.push(Signal {
                             source: self.get_id().unwrap_or("").to_string(),
