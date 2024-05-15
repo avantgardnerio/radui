@@ -31,7 +31,7 @@ impl IWidget for GridView {
         self.model.height.as_deref().unwrap_or("100%").parse().unwrap()
     }
 
-    fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>) -> Option<Signal> {
+    fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>) {
         match event {
             Event::WindowEvent { event, .. } => match event {
                 WindowEvent::MouseInput { state, button, .. } => {
@@ -41,7 +41,6 @@ impl IWidget for GridView {
             },
             _ => {}
         }
-        None
     }
 
     fn get_id(&self) -> Option<&str> {

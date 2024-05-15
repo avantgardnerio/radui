@@ -73,7 +73,7 @@ impl IWidget for Hbox {
         }
     }
 
-    fn handle_event(&mut self, ev: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>) -> Option<Signal> {
+    fn handle_event(&mut self, ev: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>) {
         println!("HBox event");
         match ev {
             Event::WindowEvent { event, .. } => match event {
@@ -84,14 +84,13 @@ impl IWidget for Hbox {
                             continue;
                         }
                         let pos = PhysicalPosition::new(cursor_pos.x - left, cursor_pos.y);
-                        return child.handle_event(ev, &pos);
+                        child.handle_event(ev, &pos);
                     }
                 }
                 _ => {}
             },
             _ => {}
         }
-        None
     }
 
     fn get_id(&self) -> Option<&str> {

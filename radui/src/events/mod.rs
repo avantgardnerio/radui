@@ -3,6 +3,7 @@ pub struct Signal {
     pub typ: SignalType,
 }
 
+#[derive(Eq, Hash, PartialEq)]
 pub enum SignalType {
     Activated,
 }

@@ -1,6 +1,8 @@
+use radui::events::SignalType;
 use radui::generated::models::Windows;
 use radui::geom::Bounds2d;
 use radui::widgets;
+use radui::widgets::label::Label;
 use radui::widgets::window::IWindow;
 use radui::widgets::IWidget;
 use std::slice::{Iter, IterMut};
@@ -18,7 +20,16 @@ impl AppWindow {
 
         let idx = windows.window.iter().position(|w| w.id == "appWindow").unwrap();
         let win = windows.window.remove(idx);
-        let win: widgets::window::Window = win.into();
+        let mut win: widgets::window::Window = win.into();
+
+        let label = win.find_by_id("lblOpen").unwrap();
+        let label = label.as_any_mut().downcast_mut::<Label>().unwrap();
+        label.add_event_listener(
+            SignalType::Activated,
+            Box::new(|| {
+                println!("clicked");
+            }),
+        );
 
         Self { children: vec![([0, 0, 0, 0], Box::new(win))] }
     }

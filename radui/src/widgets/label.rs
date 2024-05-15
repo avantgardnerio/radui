@@ -4,6 +4,7 @@ use crate::geom::{Bounds2d, Size};
 use crate::widgets::IWidget;
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, Color, FontId, Paint, Path};
+use std::collections::HashMap;
 use std::slice::{Iter, IterMut};
 use winit::dpi::PhysicalPosition;
 use winit::event::{Event, WindowEvent};
@@ -16,9 +17,15 @@ pub struct Label {
     pub width: u32,
     pub height: u32,
     pub children: Vec<(Bounds2d<u32>, Box<dyn IWidget>)>,
+    pub listeners: HashMap<SignalType, Vec<Box<dyn FnMut()>>>,
 }
 
 impl IWidget for Label {
+    fn add_event_listener(&mut self, typ: SignalType, callback: Box<dyn FnMut()>) {
+        let mut cbs = self.listeners.entry(typ).or_insert_with(|| vec![]);
+        cbs.push(callback);
+    }
+
     fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId) {
         let mut path = Path::new();
         path.rect(0.0, 0.0, self.width as f32, self.height as f32);
@@ -53,19 +60,19 @@ impl IWidget for Label {
         Size::Absolute(width as u32)
     }
 
-    fn handle_event(&mut self, event: &Event<'_, ()>, _cursor_pos: &PhysicalPosition<f64>) -> Option<Signal> {
+    fn handle_event(&mut self, event: &Event<'_, ()>, _cursor_pos: &PhysicalPosition<f64>) {
         println!("Label event");
         match event {
             Event::WindowEvent { event, .. } => match event {
                 WindowEvent::MouseInput { .. } => {
-                    let signal = Signal { source: self.get_id().unwrap_or("").to_string(), typ: SignalType::Activated };
-                    return Some(signal);
+                    if let Some(listeners) = self.listeners.get_mut(&SignalType::Activated) {
+                        listeners.iter_mut().for_each(|l| l());
+                    }
                 }
                 _ => {}
             },
             _ => {}
         }
-        None
     }
 
     fn get_id(&self) -> Option<&str> {
@@ -83,7 +90,7 @@ impl IWidget for Label {
 
 impl From<models::Label> for Box<dyn IWidget> {
     fn from(value: models::Label) -> Self {
-        let me = Label { model: value, width: 0, height: 0, children: vec![] };
+        let me = Label { model: value, width: 0, height: 0, children: vec![], listeners: Default::default() };
         Box::new(me)
     }
 }

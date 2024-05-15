@@ -1,4 +1,4 @@
-use crate::events::Signal;
+use crate::events::{Signal, SignalType};
 use crate::geom::{Bounds2d, Size};
 use as_any::AsAny;
 use femtovg::renderer::OpenGl;
@@ -41,6 +41,10 @@ pub trait IWidget: AsAny {
         Size::Absolute(size)
     }
 
+    fn add_event_listener(&mut self, _typ: SignalType, _callback: Box<dyn FnMut()>) {
+        todo!()
+    }
+
     fn get_id(&self) -> Option<&str>;
 
     fn get_children_mut(&mut self) -> IterMut<'_, (Bounds2d<u32>, Box<dyn IWidget>)>;
@@ -64,13 +68,10 @@ pub trait IWidget: AsAny {
         }
     }
 
-    fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>) -> Option<Signal> {
+    fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>) {
         for (_bounds, child) in self.get_children_mut() {
-            if let Some(signal) = child.handle_event(event, cursor_pos) {
-                return Some(signal);
-            }
+            child.handle_event(event, cursor_pos);
         }
-        None
     }
 
     fn find_by_id(&mut self, id: &str) -> Option<&mut Box<dyn IWidget>> {
