@@ -28,7 +28,7 @@ impl IWidget for GridView {
     }
 
     fn get_height(&self, _canvas: &Canvas<OpenGl>, _font: &FontId) -> Size {
-        self.model.height.as_ref().map(|h| h.as_str()).unwrap_or("100%").parse().unwrap()
+        self.model.height.as_deref().unwrap_or("100%").parse().unwrap()
     }
 
     fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>) -> Option<Signal> {
@@ -45,7 +45,7 @@ impl IWidget for GridView {
     }
 
     fn get_id(&self) -> Option<&str> {
-        self.model.id.as_ref().map(|s| s.as_str())
+        self.model.id.as_deref()
     }
 
     fn get_children(&self) -> Iter<'_, (Bounds2d<u32>, Box<dyn IWidget>)> {

@@ -47,7 +47,7 @@ impl IWidget for Vbox {
             });
         let abs_height: f32 = abs.iter().sum();
         let rel_total: f32 = rel.iter().sum();
-        let remaining = height as f32 - abs_height as f32;
+        let remaining = height as f32 - abs_height;
 
         // position tops
         let mut cursor = 0;

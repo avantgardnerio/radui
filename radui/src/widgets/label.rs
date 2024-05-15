@@ -69,7 +69,7 @@ impl IWidget for Label {
     }
 
     fn get_id(&self) -> Option<&str> {
-        self.model.id.as_ref().map(|s| s.as_str())
+        self.model.id.as_deref()
     }
 
     fn get_children(&self) -> Iter<'_, (Bounds2d<u32>, Box<dyn IWidget>)> {

@@ -13,6 +13,12 @@ pub struct FileChooser {
     pub window: Option<Box<Window>>,
 }
 
+impl Default for FileChooser {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl FileChooser {
     pub fn new() -> Self {
         let bytes = include_bytes!("../../resources/lib.xml");

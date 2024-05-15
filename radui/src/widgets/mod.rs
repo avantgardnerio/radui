@@ -52,7 +52,7 @@ pub trait IWidget: AsAny {
             canvas.save();
             canvas.translate(bounds[0] as f32, bounds[1] as f32);
 
-            c.draw(canvas, &font);
+            c.draw(canvas, font);
 
             canvas.restore();
         }

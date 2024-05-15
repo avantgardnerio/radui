@@ -11,8 +11,8 @@ impl FromStr for Size {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         // TODO: real (regex) parsing
-        if s.contains("%") {
-            let num = s.replace("%", "").parse::<u32>()?;
+        if s.contains('%') {
+            let num = s.replace('%', "").parse::<u32>()?;
             Ok(Size::Relative(num))
         } else {
             let num = s.parse::<u32>()?;

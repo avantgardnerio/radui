@@ -4,8 +4,6 @@ use crate::geom::Bounds2d;
 use crate::widgets;
 use crate::widgets::file_chooser::FileChooser;
 use crate::widgets::IWidget;
-use femtovg::renderer::OpenGl;
-use femtovg::{Canvas, FontId};
 use std::slice::{Iter, IterMut};
 
 pub trait IWindow: IWidget {

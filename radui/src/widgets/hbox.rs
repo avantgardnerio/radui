@@ -47,7 +47,7 @@ impl IWidget for Hbox {
             });
         let abs_width: f32 = abs.iter().sum();
         let rel_total: f32 = rel.iter().sum();
-        let remaining = width as f32 - abs_width as f32;
+        let remaining = width as f32 - abs_width;
 
         // position tops
         let mut cursor = 0;

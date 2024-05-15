@@ -13,9 +13,8 @@ use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::WindowBuilder;
 use winit::{dpi::PhysicalSize, window::Window};
 
-use crate::events::Signal;
 use crate::widgets::window::IWindow;
-use crate::widgets::{window, IWidget};
+use crate::widgets::{IWidget};
 use glutin::{
     config::ConfigTemplateBuilder,
     context::ContextAttributesBuilder,
