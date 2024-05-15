@@ -8,6 +8,10 @@ use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, FontId};
 use std::slice::{Iter, IterMut};
 
+pub trait IWindow: IWidget {
+    fn get_title(&self) -> &str;
+}
+
 pub struct Window {
     pub model: models::Window,
     pub children: Vec<(Bounds2d<u32>, Box<dyn IWidget>)>,
@@ -33,15 +37,13 @@ impl Window {
     }
 }
 
-impl IWidget for Window {
-    fn layout(&mut self, width: u32, height: u32, canvas: &Canvas<OpenGl>, font: &FontId) {
-        self.width = width;
-        self.height = height;
-        for (_bounds, c) in &mut self.children {
-            c.layout(width, height, canvas, font);
-        }
+impl IWindow for Window {
+    fn get_title(&self) -> &str {
+        self.model.title.as_str()
     }
+}
 
+impl IWidget for Window {
     fn get_id(&self) -> Option<&str> {
         Some(self.model.id.as_ref())
     }
@@ -52,17 +54,6 @@ impl IWidget for Window {
 
     fn get_children(&self) -> Iter<'_, (Bounds2d<u32>, Box<dyn IWidget>)> {
         self.children.iter()
-    }
-
-    fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId) {
-        for (bounds, c) in &self.children {
-            canvas.save();
-            canvas.translate(bounds[0] as f32, bounds[1] as f32);
-
-            c.draw(canvas, &font);
-
-            canvas.restore();
-        }
     }
 }
 

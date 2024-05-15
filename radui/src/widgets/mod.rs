@@ -47,9 +47,22 @@ pub trait IWidget: AsAny {
 
     fn get_children(&self) -> Iter<'_, (Bounds2d<u32>, Box<dyn IWidget>)>;
 
-    fn draw(&self, _canvas: &mut Canvas<OpenGl>, _font: &FontId) {}
+    fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId) {
+        for (bounds, c) in self.get_children() {
+            canvas.save();
+            canvas.translate(bounds[0] as f32, bounds[1] as f32);
 
-    fn layout(&mut self, _width: u32, _height: u32, _canvas: &Canvas<OpenGl>, _font: &FontId) {}
+            c.draw(canvas, &font);
+
+            canvas.restore();
+        }
+    }
+
+    fn layout(&mut self, width: u32, height: u32, canvas: &Canvas<OpenGl>, font: &FontId) {
+        for (_bounds, c) in &mut self.get_children_mut() {
+            c.layout(width, height, canvas, font);
+        }
+    }
 
     fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>) -> Option<Signal> {
         for (_bounds, child) in self.get_children_mut() {

@@ -14,6 +14,7 @@ use winit::window::WindowBuilder;
 use winit::{dpi::PhysicalSize, window::Window};
 
 use crate::events::Signal;
+use crate::widgets::window::IWindow;
 use crate::widgets::{window, IWidget};
 use glutin::{
     config::ConfigTemplateBuilder,
@@ -27,9 +28,9 @@ use resource::resource;
 pub struct App {}
 
 impl App {
-    pub fn run(mut win: window::Window, mut callback: impl FnMut(&mut window::Window, &Signal) + 'static) {
+    pub fn run<W: IWindow>(mut win: W) {
         let event_loop = EventLoop::new();
-        let (context, gl_display, window, surface) = create_window(&event_loop, win.model.title.as_str());
+        let (context, gl_display, window, surface) = create_window(&event_loop, win.get_title());
 
         let renderer = unsafe { OpenGl::new_from_function_cstr(|s| gl_display.get_proc_address(s) as *const _) }
             .expect("Cannot create renderer");
@@ -48,13 +49,8 @@ impl App {
                 }
                 WindowEvent::CloseRequested => *control_flow = ControlFlow::Exit,
                 WindowEvent::MouseInput { .. } => {
-                    let signal = win.children.iter_mut().fold(None, |_acc, (_bounds, c)| {
-                        // TODO: check Bounds::contains
-                        c.handle_event(&ev, &mouse_position)
-                    });
-                    signal.map(|sig| {
-                        callback(&mut win, &sig);
-                    });
+                    let signal = win.handle_event(&ev, &mouse_position);
+                    // TODO: signals
                     window.request_redraw();
                 }
                 _ => {}

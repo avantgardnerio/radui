@@ -8,7 +8,7 @@ use std::slice::{Iter, IterMut};
 use winit::dpi::PhysicalPosition;
 use winit::event::{Event, WindowEvent};
 
-const FONT_SIZE: f32 = 22.0;
+const FONT_SIZE: f32 = 24.0;
 const PADDING: f32 = 2.0;
 
 pub struct Label {
