@@ -37,11 +37,13 @@ impl IWidget for AppWindow {
         self.get_children_mut().for_each(|(_bounds, child)| child.handle_event(event, cursor_pos, signals));
         signals.iter().for_each(|signal| match (&signal.typ, signal.source.as_str()) {
             (SignalType::Activated, "lblOpen") => {
-                println!("showing file dialog");
-                let mut file_chooser = FileChooser::new("fcMain");
-                let bounds: Bounds2d<u32> = [100, 100, 200, 200];
-                let child: ([u32; 4], Box<dyn IWidget>) = (bounds, Box::new(file_chooser));
-                self.children.push(child);
+                if self.children.len() == 1 { // TODO: bounds testing for clicks
+                    println!("showing file dialog");
+                    let mut file_chooser = FileChooser::new("fcMain");
+                    let bounds: Bounds2d<u32> = [100, 100, 200, 200];
+                    let child: ([u32; 4], Box<dyn IWidget>) = (bounds, Box::new(file_chooser));
+                    self.children.push(child);
+                }
             }
             _ => {}
         })
