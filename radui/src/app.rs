@@ -51,7 +51,9 @@ impl App {
                     WindowEvent::CloseRequested => *control_flow = ControlFlow::Exit,
                     WindowEvent::MouseInput { .. } => {
                         win.handle_event(&ev, &mouse_position, &mut signals);
-                        // TODO: signals
+                        // TODO: conditional reflow signal
+                        let size = window.inner_size();
+                        win.layout(size.width, size.height, &canvas, &font);
                         window.request_redraw();
                     }
                     _ => {}

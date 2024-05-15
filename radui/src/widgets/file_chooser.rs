@@ -13,7 +13,6 @@ use yaserde::de::from_str;
 pub struct FileChooser {
     pub id: String,
     pub current_dir: PathBuf,
-    pub window: Option<Box<Window>>,
     pub children: Vec<(Bounds2d<u32>, Box<dyn IWidget>)>,
 }
 
@@ -32,7 +31,7 @@ impl FileChooser {
         let lbl_path = lbl_path.as_mut().as_any_mut().downcast_mut::<Label>().unwrap();
         lbl_path.model.text = current_dir.to_str().unwrap().to_string();
 
-        Self { id: id.to_string(), current_dir, window: Some(Box::new(window)), children: vec![] }
+        Self { id: id.to_string(), current_dir, children: vec![([0, 0, 0, 0], Box::new(window))] }
     }
 }
 
