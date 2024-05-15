@@ -14,7 +14,7 @@ use winit::window::WindowBuilder;
 use winit::{dpi::PhysicalSize, window::Window};
 
 use crate::widgets::window::IWindow;
-use crate::widgets::{IWidget};
+use crate::widgets::IWidget;
 use glutin::{
     config::ConfigTemplateBuilder,
     context::ContextAttributesBuilder,

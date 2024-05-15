@@ -1,7 +1,7 @@
 use radui::generated::models::Windows;
 use radui::geom::Bounds2d;
 use radui::widgets;
-use radui::widgets::window::{IWindow};
+use radui::widgets::window::IWindow;
 use radui::widgets::IWidget;
 use std::slice::{Iter, IterMut};
 use yaserde::de::from_str;
