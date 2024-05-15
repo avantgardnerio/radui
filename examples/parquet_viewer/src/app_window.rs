@@ -1,4 +1,4 @@
-use radui::events::SignalType;
+use radui::events::{Signal, SignalType};
 use radui::generated::models::Windows;
 use radui::geom::Bounds2d;
 use radui::widgets;
@@ -6,6 +6,8 @@ use radui::widgets::label::Label;
 use radui::widgets::window::IWindow;
 use radui::widgets::IWidget;
 use std::slice::{Iter, IterMut};
+use winit::dpi::PhysicalPosition;
+use winit::event::Event;
 use yaserde::de::from_str;
 
 pub struct AppWindow {
@@ -24,18 +26,24 @@ impl AppWindow {
 
         let label = win.find_by_id("lblOpen").unwrap();
         let label = label.as_any_mut().downcast_mut::<Label>().unwrap();
-        label.add_event_listener(
-            SignalType::Activated,
-            Box::new(|| {
-                println!("clicked");
-            }),
-        );
+        label.add_event_listener(SignalType::Activated);
 
         Self { children: vec![([0, 0, 0, 0], Box::new(win))] }
     }
 }
 
 impl IWidget for AppWindow {
+    fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>, signals: &mut Vec<Signal>) {
+        self.get_children_mut().for_each(|(_bounds, child)| child.handle_event(event, cursor_pos, signals));
+        signals.iter().for_each(|signal| match signal.typ {
+            SignalType::Activated => {
+                if signal.source == "lblOpen" {
+                    println!("clicked");
+                }
+            }
+        })
+    }
+
     fn get_id(&self) -> Option<&str> {
         Some("pvApp")
     }

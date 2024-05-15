@@ -17,3 +17,4 @@ homepage = "https://github.com/avantgardnerio/radui"
 [workspace.dependencies]
 radui = { path = "radui" }
 yaserde = "0.7.1"
+winit = "0.28.1"

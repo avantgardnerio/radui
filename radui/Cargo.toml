@@ -6,7 +6,7 @@ edition = { workspace = true }
 [dependencies]
 glutin = "0.30.0"
 glutin-winit = "0.3.0"
-winit = "0.28.1"
+winit = { workspace = true }
 raw-window-handle = "0.5.0"
 femtovg = "0.9.1"
 yaserde = { workspace = true }

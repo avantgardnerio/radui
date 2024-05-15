@@ -31,7 +31,7 @@ impl IWidget for GridView {
         self.model.height.as_deref().unwrap_or("100%").parse().unwrap()
     }
 
-    fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>) {
+    fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>, signals: &mut Vec<Signal>) {
         match event {
             Event::WindowEvent { event, .. } => match event {
                 WindowEvent::MouseInput { state, button, .. } => {

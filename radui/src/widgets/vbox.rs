@@ -74,7 +74,7 @@ impl IWidget for Vbox {
         }
     }
 
-    fn handle_event(&mut self, ev: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>) {
+    fn handle_event(&mut self, ev: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>, signals: &mut Vec<Signal>) {
         match ev {
             Event::WindowEvent { event, .. } => match event {
                 WindowEvent::MouseInput { .. } => {
@@ -84,7 +84,7 @@ impl IWidget for Vbox {
                             continue;
                         }
                         let pos = PhysicalPosition::new(cursor_pos.x, cursor_pos.y - top);
-                        child.handle_event(ev, &pos);
+                        child.handle_event(ev, &pos, signals);
                     }
                 }
                 _ => {}

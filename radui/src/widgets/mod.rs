@@ -41,7 +41,7 @@ pub trait IWidget: AsAny {
         Size::Absolute(size)
     }
 
-    fn add_event_listener(&mut self, _typ: SignalType, _callback: Box<dyn FnMut()>) {
+    fn add_event_listener(&mut self, _typ: SignalType) {
         todo!()
     }
 
@@ -68,10 +68,8 @@ pub trait IWidget: AsAny {
         }
     }
 
-    fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>) {
-        for (_bounds, child) in self.get_children_mut() {
-            child.handle_event(event, cursor_pos);
-        }
+    fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>, signals: &mut Vec<Signal>) {
+        self.get_children_mut().for_each(|(_bounds, child)| child.handle_event(event, cursor_pos, signals))
     }
 
     fn find_by_id(&mut self, id: &str) -> Option<&mut Box<dyn IWidget>> {

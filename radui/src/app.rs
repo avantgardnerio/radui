@@ -40,38 +40,42 @@ impl App {
 
         let mut first = true;
         let mut mouse_position = PhysicalPosition::new(0., 0.);
-        event_loop.run(move |ev, _target, control_flow| match &ev {
-            Event::WindowEvent { event, .. } => match event {
-                WindowEvent::CursorMoved { position, .. } => {
-                    mouse_position = *position;
-                    window.request_redraw();
-                }
-                WindowEvent::CloseRequested => *control_flow = ControlFlow::Exit,
-                WindowEvent::MouseInput { .. } => {
-                    let signal = win.handle_event(&ev, &mouse_position);
-                    // TODO: signals
-                    window.request_redraw();
+        let mut signals = vec![];
+        event_loop.run(move |ev, _target, control_flow| {
+            match &ev {
+                Event::WindowEvent { event, .. } => match event {
+                    WindowEvent::CursorMoved { position, .. } => {
+                        mouse_position = *position;
+                        window.request_redraw();
+                    }
+                    WindowEvent::CloseRequested => *control_flow = ControlFlow::Exit,
+                    WindowEvent::MouseInput { .. } => {
+                        win.handle_event(&ev, &mouse_position, &mut signals);
+                        // TODO: signals
+                        window.request_redraw();
+                    }
+                    _ => {}
+                },
+                Event::RedrawRequested(_) => {
+                    // Make sure the canvas has the right size:
+                    let size = window.inner_size();
+                    canvas.set_size(size.width, size.height, window.scale_factor() as f32);
+
+                    if first {
+                        win.layout(size.width, size.height, &canvas, &font);
+                        first = false;
+                    }
+
+                    canvas.clear_rect(0, 0, size.width, size.height, Color::black());
+
+                    win.draw(&mut canvas, &font);
+
+                    canvas.flush();
+                    surface.swap_buffers(&context).expect("Could not swap buffers");
                 }
                 _ => {}
-            },
-            Event::RedrawRequested(_) => {
-                // Make sure the canvas has the right size:
-                let size = window.inner_size();
-                canvas.set_size(size.width, size.height, window.scale_factor() as f32);
-
-                if first {
-                    win.layout(size.width, size.height, &canvas, &font);
-                    first = false;
-                }
-
-                canvas.clear_rect(0, 0, size.width, size.height, Color::black());
-
-                win.draw(&mut canvas, &font);
-
-                canvas.flush();
-                surface.swap_buffers(&context).expect("Could not swap buffers");
             }
-            _ => {}
+            signals.clear();
         });
     }
 }

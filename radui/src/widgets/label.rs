@@ -4,7 +4,7 @@ use crate::geom::{Bounds2d, Size};
 use crate::widgets::IWidget;
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, Color, FontId, Paint, Path};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::slice::{Iter, IterMut};
 use winit::dpi::PhysicalPosition;
 use winit::event::{Event, WindowEvent};
@@ -17,13 +17,12 @@ pub struct Label {
     pub width: u32,
     pub height: u32,
     pub children: Vec<(Bounds2d<u32>, Box<dyn IWidget>)>,
-    pub listeners: HashMap<SignalType, Vec<Box<dyn FnMut()>>>,
+    pub listeners: HashSet<SignalType>,
 }
 
 impl IWidget for Label {
-    fn add_event_listener(&mut self, typ: SignalType, callback: Box<dyn FnMut()>) {
-        let mut cbs = self.listeners.entry(typ).or_insert_with(|| vec![]);
-        cbs.push(callback);
+    fn add_event_listener(&mut self, typ: SignalType) {
+        self.listeners.insert(typ);
     }
 
     fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId) {
@@ -60,13 +59,16 @@ impl IWidget for Label {
         Size::Absolute(width as u32)
     }
 
-    fn handle_event(&mut self, event: &Event<'_, ()>, _cursor_pos: &PhysicalPosition<f64>) {
+    fn handle_event(&mut self, event: &Event<'_, ()>, _cursor_pos: &PhysicalPosition<f64>, signals: &mut Vec<Signal>) {
         println!("Label event");
         match event {
             Event::WindowEvent { event, .. } => match event {
                 WindowEvent::MouseInput { .. } => {
-                    if let Some(listeners) = self.listeners.get_mut(&SignalType::Activated) {
-                        listeners.iter_mut().for_each(|l| l());
+                    if self.listeners.contains(&SignalType::Activated) {
+                        signals.push(Signal {
+                            source: self.get_id().unwrap_or("").to_string(),
+                            typ: SignalType::Activated,
+                        })
                     }
                 }
                 _ => {}
