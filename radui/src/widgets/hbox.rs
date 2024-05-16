@@ -1,24 +1,24 @@
-use crate::events::Signal;
+use std::iter::once;
+use std::slice::{Iter, IterMut};
+
+use femtovg::renderer::OpenGl;
+use femtovg::{Canvas, FontId};
+use itertools::{Either, Itertools};
+
+use crate::events::{Event, Signal};
 use crate::generated::models;
 use crate::generated::models::WidgetChoice;
 use crate::geom::{Bounds2d, Size};
 use crate::widgets::IWidget;
-use femtovg::renderer::OpenGl;
-use femtovg::{Canvas, FontId};
-use itertools::{Either, Itertools};
-use std::iter::once;
-use std::slice::{Iter, IterMut};
-use winit::dpi::PhysicalPosition;
-use winit::event::{Event, WindowEvent};
 
-pub struct Hbox {
+pub struct HBox {
     pub model: models::Hbox,
     pub children: Vec<(Bounds2d<u32>, Box<dyn IWidget>)>,
     pub width: u32,
     pub height: u32,
 }
 
-impl IWidget for Hbox {
+impl IWidget for HBox {
     fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId) {
         for (idx, (bounds, child)) in self.children.iter().enumerate() {
             let left = bounds[0];
@@ -73,23 +73,20 @@ impl IWidget for Hbox {
         }
     }
 
-    fn handle_event(&mut self, ev: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>, signals: &mut Vec<Signal>) {
+    fn handle_event(&mut self, ev: &Event, signals: &mut Vec<Signal>) {
         println!("HBox event");
         match ev {
-            Event::WindowEvent { event, .. } => match event {
-                WindowEvent::MouseInput { .. } => {
-                    for (bounds, child) in self.children.iter_mut().rev() {
-                        let left = bounds[0] as f64;
-                        if cursor_pos.x < left {
-                            continue;
-                        }
-                        let pos = PhysicalPosition::new(cursor_pos.x - left, cursor_pos.y);
-                        child.handle_event(ev, &pos, signals);
+            Event::Click(pos) => {
+                for (bounds, child) in self.children.iter_mut().rev() {
+                    let left = bounds[0] as f64;
+                    if pos[0] < left {
+                        continue;
                     }
+                    let pos = [pos[0] - left, pos[1]];
+                    let ev = Event::Click(pos);
+                    child.handle_event(&ev, signals);
                 }
-                _ => {}
-            },
-            _ => {}
+            }
         }
     }
 
@@ -123,7 +120,7 @@ impl From<models::Hbox> for Box<dyn IWidget> {
                 ([0, 0, 0, 0], child)
             })
             .collect();
-        let me = Hbox { model: value, children, width: 0, height: 0 };
+        let me = HBox { model: value, children, width: 0, height: 0 };
         Box::new(me)
     }
 }

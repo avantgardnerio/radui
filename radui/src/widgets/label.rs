@@ -1,13 +1,13 @@
-use crate::events::{Signal, SignalType};
+use std::collections::HashSet;
+use std::slice::{Iter, IterMut};
+
+use femtovg::renderer::OpenGl;
+use femtovg::{Canvas, Color, FontId, Paint, Path};
+
+use crate::events::{Event, Signal, SignalType};
 use crate::generated::models;
 use crate::geom::{Bounds2d, Size};
 use crate::widgets::IWidget;
-use femtovg::renderer::OpenGl;
-use femtovg::{Canvas, Color, FontId, Paint, Path};
-use std::collections::{HashMap, HashSet};
-use std::slice::{Iter, IterMut};
-use winit::dpi::PhysicalPosition;
-use winit::event::{ElementState, Event, WindowEvent};
 
 const FONT_SIZE: f32 = 24.0;
 const PADDING: f32 = 2.0;
@@ -59,22 +59,15 @@ impl IWidget for Label {
         Size::Absolute(width as u32)
     }
 
-    fn handle_event(&mut self, event: &Event<'_, ()>, _cursor_pos: &PhysicalPosition<f64>, signals: &mut Vec<Signal>) {
+    fn handle_event(&mut self, event: &Event, signals: &mut Vec<Signal>) {
         println!("Label event");
         match event {
-            Event::WindowEvent { event, .. } => match event {
-                WindowEvent::MouseInput { state: ElementState::Released, .. } => {
-                    println!("release");
-                    if self.listeners.contains(&SignalType::Activated) {
-                        signals.push(Signal {
-                            source: self.get_id().unwrap_or("").to_string(),
-                            typ: SignalType::Activated,
-                        })
-                    }
+            Event::Click(_pos) => {
+                println!("click");
+                if self.listeners.contains(&SignalType::Activated) {
+                    signals.push(Signal { source: self.get_id().unwrap_or("").to_string(), typ: SignalType::Activated })
                 }
-                _ => {}
-            },
-            _ => {}
+            }
         }
     }
 

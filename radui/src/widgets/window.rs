@@ -1,10 +1,10 @@
+use std::slice::{Iter, IterMut};
+
 use crate::generated::models;
 use crate::generated::models::WidgetChoice;
 use crate::geom::Bounds2d;
 use crate::widgets;
-use crate::widgets::file_chooser::FileChooser;
 use crate::widgets::IWidget;
-use std::slice::{Iter, IterMut};
 
 pub trait IWindow: IWidget {
     fn get_title(&self) -> &str;

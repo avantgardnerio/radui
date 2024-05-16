@@ -1,12 +1,12 @@
-use crate::events::{Signal, SignalType};
-use crate::geom::{Bounds2d, Size};
+use std::cmp::max;
+use std::slice::{Iter, IterMut};
+
 use as_any::AsAny;
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, FontId};
-use std::cmp::max;
-use std::slice::{Iter, IterMut};
-use winit::dpi::PhysicalPosition;
-use winit::event::Event;
+
+use crate::events::{Event, Signal, SignalType};
+use crate::geom::{Bounds2d, Size};
 
 pub mod colors;
 pub mod file_chooser;
@@ -68,8 +68,8 @@ pub trait IWidget: AsAny {
         }
     }
 
-    fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>, signals: &mut Vec<Signal>) {
-        self.get_children_mut().for_each(|(_bounds, child)| child.handle_event(event, cursor_pos, signals))
+    fn handle_event(&mut self, event: &Event, signals: &mut Vec<Signal>) {
+        self.get_children_mut().for_each(|(_bounds, child)| child.handle_event(event, signals))
     }
 
     fn find_by_id(&mut self, id: &str) -> Option<&mut Box<dyn IWidget>> {

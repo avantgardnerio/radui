@@ -1,15 +1,14 @@
-use radui::events::{Signal, SignalType};
+use std::slice::{Iter, IterMut};
+
+use yaserde::de::from_str;
+
+use radui::events::{Event, Signal, SignalType};
 use radui::generated::models::Windows;
 use radui::geom::Bounds2d;
 use radui::widgets;
 use radui::widgets::file_chooser::FileChooser;
-use radui::widgets::label::Label;
 use radui::widgets::window::IWindow;
 use radui::widgets::IWidget;
-use std::slice::{Iter, IterMut};
-use winit::dpi::PhysicalPosition;
-use winit::event::Event;
-use yaserde::de::from_str;
 
 pub struct AppWindow {
     pub children: Vec<(Bounds2d<u32>, Box<dyn IWidget>)>,
@@ -33,13 +32,14 @@ impl AppWindow {
 }
 
 impl IWidget for AppWindow {
-    fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>, signals: &mut Vec<Signal>) {
-        self.get_children_mut().for_each(|(_bounds, child)| child.handle_event(event, cursor_pos, signals));
+    fn handle_event(&mut self, event: &Event, signals: &mut Vec<Signal>) {
+        self.get_children_mut().for_each(|(_bounds, child)| child.handle_event(event, signals));
         signals.iter().for_each(|signal| match (&signal.typ, signal.source.as_str()) {
             (SignalType::Activated, "lblOpen") => {
-                if self.children.len() == 1 { // TODO: bounds testing for clicks
+                if self.children.len() == 1 {
+                    // TODO: bounds testing for clicks
                     println!("showing file dialog");
-                    let mut file_chooser = FileChooser::new("fcMain");
+                    let file_chooser = FileChooser::new("fcMain");
                     let bounds: Bounds2d<u32> = [100, 100, 200, 200];
                     let child: ([u32; 4], Box<dyn IWidget>) = (bounds, Box::new(file_chooser));
                     self.children.push(child);

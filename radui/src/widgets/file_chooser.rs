@@ -1,16 +1,15 @@
-use crate::events::{Signal, SignalType};
+use std::env;
+use std::path::PathBuf;
+use std::slice::{Iter, IterMut};
+
+use yaserde::de::from_str;
+
+use crate::events::{Event, Signal, SignalType};
 use crate::generated::models::Windows;
 use crate::geom::Bounds2d;
 use crate::widgets;
 use crate::widgets::label::Label;
-use crate::widgets::window::Window;
-use crate::widgets::{window, IWidget};
-use std::env;
-use std::path::PathBuf;
-use std::slice::{Iter, IterMut};
-use winit::dpi::PhysicalPosition;
-use winit::event::Event;
-use yaserde::de::from_str;
+use crate::widgets::IWidget;
 
 pub struct FileChooser {
     pub id: String,
@@ -42,8 +41,8 @@ impl FileChooser {
 }
 
 impl IWidget for FileChooser {
-    fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>, signals: &mut Vec<Signal>) {
-        self.get_children_mut().for_each(|(_bounds, child)| child.handle_event(event, cursor_pos, signals));
+    fn handle_event(&mut self, event: &Event, signals: &mut Vec<Signal>) {
+        self.get_children_mut().for_each(|(_bounds, child)| child.handle_event(event, signals));
         let mut current_dir = self.current_dir.parent().unwrap().to_path_buf();
         signals.iter().for_each(|signal| match (&signal.typ, signal.source.as_str()) {
             (SignalType::Activated, "lblUp") => {

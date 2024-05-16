@@ -4,17 +4,6 @@ use std::num::NonZeroU32;
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, Color};
 use glutin::surface::Surface;
-use glutin::{context::PossiblyCurrentContext, display::Display};
-use glutin_winit::DisplayBuilder;
-use raw_window_handle::HasRawWindowHandle;
-use winit::dpi::PhysicalPosition;
-use winit::event::{Event, WindowEvent};
-use winit::event_loop::{ControlFlow, EventLoop};
-use winit::window::WindowBuilder;
-use winit::{dpi::PhysicalSize, window::Window};
-
-use crate::widgets::window::IWindow;
-use crate::widgets::IWidget;
 use glutin::{
     config::ConfigTemplateBuilder,
     context::ContextAttributesBuilder,
@@ -22,7 +11,17 @@ use glutin::{
     prelude::*,
     surface::{SurfaceAttributesBuilder, WindowSurface},
 };
+use glutin::{context::PossiblyCurrentContext, display::Display};
+use glutin_winit::DisplayBuilder;
+use raw_window_handle::HasRawWindowHandle;
 use resource::resource;
+use winit::event::{ElementState, Event, WindowEvent};
+use winit::event_loop::{ControlFlow, EventLoop};
+use winit::window::WindowBuilder;
+use winit::{dpi::PhysicalSize, window::Window};
+
+use crate::geom::Point2d;
+use crate::widgets::window::IWindow;
 
 pub struct App {}
 
@@ -39,22 +38,28 @@ impl App {
         let font = canvas.add_font_mem(&resource!("resources/FiraSans-Regular.ttf")).expect("Cannot add font");
 
         let mut first = true;
-        let mut mouse_position = PhysicalPosition::new(0., 0.);
+        let mut mouse_pos: Point2d<f64> = [0.0, 0.0];
         let mut signals = vec![];
         event_loop.run(move |ev, _target, control_flow| {
             match &ev {
                 Event::WindowEvent { event, .. } => match event {
                     WindowEvent::CursorMoved { position, .. } => {
-                        mouse_position = *position;
+                        mouse_pos = [position.x, position.y];
                         window.request_redraw();
                     }
                     WindowEvent::CloseRequested => *control_flow = ControlFlow::Exit,
-                    WindowEvent::MouseInput { .. } => {
-                        win.handle_event(&ev, &mouse_position, &mut signals);
-                        // TODO: conditional reflow signal
-                        let size = window.inner_size();
-                        win.layout(size.width, size.height, &canvas, &font);
-                        window.request_redraw();
+                    WindowEvent::MouseInput { state, .. } => {
+                        match state {
+                            ElementState::Pressed => {}
+                            ElementState::Released => {
+                                let ev = crate::events::Event::Click(mouse_pos);
+                                win.handle_event(&ev, &mut signals);
+                                // TODO: conditional reflow signal
+                                let size = window.inner_size();
+                                win.layout(size.width, size.height, &canvas, &font);
+                                window.request_redraw();
+                            }
+                        }
                     }
                     _ => {}
                 },

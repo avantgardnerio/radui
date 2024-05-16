@@ -1,12 +1,9 @@
-use crate::events::Signal;
 use crate::generated::models;
 use crate::geom::{Bounds2d, Size};
 use crate::widgets::IWidget;
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, Color, FontId, Paint, Path};
 use std::slice::{Iter, IterMut};
-use winit::dpi::PhysicalPosition;
-use winit::event::{Event, WindowEvent};
 
 pub struct GridView {
     pub model: models::GridView,
@@ -29,18 +26,6 @@ impl IWidget for GridView {
 
     fn get_height(&self, _canvas: &Canvas<OpenGl>, _font: &FontId) -> Size {
         self.model.height.as_deref().unwrap_or("100%").parse().unwrap()
-    }
-
-    fn handle_event(&mut self, event: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>, signals: &mut Vec<Signal>) {
-        match event {
-            Event::WindowEvent { event, .. } => match event {
-                WindowEvent::MouseInput { state, button, .. } => {
-                    println!("grid {state:?} {button:?} {cursor_pos:?}");
-                }
-                _ => {}
-            },
-            _ => {}
-        }
     }
 
     fn get_id(&self) -> Option<&str> {

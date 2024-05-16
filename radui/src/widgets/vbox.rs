@@ -1,4 +1,4 @@
-use crate::events::Signal;
+use crate::events::{Event, Signal};
 use crate::generated::models;
 use crate::generated::models::WidgetChoice;
 use crate::geom::{Bounds2d, Size};
@@ -8,8 +8,6 @@ use femtovg::{Canvas, FontId};
 use itertools::{Either, Itertools};
 use std::iter::once;
 use std::slice::{Iter, IterMut};
-use winit::dpi::PhysicalPosition;
-use winit::event::{Event, WindowEvent};
 
 pub struct Vbox {
     pub model: models::Vbox,
@@ -74,22 +72,19 @@ impl IWidget for Vbox {
         }
     }
 
-    fn handle_event(&mut self, ev: &Event<'_, ()>, cursor_pos: &PhysicalPosition<f64>, signals: &mut Vec<Signal>) {
+    fn handle_event(&mut self, ev: &Event, signals: &mut Vec<Signal>) {
         match ev {
-            Event::WindowEvent { event, .. } => match event {
-                WindowEvent::MouseInput { .. } => {
-                    for (bounds, child) in self.children.iter_mut().rev() {
-                        let top = bounds[1] as f64;
-                        if cursor_pos.y < top {
-                            continue;
-                        }
-                        let pos = PhysicalPosition::new(cursor_pos.x, cursor_pos.y - top);
-                        child.handle_event(ev, &pos, signals);
+            Event::Click(pos) => {
+                for (bounds, child) in self.children.iter_mut().rev() {
+                    let top = bounds[1] as f64;
+                    if pos[1] < top {
+                        continue;
                     }
+                    let pos = [pos[0], pos[1] - top];
+                    let ev = Event::Click(pos);
+                    child.handle_event(&ev, signals);
                 }
-                _ => {}
-            },
-            _ => {}
+            }
         }
     }
 
