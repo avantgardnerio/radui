@@ -69,8 +69,11 @@ pub trait IWidget: AsAny {
     }
 
     fn handle_event(&mut self, event: &Event, signals: &mut Vec<Signal>) {
-        self.get_children_mut().for_each(|(_bounds, child)| child.handle_event(event, signals))
+        self.get_children_mut().for_each(|(_bounds, child)| child.handle_event(event, signals));
+        signals.iter().for_each(|signal| self.handle_signal(signal))
     }
+
+    fn handle_signal(&mut self, _signal: &Signal) {}
 
     fn find_by_id(&mut self, id: &str) -> Option<&mut Box<dyn IWidget>> {
         for (_bounds, child) in self.get_children_mut() {

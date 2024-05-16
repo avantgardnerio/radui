@@ -2,7 +2,7 @@ use std::slice::{Iter, IterMut};
 
 use yaserde::de::from_str;
 
-use radui::events::{Event, Signal, SignalType};
+use radui::events::{Signal, SignalType};
 use radui::generated::models::Windows;
 use radui::geom::Bounds2d;
 use radui::widgets;
@@ -32,9 +32,8 @@ impl AppWindow {
 }
 
 impl IWidget for AppWindow {
-    fn handle_event(&mut self, event: &Event, signals: &mut Vec<Signal>) {
-        self.get_children_mut().for_each(|(_bounds, child)| child.handle_event(event, signals));
-        signals.iter().for_each(|signal| match (&signal.typ, signal.source.as_str()) {
+    fn handle_signal(&mut self, signal: &Signal) {
+        match (&signal.typ, signal.source.as_str()) {
             (SignalType::Activated, "lblOpen") => {
                 if self.children.len() == 1 {
                     // TODO: bounds testing for clicks
@@ -46,7 +45,7 @@ impl IWidget for AppWindow {
                 }
             }
             _ => {}
-        })
+        }
     }
 
     fn get_id(&self) -> Option<&str> {
