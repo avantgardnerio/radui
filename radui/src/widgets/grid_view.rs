@@ -1,15 +1,17 @@
-use crate::generated::models;
-use crate::geom::{Bounds2d, Size};
-use crate::widgets::IWidget;
+use std::slice::{Iter, IterMut};
+
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, Color, FontId, Paint, Path};
-use std::slice::{Iter, IterMut};
+
+use crate::generated::models;
+use crate::geom::Size;
+use crate::widgets::{IWidget, PositionedWidget};
 
 pub struct GridView {
     pub model: models::GridView,
     pub width: u32,
     pub height: u32,
-    pub children: Vec<(Bounds2d<u32>, Box<dyn IWidget>)>,
+    pub children: Vec<PositionedWidget>,
 }
 
 impl IWidget for GridView {
@@ -32,11 +34,11 @@ impl IWidget for GridView {
         self.model.id.as_deref()
     }
 
-    fn get_children(&self) -> Iter<'_, (Bounds2d<u32>, Box<dyn IWidget>)> {
+    fn get_children(&self) -> Iter<'_, PositionedWidget> {
         self.children.iter()
     }
 
-    fn get_children_mut(&mut self) -> IterMut<'_, (Bounds2d<u32>, Box<dyn IWidget>)> {
+    fn get_children_mut(&mut self) -> IterMut<'_, PositionedWidget> {
         self.children.iter_mut()
     }
 }

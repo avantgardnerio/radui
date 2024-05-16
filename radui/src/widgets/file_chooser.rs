@@ -6,15 +6,14 @@ use yaserde::de::from_str;
 
 use crate::events::{Event, Signal, SignalType};
 use crate::generated::models::Windows;
-use crate::geom::Bounds2d;
 use crate::widgets;
 use crate::widgets::label::Label;
-use crate::widgets::IWidget;
+use crate::widgets::{IWidget, PositionedWidget};
 
 pub struct FileChooser {
     pub id: String,
     pub current_dir: PathBuf,
-    pub children: Vec<(Bounds2d<u32>, Box<dyn IWidget>)>,
+    pub children: Vec<PositionedWidget>,
 }
 
 impl FileChooser {
@@ -36,13 +35,16 @@ impl FileChooser {
         let label = window.find_by_id("lblUp").unwrap();
         label.add_event_listener(SignalType::Activated);
 
-        Self { id: id.to_string(), current_dir, children: vec![([0, 0, 0, 0], Box::new(window))] }
+        let widget = Box::new(window);
+        let bounds = [0, 0, 0, 0];
+        let child = PositionedWidget { bounds, widget };
+        Self { id: id.to_string(), current_dir, children: vec![child] }
     }
 }
 
 impl IWidget for FileChooser {
     fn handle_event(&mut self, event: &Event, signals: &mut Vec<Signal>) {
-        self.get_children_mut().for_each(|(_bounds, child)| child.handle_event(event, signals));
+        self.get_children_mut().for_each(|w| w.widget.handle_event(event, signals));
         let mut current_dir = self.current_dir.parent().unwrap().to_path_buf();
         signals.iter().for_each(|signal| match (&signal.typ, signal.source.as_str()) {
             (SignalType::Activated, "lblUp") => {
@@ -61,11 +63,11 @@ impl IWidget for FileChooser {
         Some(self.id.as_str())
     }
 
-    fn get_children_mut(&mut self) -> IterMut<'_, (Bounds2d<u32>, Box<dyn IWidget>)> {
+    fn get_children_mut(&mut self) -> IterMut<'_, PositionedWidget> {
         self.children.iter_mut()
     }
 
-    fn get_children(&self) -> Iter<'_, (Bounds2d<u32>, Box<dyn IWidget>)> {
+    fn get_children(&self) -> Iter<'_, PositionedWidget> {
         self.children.iter()
     }
 }

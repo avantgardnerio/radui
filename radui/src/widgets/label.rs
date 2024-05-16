@@ -6,8 +6,8 @@ use femtovg::{Canvas, Color, FontId, Paint, Path};
 
 use crate::events::{Event, Signal, SignalType};
 use crate::generated::models;
-use crate::geom::{Bounds2d, Size};
-use crate::widgets::IWidget;
+use crate::geom::Size;
+use crate::widgets::{IWidget, PositionedWidget};
 
 const FONT_SIZE: f32 = 24.0;
 const PADDING: f32 = 2.0;
@@ -16,7 +16,7 @@ pub struct Label {
     pub model: models::Label,
     pub width: u32,
     pub height: u32,
-    pub children: Vec<(Bounds2d<u32>, Box<dyn IWidget>)>,
+    pub children: Vec<PositionedWidget>,
     pub listeners: HashSet<SignalType>,
 }
 
@@ -75,11 +75,11 @@ impl IWidget for Label {
         self.model.id.as_deref()
     }
 
-    fn get_children(&self) -> Iter<'_, (Bounds2d<u32>, Box<dyn IWidget>)> {
+    fn get_children(&self) -> Iter<'_, PositionedWidget> {
         self.children.iter()
     }
 
-    fn get_children_mut(&mut self) -> IterMut<'_, (Bounds2d<u32>, Box<dyn IWidget>)> {
+    fn get_children_mut(&mut self) -> IterMut<'_, PositionedWidget> {
         self.children.iter_mut()
     }
 }

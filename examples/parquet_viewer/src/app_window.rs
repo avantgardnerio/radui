@@ -8,10 +8,11 @@ use radui::geom::Bounds2d;
 use radui::widgets;
 use radui::widgets::file_chooser::FileChooser;
 use radui::widgets::window::IWindow;
-use radui::widgets::IWidget;
+use radui::widgets::{IWidget, PositionedWidget};
 
 pub struct AppWindow {
-    pub children: Vec<(Bounds2d<u32>, Box<dyn IWidget>)>,
+    pub children: Vec<PositionedWidget>,
+    pub popups: Vec<PositionedWidget>,
 }
 
 impl AppWindow {
@@ -27,7 +28,10 @@ impl AppWindow {
         let label = win.find_by_id("lblOpen").unwrap();
         label.add_event_listener(SignalType::Activated);
 
-        Self { children: vec![([0, 0, 0, 0], Box::new(win))] }
+        let bounds = [0, 0, 0, 0];
+        let widget = Box::new(win);
+        let child = PositionedWidget { bounds, widget };
+        Self { children: vec![child], popups: vec![] }
     }
 }
 
@@ -35,12 +39,12 @@ impl IWidget for AppWindow {
     fn handle_signal(&mut self, signal: &Signal) {
         match (&signal.typ, signal.source.as_str()) {
             (SignalType::Activated, "lblOpen") => {
-                // TODO: bounds testing for clicks
                 println!("showing file dialog");
                 let file_chooser = FileChooser::new("fcMain");
                 let bounds: Bounds2d<u32> = [100, 100, 200, 200];
-                let child: ([u32; 4], Box<dyn IWidget>) = (bounds, Box::new(file_chooser));
-                self.children.push(child);
+                let widget = Box::new(file_chooser);
+                let child = PositionedWidget { bounds, widget };
+                self.popups.push(child);
             }
             _ => {}
         }
@@ -50,11 +54,11 @@ impl IWidget for AppWindow {
         Some("pvApp")
     }
 
-    fn get_children_mut(&mut self) -> IterMut<'_, (Bounds2d<u32>, Box<dyn IWidget>)> {
+    fn get_children_mut(&mut self) -> IterMut<'_, PositionedWidget> {
         self.children.iter_mut()
     }
 
-    fn get_children(&self) -> Iter<'_, (Bounds2d<u32>, Box<dyn IWidget>)> {
+    fn get_children(&self) -> Iter<'_, PositionedWidget> {
         self.children.iter()
     }
 }
@@ -62,5 +66,13 @@ impl IWidget for AppWindow {
 impl IWindow for AppWindow {
     fn get_title(&self) -> &str {
         "Parquet Viewer"
+    }
+
+    fn get_popups_mut(&mut self) -> IterMut<'_, PositionedWidget> {
+        self.popups.iter_mut()
+    }
+
+    fn get_popups(&self) -> Iter<'_, PositionedWidget> {
+        self.popups.iter()
     }
 }
