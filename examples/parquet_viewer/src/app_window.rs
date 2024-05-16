@@ -35,14 +35,12 @@ impl IWidget for AppWindow {
     fn handle_signal(&mut self, signal: &Signal) {
         match (&signal.typ, signal.source.as_str()) {
             (SignalType::Activated, "lblOpen") => {
-                if self.children.len() == 1 {
-                    // TODO: bounds testing for clicks
-                    println!("showing file dialog");
-                    let file_chooser = FileChooser::new("fcMain");
-                    let bounds: Bounds2d<u32> = [100, 100, 200, 200];
-                    let child: ([u32; 4], Box<dyn IWidget>) = (bounds, Box::new(file_chooser));
-                    self.children.push(child);
-                }
+                // TODO: bounds testing for clicks
+                println!("showing file dialog");
+                let file_chooser = FileChooser::new("fcMain");
+                let bounds: Bounds2d<u32> = [100, 100, 200, 200];
+                let child: ([u32; 4], Box<dyn IWidget>) = (bounds, Box::new(file_chooser));
+                self.children.push(child);
             }
             _ => {}
         }
