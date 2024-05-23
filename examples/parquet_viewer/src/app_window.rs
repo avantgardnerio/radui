@@ -10,12 +10,12 @@ use radui::widgets::file_chooser::FileChooser;
 use radui::widgets::window::IWindow;
 use radui::widgets::{IWidget, PositionedWidget};
 
-pub struct AppWindow {
+pub struct ParquetViewerWindow {
     pub children: Vec<PositionedWidget>,
     pub popups: Vec<PositionedWidget>,
 }
 
-impl AppWindow {
+impl ParquetViewerWindow {
     pub fn new() -> Self {
         let bytes = include_bytes!("../resources/app.xml");
         let content = String::from_utf8_lossy(bytes);
@@ -35,7 +35,7 @@ impl AppWindow {
     }
 }
 
-impl IWidget for AppWindow {
+impl IWidget for ParquetViewerWindow {
     fn handle_signal(&mut self, signal: &Signal) {
         match (&signal.typ, signal.source.as_str()) {
             (SignalType::Activated, "lblOpen") => {
@@ -63,7 +63,7 @@ impl IWidget for AppWindow {
     }
 }
 
-impl IWindow for AppWindow {
+impl IWindow for ParquetViewerWindow {
     fn get_title(&self) -> &str {
         "Parquet Viewer"
     }
