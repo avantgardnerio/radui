@@ -1,6 +1,8 @@
 use std::env;
 use std::num::NonZeroU32;
 
+use crate::events;
+use crate::events::SignalType;
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, Color};
 use glutin::surface::Surface;
@@ -16,7 +18,7 @@ use glutin_winit::DisplayBuilder;
 use raw_window_handle::HasRawWindowHandle;
 use resource::resource;
 use winit::event::{ElementState, Event, WindowEvent};
-use winit::event_loop::{ControlFlow, EventLoop};
+use winit::event_loop::{ControlFlow, EventLoop, EventLoopBuilder};
 use winit::window::WindowBuilder;
 use winit::{dpi::PhysicalSize, window::Window};
 
@@ -27,7 +29,7 @@ pub struct App {}
 
 impl App {
     pub fn run<W: IWindow>(mut win: W) {
-        let event_loop = EventLoop::new();
+        let event_loop = EventLoopBuilder::<events::Signal>::with_user_event().build();
         let (context, gl_display, window, surface) = create_window(&event_loop, win.get_title());
 
         let renderer = unsafe { OpenGl::new_from_function_cstr(|s| gl_display.get_proc_address(s) as *const _) }
@@ -38,29 +40,36 @@ impl App {
         let font = canvas.add_font_mem(&resource!("resources/FiraSans-Regular.ttf")).expect("Cannot add font");
 
         let mut first = true;
-        let mut mouse_pos: Point2d<f64> = [0.0, 0.0];
-        let mut signals = vec![];
+        let mut mouse_pos: Point2d<u32> = Point2d { dims: [0, 0] };
+        let mut events = vec![];
+        let proxy = event_loop.create_proxy();
         event_loop.run(move |ev, _target, control_flow| {
             match &ev {
                 Event::WindowEvent { event, .. } => match event {
                     WindowEvent::CursorMoved { position, .. } => {
-                        mouse_pos = [position.x, position.y];
+                        mouse_pos = Point2d { dims: [position.x as u32, position.y as u32] };
                         window.request_redraw();
                     }
                     WindowEvent::CloseRequested => *control_flow = ControlFlow::Exit,
-                    WindowEvent::MouseInput { state, .. } => {
-                        match state {
-                            ElementState::Pressed => {}
-                            ElementState::Released => {
-                                let ev = crate::events::Event::Click(mouse_pos);
-                                win.handle_event(&ev, &mut signals);
-                                // TODO: conditional reflow signal
-                                let size = window.inner_size();
-                                win.layout(size.width, size.height, &canvas, &font);
-                                window.request_redraw();
+                    WindowEvent::MouseInput { state, .. } => match state {
+                        ElementState::Pressed => {}
+                        ElementState::Released => {
+                            let ev =
+                                events::Signal { source: "".to_string(), typ: SignalType::Click(mouse_pos.clone()) };
+                            {
+                                let ar = &mut events;
+                                let mut dispatch: Box<dyn FnMut(events::Signal) + '_> =
+                                    Box::new(move |ev: events::Signal| {
+                                        ar.push(ev);
+                                    });
+                                win.handle_event(&ev, &mut dispatch);
                             }
+
+                            let size = window.inner_size();
+                            win.layout(size.width, size.height, &canvas, &font);
+                            window.request_redraw();
                         }
-                    }
+                    },
                     _ => {}
                 },
                 Event::RedrawRequested(_) => {
@@ -80,15 +89,25 @@ impl App {
                     canvas.flush();
                     surface.swap_buffers(&context).expect("Could not swap buffers");
                 }
+                Event::UserEvent(ev) => {
+                    let ar = &mut events;
+                    let mut dispatch: Box<dyn FnMut(events::Signal) + '_> = Box::new(move |ev: events::Signal| {
+                        ar.push(ev);
+                    });
+                    win.handle_event(&ev, &mut dispatch);
+                }
                 _ => {}
             }
-            signals.clear();
+
+            for event in events.drain(..) {
+                proxy.send_event(event).unwrap();
+            }
         });
     }
 }
 
-fn create_window(
-    event_loop: &EventLoop<()>,
+fn create_window<T>(
+    event_loop: &EventLoop<T>,
     title: &str,
 ) -> (PossiblyCurrentContext, Display, Window, Surface<WindowSurface>) {
     let window_builder = WindowBuilder::new().with_inner_size(PhysicalSize::new(1000., 600.)).with_title(title);

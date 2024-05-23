@@ -5,10 +5,10 @@ use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, FontId};
 use itertools::{Either, Itertools};
 
-use crate::events::{Event, Signal};
+use crate::events::{Signal, SignalType};
 use crate::generated::models;
 use crate::generated::models::WidgetChoice;
-use crate::geom::Size;
+use crate::geom::{Point2d, Size};
 use crate::widgets::{IWidget, PositionedWidget};
 
 pub struct Vbox {
@@ -72,19 +72,20 @@ impl IWidget for Vbox {
         }
     }
 
-    fn handle_event(&mut self, ev: &Event, signals: &mut Vec<Signal>) {
-        match ev {
-            Event::Click(pos) => {
+    fn handle_event(&mut self, ev: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
+        match &ev.typ {
+            SignalType::Click(pos) => {
                 for widget in self.children.iter_mut().rev() {
-                    let top = widget.bounds[1] as f64;
-                    if pos[1] < top {
+                    let top = widget.bounds[1];
+                    if pos.dims[1] < top {
                         continue;
                     }
-                    let pos = [pos[0], pos[1] - top];
-                    let ev = Event::Click(pos);
-                    widget.widget.handle_event(&ev, signals);
+                    let pos = Point2d { dims: [pos.dims[0], pos.dims[1] - top] };
+                    let ev = Signal { source: ev.source.clone(), typ: SignalType::Click(pos) };
+                    widget.widget.handle_event(&ev, dispatch);
                 }
             }
+            _ => {}
         }
     }
 

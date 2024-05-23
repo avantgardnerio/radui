@@ -4,7 +4,7 @@ use std::slice::{Iter, IterMut};
 
 use yaserde::de::from_str;
 
-use crate::events::{Event, Signal, SignalType};
+use crate::events::{Signal, SignalType};
 use crate::generated::models::Windows;
 use crate::widgets;
 use crate::widgets::label::Label;
@@ -43,20 +43,20 @@ impl FileChooser {
 }
 
 impl IWidget for FileChooser {
-    fn handle_event(&mut self, event: &Event, signals: &mut Vec<Signal>) {
-        self.get_children_mut().for_each(|w| w.widget.handle_event(event, signals));
-        let mut current_dir = self.current_dir.parent().unwrap().to_path_buf();
-        signals.iter().for_each(|signal| match (&signal.typ, signal.source.as_str()) {
+    fn handle_event(&mut self, event: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
+        self.get_children_mut().for_each(|w| w.widget.handle_event(event, dispatch));
+
+        match (&event.typ, event.source.as_str()) {
             (SignalType::Activated, "lblUp") => {
                 println!("Up");
-                current_dir = self.current_dir.parent().unwrap().to_path_buf();
+                let current_dir = self.current_dir.parent().unwrap().to_path_buf();
+                let lbl_path = self.find_by_id("lblPath").unwrap();
+                let lbl_path = lbl_path.as_mut().as_any_mut().downcast_mut::<Label>().unwrap();
+                lbl_path.model.text = current_dir.to_str().unwrap().to_string();
+                self.current_dir = current_dir;
             }
             _ => {}
-        });
-        let lbl_path = self.find_by_id("lblPath").unwrap();
-        let lbl_path = lbl_path.as_mut().as_any_mut().downcast_mut::<Label>().unwrap();
-        lbl_path.model.text = current_dir.to_str().unwrap().to_string();
-        self.current_dir = current_dir;
+        }
     }
 
     fn get_id(&self) -> Option<&str> {

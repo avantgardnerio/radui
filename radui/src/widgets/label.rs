@@ -4,7 +4,7 @@ use std::slice::{Iter, IterMut};
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, Color, FontId, Paint, Path};
 
-use crate::events::{Event, Signal, SignalType};
+use crate::events::{Signal, SignalType};
 use crate::generated::models;
 use crate::geom::Size;
 use crate::widgets::{IWidget, PositionedWidget};
@@ -59,15 +59,16 @@ impl IWidget for Label {
         Size::Absolute(width as u32)
     }
 
-    fn handle_event(&mut self, event: &Event, signals: &mut Vec<Signal>) {
+    fn handle_event(&mut self, event: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
         println!("Label event");
-        match event {
-            Event::Click(_pos) => {
+        match &event.typ {
+            SignalType::Click(_pos) => {
                 println!("click");
                 if self.listeners.contains(&SignalType::Activated) {
-                    signals.push(Signal { source: self.get_id().unwrap_or("").to_string(), typ: SignalType::Activated })
+                    dispatch(Signal { source: self.get_id().unwrap_or("").to_string(), typ: SignalType::Activated })
                 }
             }
+            _ => {}
         }
     }
 

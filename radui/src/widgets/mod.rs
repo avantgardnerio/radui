@@ -5,7 +5,7 @@ use as_any::AsAny;
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, FontId};
 
-use crate::events::{Event, Signal, SignalType};
+use crate::events::{Signal, SignalType};
 use crate::geom::{Bounds2d, Size};
 
 pub mod colors;
@@ -71,12 +71,9 @@ pub trait IWidget: AsAny {
         }
     }
 
-    fn handle_event(&mut self, event: &Event, signals: &mut Vec<Signal>) {
-        self.get_children_mut().for_each(|widget| widget.widget.handle_event(event, signals));
-        signals.iter().for_each(|signal| self.handle_signal(signal))
+    fn handle_event(&mut self, event: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
+        self.get_children_mut().for_each(|widget| widget.widget.handle_event(event, dispatch));
     }
-
-    fn handle_signal(&mut self, _signal: &Signal) {}
 
     fn find_by_id(&mut self, id: &str) -> Option<&mut Box<dyn IWidget>> {
         for widget in self.get_children_mut() {

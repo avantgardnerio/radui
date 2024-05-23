@@ -36,8 +36,10 @@ impl ParquetViewerWindow {
 }
 
 impl IWidget for ParquetViewerWindow {
-    fn handle_signal(&mut self, signal: &Signal) {
-        match (&signal.typ, signal.source.as_str()) {
+    fn handle_event(&mut self, event: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
+        self.get_children_mut().for_each(|widget| widget.widget.handle_event(event, dispatch));
+
+        match (&event.typ, event.source.as_str()) {
             (SignalType::Activated, "lblOpen") => {
                 println!("showing file dialog");
                 let file_chooser = FileChooser::new("fcMain");

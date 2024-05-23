@@ -21,6 +21,8 @@ impl FromStr for Size {
     }
 }
 
-pub type Point2d<T> = [T; 2];
-
+#[derive(Eq, Hash, PartialEq, Debug, Clone)]
+pub struct Point2d<T> {
+    pub(crate) dims: [T; 2],
+}
 pub type Bounds2d<T> = [T; 4];
