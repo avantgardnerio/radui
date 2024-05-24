@@ -29,7 +29,7 @@ pub struct App {}
 
 impl App {
     pub fn run<W: IWindow>(mut win: W) {
-        let event_loop = EventLoopBuilder::<events::Signal>::with_user_event().build();
+        let event_loop = EventLoopBuilder::<Signal>::with_user_event().build();
         let (context, gl_display, window, surface) = create_window(&event_loop, win.get_title());
 
         let renderer = unsafe { OpenGl::new_from_function_cstr(|s| gl_display.get_proc_address(s) as *const _) }
@@ -57,8 +57,8 @@ impl App {
                             let ev = Signal { source: vec![], dest: vec![], typ: SignalType::Click(mouse_pos.clone()) };
                             {
                                 let ar = &mut events;
-                                let mut dispatch: Box<dyn FnMut(events::Signal) + '_> =
-                                    Box::new(move |ev: events::Signal| {
+                                let mut dispatch: Box<dyn FnMut(Signal) + '_> =
+                                    Box::new(move |ev: Signal| {
                                         ar.push(ev);
                                     });
                                 win.handle_event(&mut vec![], &ev, &mut dispatch);
@@ -72,6 +72,7 @@ impl App {
                     _ => {}
                 },
                 Event::RedrawRequested(_) => {
+                    println!("redraw");
                     // Make sure the canvas has the right size:
                     let size = window.inner_size();
                     canvas.set_size(size.width, size.height, window.scale_factor() as f32);
@@ -95,6 +96,7 @@ impl App {
                         ar.push(ev);
                     });
                     win.handle_event(&mut vec![], &ev, &mut dispatch);
+                    window.request_redraw();
                 }
                 _ => {}
             }

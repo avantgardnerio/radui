@@ -69,9 +69,7 @@ pub trait IWidget: AsAny {
     }
 
     fn layout(&mut self, width: u32, height: u32, canvas: &Canvas<OpenGl>, font: &FontId) {
-        for widget in &mut self.get_children_mut() {
-            widget.widget.layout(width, height, canvas, font);
-        }
+        self.get_children_mut().for_each(|c| c.widget.layout(width, height, canvas, font));
     }
 
     fn handle_event(&mut self, path: &mut Vec<Uuid>, event: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
