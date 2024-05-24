@@ -4,6 +4,7 @@ use std::slice::{Iter, IterMut};
 use as_any::AsAny;
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, FontId};
+use uuid::Uuid;
 
 use crate::events::{Signal, SignalType};
 use crate::geom::{Bounds2d, Size};
@@ -44,13 +45,13 @@ pub trait IWidget: AsAny {
         Size::Absolute(size)
     }
 
-    fn add_event_listener(&mut self, _typ: SignalType) {
+    fn add_event_listener(&mut self, _typ: SignalType, _id: Vec<Uuid>) {
         todo!()
     }
 
     fn get_name(&self) -> Option<&str>;
 
-    fn get_id(&self) -> &uuid::Uuid;
+    fn get_id(&self) -> &Uuid;
 
     fn get_children_mut(&mut self) -> IterMut<'_, PositionedWidget>;
 
@@ -73,16 +74,29 @@ pub trait IWidget: AsAny {
         }
     }
 
-    fn handle_event(&mut self, event: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
-        self.get_children_mut().for_each(|widget| widget.widget.handle_event(event, dispatch));
+    fn handle_event(&mut self, path: &mut Vec<Uuid>, event: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
+        path.push(self.get_id().clone());
+
+        self.get_children_mut().for_each(|widget| widget.widget.handle_event(path, event, dispatch));
+        self.handle_own_event(path, event, dispatch);
+
+        path.pop();
     }
 
-    fn find_by_id(&mut self, id: &str) -> Option<&mut Box<dyn IWidget>> {
+    fn handle_own_event(
+        &mut self,
+        _path: &mut Vec<Uuid>,
+        _event: &Signal,
+        _dispatch: &mut Box<dyn FnMut(Signal) + '_>,
+    ) {
+    }
+
+    fn find_by_name(&mut self, id: &str) -> Option<&mut Box<dyn IWidget>> {
         for widget in self.get_children_mut() {
             if Some(id) == widget.widget.get_name() {
                 return Some(&mut widget.widget);
             }
-            if let Some(child) = widget.widget.find_by_id(id) {
+            if let Some(child) = widget.widget.find_by_name(id) {
                 return Some(child);
             }
         }

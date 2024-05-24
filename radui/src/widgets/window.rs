@@ -71,6 +71,6 @@ impl From<models::Window> for widgets::window::Window {
             vec![PositionedWidget { bounds, widget }]
         });
 
-        widgets::window::Window { id: Default::default(), model: value, children, width: 0, height: 0, popups: vec![] }
+        widgets::window::Window { id: Uuid::new_v4(), model: value, children, width: 0, height: 0, popups: vec![] }
     }
 }

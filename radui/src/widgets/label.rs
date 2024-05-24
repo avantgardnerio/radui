@@ -1,4 +1,5 @@
-use std::collections::HashSet;
+use std::collections::HashMap;
+use std::iter::once;
 use std::slice::{Iter, IterMut};
 
 use femtovg::renderer::OpenGl;
@@ -19,12 +20,12 @@ pub struct Label {
     pub width: u32,
     pub height: u32,
     pub children: Vec<PositionedWidget>,
-    pub listeners: HashSet<SignalType>,
+    pub listeners: HashMap<SignalType, Vec<Vec<Uuid>>>,
 }
 
 impl IWidget for Label {
-    fn add_event_listener(&mut self, typ: SignalType) {
-        self.listeners.insert(typ);
+    fn add_event_listener(&mut self, typ: SignalType, id: Vec<Uuid>) {
+        self.listeners.entry(typ).and_modify(|v| v.push(id.clone())).or_insert_with(|| vec![id]);
     }
 
     fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId) {
@@ -61,13 +62,18 @@ impl IWidget for Label {
         Size::Absolute(width as u32)
     }
 
-    fn handle_event(&mut self, event: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
-        println!("Label event");
+    fn handle_own_event(&mut self, path: &mut Vec<Uuid>, event: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
+        let my_path = path.iter().cloned().chain(once(self.id)).collect::<Vec<_>>();
         match &event.typ {
             SignalType::Click(_pos) => {
-                println!("click");
-                if self.listeners.contains(&SignalType::Activated) {
-                    dispatch(Signal { source: self.get_name().unwrap_or("").to_string(), typ: SignalType::Activated })
+                if let Some(listeners) = self.listeners.get(&SignalType::Activated) {
+                    println!("lable lisender");
+                    for listener in listeners {
+                        println!("dispat lable lisender");
+                        let signal =
+                            Signal { source: my_path.clone(), dest: listener.clone(), typ: SignalType::Activated };
+                        dispatch(signal);
+                    }
                 }
             }
             _ => {}
@@ -94,7 +100,7 @@ impl IWidget for Label {
 impl From<models::Label> for Box<dyn IWidget> {
     fn from(value: models::Label) -> Self {
         let me = Label {
-            id: Default::default(),
+            id: Uuid::new_v4(),
             model: value,
             width: 0,
             height: 0,

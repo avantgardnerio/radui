@@ -15,6 +15,7 @@ pub struct ParquetViewerWindow {
     pub id: Uuid,
     pub children: Vec<PositionedWidget>,
     pub popups: Vec<PositionedWidget>,
+    pub lbl_open_id: Uuid,
 }
 
 impl ParquetViewerWindow {
@@ -27,30 +28,28 @@ impl ParquetViewerWindow {
         let win = windows.window.remove(idx);
         let mut win: widgets::window::Window = win.into();
 
-        let label = win.find_by_id("lblOpen").unwrap();
-        label.add_event_listener(SignalType::Activated);
+        let id = Uuid::new_v4();
+        let label = win.find_by_name("lblOpen").unwrap();
+        label.add_event_listener(SignalType::Activated, vec![id.clone()]);
+        let lbl_open_id = label.get_id().clone();
 
         let bounds = [0, 0, 0, 0];
         let widget = Box::new(win);
         let child = PositionedWidget { bounds, widget };
-        Self { id: Default::default(), children: vec![child], popups: vec![] }
+        Self { id, children: vec![child], popups: vec![], lbl_open_id }
     }
 }
 
 impl IWidget for ParquetViewerWindow {
-    fn handle_event(&mut self, event: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
-        self.get_children_mut().for_each(|widget| widget.widget.handle_event(event, dispatch));
-
-        match (&event.typ, event.source.as_str()) {
-            (SignalType::Activated, "lblOpen") => {
-                println!("showing file dialog");
-                let file_chooser = FileChooser::new("fcMain");
-                let bounds: Bounds2d<u32> = [100, 100, 200, 200];
-                let widget = Box::new(file_chooser);
-                let child = PositionedWidget { bounds, widget };
-                self.popups.push(child);
-            }
-            _ => {}
+    fn handle_own_event(&mut self, path: &mut Vec<Uuid>, event: &Signal, _dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
+        println!("App event source={:?} lbl_open_id={:?}", event.source, self.lbl_open_id);
+        if event.source.last() == Some(&self.lbl_open_id) && event.typ == SignalType::Activated {
+            println!("showing file dialog");
+            let file_chooser = FileChooser::new("fcMain", path);
+            let bounds: Bounds2d<u32> = [100, 100, 200, 200];
+            let widget = Box::new(file_chooser);
+            let child = PositionedWidget { bounds, widget };
+            self.popups.push(child);
         }
     }
 

@@ -74,7 +74,8 @@ impl IWidget for Vbox {
         }
     }
 
-    fn handle_event(&mut self, ev: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
+    fn handle_event(&mut self, path: &mut Vec<Uuid>, ev: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
+        path.push(self.id.clone());
         match &ev.typ {
             SignalType::Click(pos) => {
                 for widget in self.children.iter_mut().rev() {
@@ -83,12 +84,13 @@ impl IWidget for Vbox {
                         continue;
                     }
                     let pos = Point2d { dims: [pos.dims[0], pos.dims[1] - top] };
-                    let ev = Signal { source: ev.source.clone(), typ: SignalType::Click(pos) };
-                    widget.widget.handle_event(&ev, dispatch);
+                    let ev = Signal { typ: SignalType::Click(pos), ..ev.clone() };
+                    widget.widget.handle_event(path, &ev, dispatch);
                 }
             }
             _ => {}
         }
+        path.pop();
     }
 
     fn get_name(&self) -> Option<&str> {
@@ -126,7 +128,7 @@ impl From<models::Vbox> for Box<dyn IWidget> {
                 PositionedWidget { bounds, widget }
             })
             .collect();
-        let me = Vbox { id: Default::default(), model: value, children, width: 0, height: 0 };
+        let me = Vbox { id: Uuid::new_v4(), model: value, children, width: 0, height: 0 };
         Box::new(me)
     }
 }

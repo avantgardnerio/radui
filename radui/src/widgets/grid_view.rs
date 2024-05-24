@@ -51,7 +51,7 @@ impl IWidget for GridView {
 
 impl From<models::GridView> for Box<dyn IWidget> {
     fn from(value: models::GridView) -> Self {
-        let me = GridView { id: Default::default(), model: value, width: 0, height: 0, children: vec![] };
+        let me = GridView { id: Uuid::new_v4(), model: value, width: 0, height: 0, children: vec![] };
         Box::new(me)
     }
 }

@@ -1,4 +1,5 @@
 use std::env;
+use std::iter::once;
 use std::path::PathBuf;
 use std::slice::{Iter, IterMut};
 use uuid::Uuid;
@@ -16,10 +17,11 @@ pub struct FileChooser {
     pub id: Uuid,
     pub current_dir: PathBuf,
     pub children: Vec<PositionedWidget>,
+    pub lbl_up_id: Vec<Uuid>,
 }
 
 impl FileChooser {
-    pub fn new(id: &str) -> Self {
+    pub fn new(name: &str, path: &Vec<Uuid>) -> Self {
         println!("new FC");
         let bytes = include_bytes!("../../resources/lib.xml");
         let content = String::from_utf8_lossy(bytes);
@@ -30,34 +32,32 @@ impl FileChooser {
         let mut window: widgets::window::Window = window.into();
 
         let current_dir = env::current_dir().unwrap();
-        let lbl_path = window.find_by_id("lblPath").unwrap();
+        let lbl_path = window.find_by_name("lblPath").unwrap();
         let lbl_path = lbl_path.as_mut().as_any_mut().downcast_mut::<Label>().unwrap();
         lbl_path.model.text = current_dir.to_str().unwrap().to_string();
 
-        let label = window.find_by_id("lblUp").unwrap();
-        label.add_event_listener(SignalType::Activated);
+        let id = Uuid::new_v4();
+        let my_path = path.iter().cloned().chain(once(id.clone())).collect();
+        let label = window.find_by_name("lblUp").unwrap();
+        label.add_event_listener(SignalType::Activated, my_path);
+        let lbl_up_id = path.iter().cloned().chain(once(label.get_id().clone())).collect();
 
         let widget = Box::new(window);
         let bounds = [0, 0, 0, 0];
         let child = PositionedWidget { bounds, widget };
-        Self { name: id.to_string(), id: Default::default(), current_dir, children: vec![child] }
+        Self { name: name.to_string(), id, current_dir, children: vec![child], lbl_up_id }
     }
 }
 
 impl IWidget for FileChooser {
-    fn handle_event(&mut self, event: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
-        self.get_children_mut().for_each(|w| w.widget.handle_event(event, dispatch));
-
-        match (&event.typ, event.source.as_str()) {
-            (SignalType::Activated, "lblUp") => {
-                println!("Up");
-                let current_dir = self.current_dir.parent().unwrap().to_path_buf();
-                let lbl_path = self.find_by_id("lblPath").unwrap();
-                let lbl_path = lbl_path.as_mut().as_any_mut().downcast_mut::<Label>().unwrap();
-                lbl_path.model.text = current_dir.to_str().unwrap().to_string();
-                self.current_dir = current_dir;
-            }
-            _ => {}
+    fn handle_own_event(&mut self, _path: &mut Vec<Uuid>, event: &Signal, _dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
+        if event.source == self.lbl_up_id {
+            println!("Up");
+            let current_dir = self.current_dir.parent().unwrap().to_path_buf();
+            let lbl_path = self.find_by_name("lblPath").unwrap();
+            let lbl_path = lbl_path.as_mut().as_any_mut().downcast_mut::<Label>().unwrap();
+            lbl_path.model.text = current_dir.to_str().unwrap().to_string();
+            self.current_dir = current_dir;
         }
     }
 

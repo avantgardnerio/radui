@@ -2,7 +2,7 @@ use std::env;
 use std::num::NonZeroU32;
 
 use crate::events;
-use crate::events::SignalType;
+use crate::events::{Signal, SignalType};
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, Color};
 use glutin::surface::Surface;
@@ -54,15 +54,14 @@ impl App {
                     WindowEvent::MouseInput { state, .. } => match state {
                         ElementState::Pressed => {}
                         ElementState::Released => {
-                            let ev =
-                                events::Signal { source: "".to_string(), typ: SignalType::Click(mouse_pos.clone()) };
+                            let ev = Signal { source: vec![], dest: vec![], typ: SignalType::Click(mouse_pos.clone()) };
                             {
                                 let ar = &mut events;
                                 let mut dispatch: Box<dyn FnMut(events::Signal) + '_> =
                                     Box::new(move |ev: events::Signal| {
                                         ar.push(ev);
                                     });
-                                win.handle_event(&ev, &mut dispatch);
+                                win.handle_event(&mut vec![], &ev, &mut dispatch);
                             }
 
                             let size = window.inner_size();
@@ -90,16 +89,18 @@ impl App {
                     surface.swap_buffers(&context).expect("Could not swap buffers");
                 }
                 Event::UserEvent(ev) => {
+                    println!("handling custom events");
                     let ar = &mut events;
-                    let mut dispatch: Box<dyn FnMut(events::Signal) + '_> = Box::new(move |ev: events::Signal| {
+                    let mut dispatch: Box<dyn FnMut(Signal) + '_> = Box::new(move |ev: events::Signal| {
                         ar.push(ev);
                     });
-                    win.handle_event(&ev, &mut dispatch);
+                    win.handle_event(&mut vec![], &ev, &mut dispatch);
                 }
                 _ => {}
             }
 
             for event in events.drain(..) {
+                println!("Dispatching signal");
                 proxy.send_event(event).unwrap();
             }
         });
