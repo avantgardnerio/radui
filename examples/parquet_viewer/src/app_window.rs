@@ -1,4 +1,5 @@
 use std::slice::{Iter, IterMut};
+use uuid::Uuid;
 
 use yaserde::de::from_str;
 
@@ -11,6 +12,7 @@ use radui::widgets::window::IWindow;
 use radui::widgets::{IWidget, PositionedWidget};
 
 pub struct ParquetViewerWindow {
+    pub id: Uuid,
     pub children: Vec<PositionedWidget>,
     pub popups: Vec<PositionedWidget>,
 }
@@ -21,7 +23,7 @@ impl ParquetViewerWindow {
         let content = String::from_utf8_lossy(bytes);
         let mut windows: Windows = from_str(&content).unwrap();
 
-        let idx = windows.window.iter().position(|w| w.id == "appWindow").unwrap();
+        let idx = windows.window.iter().position(|w| w.name == "appWindow").unwrap();
         let win = windows.window.remove(idx);
         let mut win: widgets::window::Window = win.into();
 
@@ -31,7 +33,7 @@ impl ParquetViewerWindow {
         let bounds = [0, 0, 0, 0];
         let widget = Box::new(win);
         let child = PositionedWidget { bounds, widget };
-        Self { children: vec![child], popups: vec![] }
+        Self { id: Default::default(), children: vec![child], popups: vec![] }
     }
 }
 
@@ -52,7 +54,7 @@ impl IWidget for ParquetViewerWindow {
         }
     }
 
-    fn get_id(&self) -> Option<&str> {
+    fn get_name(&self) -> Option<&str> {
         Some("pvApp")
     }
 
@@ -62,6 +64,10 @@ impl IWidget for ParquetViewerWindow {
 
     fn get_children(&self) -> Iter<'_, PositionedWidget> {
         self.children.iter()
+    }
+
+    fn get_id(&self) -> &Uuid {
+        &self.id
     }
 }
 

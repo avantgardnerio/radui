@@ -1,6 +1,7 @@
 use std::env;
 use std::path::PathBuf;
 use std::slice::{Iter, IterMut};
+use uuid::Uuid;
 
 use yaserde::de::from_str;
 
@@ -11,7 +12,8 @@ use crate::widgets::label::Label;
 use crate::widgets::{IWidget, PositionedWidget};
 
 pub struct FileChooser {
-    pub id: String,
+    pub name: String,
+    pub id: Uuid,
     pub current_dir: PathBuf,
     pub children: Vec<PositionedWidget>,
 }
@@ -23,7 +25,7 @@ impl FileChooser {
         let content = String::from_utf8_lossy(bytes);
         let mut windows: Windows = from_str(&content).unwrap();
 
-        let idx = windows.window.iter().position(|w| w.id == "file_chooser").unwrap();
+        let idx = windows.window.iter().position(|w| w.name == "file_chooser").unwrap();
         let window = windows.window.remove(idx);
         let mut window: widgets::window::Window = window.into();
 
@@ -38,7 +40,7 @@ impl FileChooser {
         let widget = Box::new(window);
         let bounds = [0, 0, 0, 0];
         let child = PositionedWidget { bounds, widget };
-        Self { id: id.to_string(), current_dir, children: vec![child] }
+        Self { name: id.to_string(), id: Default::default(), current_dir, children: vec![child] }
     }
 }
 
@@ -59,8 +61,8 @@ impl IWidget for FileChooser {
         }
     }
 
-    fn get_id(&self) -> Option<&str> {
-        Some(self.id.as_str())
+    fn get_name(&self) -> Option<&str> {
+        Some(self.name.as_str())
     }
 
     fn get_children_mut(&mut self) -> IterMut<'_, PositionedWidget> {
@@ -69,5 +71,9 @@ impl IWidget for FileChooser {
 
     fn get_children(&self) -> Iter<'_, PositionedWidget> {
         self.children.iter()
+    }
+
+    fn get_id(&self) -> &Uuid {
+        &self.id
     }
 }

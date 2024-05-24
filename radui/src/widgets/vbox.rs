@@ -4,6 +4,7 @@ use std::slice::{Iter, IterMut};
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, FontId};
 use itertools::{Either, Itertools};
+use uuid::Uuid;
 
 use crate::events::{Signal, SignalType};
 use crate::generated::models;
@@ -12,6 +13,7 @@ use crate::geom::{Point2d, Size};
 use crate::widgets::{IWidget, PositionedWidget};
 
 pub struct Vbox {
+    pub id: Uuid,
     pub model: models::Vbox,
     pub children: Vec<PositionedWidget>,
     pub width: u32,
@@ -89,7 +91,7 @@ impl IWidget for Vbox {
         }
     }
 
-    fn get_id(&self) -> Option<&str> {
+    fn get_name(&self) -> Option<&str> {
         None
     }
 
@@ -99,6 +101,10 @@ impl IWidget for Vbox {
 
     fn get_children(&self) -> Iter<'_, PositionedWidget> {
         self.children.iter()
+    }
+
+    fn get_id(&self) -> &Uuid {
+        &self.id
     }
 }
 
@@ -120,7 +126,7 @@ impl From<models::Vbox> for Box<dyn IWidget> {
                 PositionedWidget { bounds, widget }
             })
             .collect();
-        let me = Vbox { model: value, children, width: 0, height: 0 };
+        let me = Vbox { id: Default::default(), model: value, children, width: 0, height: 0 };
         Box::new(me)
     }
 }

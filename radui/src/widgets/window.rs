@@ -1,4 +1,5 @@
 use std::slice::{Iter, IterMut};
+use uuid::Uuid;
 
 use crate::generated::models;
 use crate::generated::models::WidgetChoice;
@@ -15,6 +16,7 @@ pub trait IWindow: IWidget {
 }
 
 pub struct Window {
+    pub id: Uuid,
     pub model: models::Window,
     pub children: Vec<PositionedWidget>,
     pub popups: Vec<PositionedWidget>,
@@ -37,8 +39,12 @@ impl IWindow for Window {
 }
 
 impl IWidget for Window {
-    fn get_id(&self) -> Option<&str> {
-        Some(self.model.id.as_ref())
+    fn get_name(&self) -> Option<&str> {
+        Some(self.model.name.as_ref())
+    }
+
+    fn get_id(&self) -> &Uuid {
+        &self.id
     }
 
     fn get_children_mut(&mut self) -> IterMut<'_, PositionedWidget> {
@@ -65,6 +71,6 @@ impl From<models::Window> for widgets::window::Window {
             vec![PositionedWidget { bounds, widget }]
         });
 
-        widgets::window::Window { model: value, children, width: 0, height: 0, popups: vec![] }
+        widgets::window::Window { id: Default::default(), model: value, children, width: 0, height: 0, popups: vec![] }
     }
 }

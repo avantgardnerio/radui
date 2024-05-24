@@ -48,7 +48,9 @@ pub trait IWidget: AsAny {
         todo!()
     }
 
-    fn get_id(&self) -> Option<&str>;
+    fn get_name(&self) -> Option<&str>;
+
+    fn get_id(&self) -> &uuid::Uuid;
 
     fn get_children_mut(&mut self) -> IterMut<'_, PositionedWidget>;
 
@@ -77,7 +79,7 @@ pub trait IWidget: AsAny {
 
     fn find_by_id(&mut self, id: &str) -> Option<&mut Box<dyn IWidget>> {
         for widget in self.get_children_mut() {
-            if Some(id) == widget.widget.get_id() {
+            if Some(id) == widget.widget.get_name() {
                 return Some(&mut widget.widget);
             }
             if let Some(child) = widget.widget.find_by_id(id) {

@@ -14,7 +14,7 @@
             <xs:sequence>
                 <xs:element name="child" type="Widget" minOccurs="0" />
             </xs:sequence>
-            <xs:attribute name="id" type="xs:string" use="required" />
+            <xs:attribute name="name" type="xs:string" use="required" />
             <xs:attribute name="title" type="xs:string" use="required"/>
             <xs:attribute name="width" type="xs:float" use="required" />
             <xs:attribute name="height" type="xs:float" use="required" />
@@ -38,14 +38,14 @@
     </xs:complexType>
 
     <xs:complexType name="Label">
-        <xs:attribute name="id" type="xs:string" />
+        <xs:attribute name="name" type="xs:string" />
         <xs:attribute name="text" type="xs:string" use="required" />
         <xs:attribute name="width" type="xs:string" />
         <xs:attribute name="height" type="xs:string" />
     </xs:complexType>
 
     <xs:complexType name="GridView">
-        <xs:attribute name="id" type="xs:string" />
+        <xs:attribute name="name" type="xs:string" />
         <xs:attribute name="width" type="xs:string" />
         <xs:attribute name="height" type="xs:string" />
     </xs:complexType>
