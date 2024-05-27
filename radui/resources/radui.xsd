@@ -1,24 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-    <!-- Define a reusable complex type for stackable elements -->
-    <xs:complexType name="Widgets">
-        <xs:sequence>
-            <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element ref="Vbox"/>
-                <xs:element ref="Hbox"/>
-                <xs:element ref="Label"/>
-                <xs:element ref="GridView"/>
-            </xs:choice>
-        </xs:sequence>
-        <xs:attributeGroup ref="commonAttributes"/>
-    </xs:complexType>
+    <!-- Define a reusable group for stackable child elements -->
+    <xs:group name="StackableChildren">
+        <xs:choice>
+            <xs:element ref="VBox"/>
+            <xs:element ref="HBox"/>
+            <xs:element ref="Label"/>
+        </xs:choice>
+    </xs:group>
 
-    <!-- Define the VerticalStack element using the reusable complex type -->
-    <xs:element name="Vbox" type="Widgets"/>
+    <!-- Define the common attributes as an attribute group -->
+    <xs:attributeGroup name="commonAttributes">
+        <xs:attribute name="width" type="xs:string" use="optional"/>
+        <xs:attribute name="height" type="xs:string" use="optional"/>
+    </xs:attributeGroup>
 
-    <!-- Define the HorizontalStack element using the reusable complex type -->
-    <xs:element name="Hbox" type="Widgets"/>
+    <!-- Define the VerticalStack element -->
+    <xs:element name="VBox">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:group ref="StackableChildren"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="commonAttributes"/>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Define the HorizontalStack element -->
+    <xs:element name="HBox">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:group ref="StackableChildren"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="commonAttributes"/>
+        </xs:complexType>
+    </xs:element>
 
     <!-- Define the Label element -->
     <xs:element name="Label">
@@ -33,12 +49,5 @@
             <xs:attributeGroup ref="commonAttributes"/>
         </xs:complexType>
     </xs:element>
-
-    <!-- Define the common attributes as an attribute group -->
-    <xs:attributeGroup name="commonAttributes">
-        <xs:attribute name="name" type="xs:string" use="optional"/>
-        <xs:attribute name="width" type="xs:string" use="optional"/>
-        <xs:attribute name="height" type="xs:string" use="optional"/>
-    </xs:attributeGroup>
 
 </xs:schema>
