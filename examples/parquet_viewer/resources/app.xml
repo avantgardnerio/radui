@@ -1,24 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Windows xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:noNamespaceSchemaLocation="../../../radui/resources/radui.xsd">
-    <Window name="appWindow" title="RadUI" width="640" height="480">
-        <child>
-            <VBox width="100%" height="100%">
-                <children>
-                    <HBox>
-                        <children>
-                            <Label name="lblOpen" text="Open" />
-                        </children>
-                        <children>
-                            <Label name="lblClose" text="Close" />
-                        </children>
-                    </HBox>
-                </children>
-                <children>
-                    <GridView width="100%" height="100%" />
-                </children>
-            </VBox>
-        </child>
-    </Window>
-</Windows>
+<Vbox
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../../../radui/resources/radui.xsd"
+        width="100%" height="100%"
+>
+    <Hbox>
+        <Label name="lblOpen" text="Open"/>
+        <Label name="lblClose" text="Close"/>
+    </Hbox>
+    <GridView width="100%" height="100%"/>
+</Vbox>

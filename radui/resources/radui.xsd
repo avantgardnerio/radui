@@ -1,62 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs ="http://www.w3.org/2001/XMLSchema">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-    <xs:element name="Windows">
+    <!-- Define a reusable complex type for stackable elements -->
+    <xs:complexType name="Widgets">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="Vbox"/>
+                <xs:element ref="Hbox"/>
+                <xs:element ref="Label"/>
+                <xs:element ref="GridView"/>
+            </xs:choice>
+        </xs:sequence>
+        <xs:attributeGroup ref="commonAttributes"/>
+    </xs:complexType>
+
+    <!-- Define the VerticalStack element using the reusable complex type -->
+    <xs:element name="Vbox" type="Widgets"/>
+
+    <!-- Define the HorizontalStack element using the reusable complex type -->
+    <xs:element name="Hbox" type="Widgets"/>
+
+    <!-- Define the Label element -->
+    <xs:element name="Label">
         <xs:complexType>
-            <xs:sequence>
-                <xs:element ref="Window" maxOccurs="unbounded"/>
-            </xs:sequence>
+            <xs:attribute name="text" type="xs:string" use="required"/>
+            <xs:attributeGroup ref="commonAttributes"/>
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="Window">
+    <xs:element name="GridView">
         <xs:complexType>
-            <xs:sequence>
-                <xs:element name="child" type="Widget" minOccurs="0" />
-            </xs:sequence>
-            <xs:attribute name="name" type="xs:string" use="required" />
-            <xs:attribute name="title" type="xs:string" use="required"/>
-            <xs:attribute name="width" type="xs:float" use="required" />
-            <xs:attribute name="height" type="xs:float" use="required" />
+            <xs:attributeGroup ref="commonAttributes"/>
         </xs:complexType>
     </xs:element>
 
-    <xs:complexType name="VBox">
-        <xs:sequence>
-            <xs:element name="children" type="Widget" maxOccurs="unbounded"/>
-        </xs:sequence>
-        <xs:attribute name="width" type="xs:string" />
-        <xs:attribute name="height" type="xs:string" />
-    </xs:complexType>
-
-    <xs:complexType name="HBox">
-        <xs:sequence>
-            <xs:element name="children" type="Widget" maxOccurs="unbounded"/>
-        </xs:sequence>
-        <xs:attribute name="width" type="xs:string" />
-        <xs:attribute name="height" type="xs:string" />
-    </xs:complexType>
-
-    <xs:complexType name="Label">
-        <xs:attribute name="name" type="xs:string" />
-        <xs:attribute name="text" type="xs:string" use="required" />
-        <xs:attribute name="width" type="xs:string" />
-        <xs:attribute name="height" type="xs:string" />
-    </xs:complexType>
-
-    <xs:complexType name="GridView">
-        <xs:attribute name="name" type="xs:string" />
-        <xs:attribute name="width" type="xs:string" />
-        <xs:attribute name="height" type="xs:string" />
-    </xs:complexType>
-
-    <xs:complexType name="Widget">
-        <xs:choice>
-            <xs:element name="GridView" type="GridView" />
-            <xs:element name="VBox" type="VBox" />
-            <xs:element name="HBox" type="HBox" />
-            <xs:element name="Label" type="Label" />
-        </xs:choice>
-    </xs:complexType>
+    <!-- Define the common attributes as an attribute group -->
+    <xs:attributeGroup name="commonAttributes">
+        <xs:attribute name="name" type="xs:string" use="optional"/>
+        <xs:attribute name="width" type="xs:string" use="optional"/>
+        <xs:attribute name="height" type="xs:string" use="optional"/>
+    </xs:attributeGroup>
 
 </xs:schema>

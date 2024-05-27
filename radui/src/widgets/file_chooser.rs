@@ -7,10 +7,10 @@ use uuid::Uuid;
 use yaserde::de::from_str;
 
 use crate::events::{Signal, SignalType};
-use crate::generated::models::Windows;
 use crate::widgets;
 use crate::widgets::label::Label;
 use crate::widgets::{IWidget, PositionedWidget};
+use crate::widgets::vbox::Vbox;
 
 pub struct FileChooser {
     pub name: String,
@@ -25,7 +25,7 @@ impl FileChooser {
         println!("new FC");
         let bytes = include_bytes!("../../resources/lib.xml");
         let content = String::from_utf8_lossy(bytes);
-        let mut windows: Windows = from_str(&content).unwrap();
+        let mut windows: Vbox = from_str(&content).unwrap();
 
         let idx = windows.window.iter().position(|w| w.name == "file_chooser").unwrap();
         let window = windows.window.remove(idx);

@@ -8,13 +8,12 @@ use uuid::Uuid;
 
 use crate::events::{Signal, SignalType};
 use crate::generated::models;
-use crate::generated::models::WidgetChoice;
 use crate::geom::{Point2d, Size};
 use crate::widgets::{IWidget, PositionedWidget};
 
 pub struct HBox {
     pub id: Uuid,
-    pub model: models::Hbox,
+    pub model: models::widgets::WidgetsChoice::Hbox(),
     pub children: Vec<PositionedWidget>,
     pub width: u32,
     pub height: u32,
