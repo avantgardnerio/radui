@@ -4,7 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.macromedia.com/2003/mxml mxml.xsd"
 >
-    <mx:VBox width="75%" height="75%" >
+    <mx:VBox width="75%" height="75%">
         <mx:HBox width="100%">
             <mx:Label id="lblPath" text=""/>
             <mx:Label id="lblUp" text="Up"/>
