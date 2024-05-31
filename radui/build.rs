@@ -6,7 +6,7 @@ use xsd_parser::parser::parse;
 use xsd_parser::parser::types::{RsEntity, RsFile, TupleStruct};
 
 fn main() {
-    let input = "resources/radui.xsd";
+    let input = "resources/mxml.xsd";
     println!("cargo::rerun-if-changed=build.rs");
     println!("cargo::rerun-if-changed={input}");
 
