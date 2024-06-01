@@ -6,26 +6,24 @@ pub fn generate(schema: LogicalSchema) -> String {
         if Some(true) == el.is_abstract {
             return "".to_string();
         }
+        let Some(typ) = &el.typ else {
+            return "".to_string();
+        };
+        let typ = schema.types.get(typ).unwrap();
         let mut attrs = vec![];
-        if let Some(typ) = &el.typ {
-            let typ = schema.types.get(typ).unwrap();
-            for ext in &typ.complexContent.extensions {
-                match ext {
-                    ExtensionEl::AttributeGroup(grp) => {
-                        if let Some(attributes) = &grp.attributes {
-                            for attr in attributes {
-                                match attr {
-                                    AttribGroupEl::AttributeGroup(_) => {}
-                                    AttribGroupEl::Attribute(attr) => {
-                                        let str = format!("pub {}: {},", attr.name, attr.typ);
-                                        attrs.push(str);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    ExtensionEl::Group(_) => {}
-                }
+        for ext in &typ.complexContent.extensions {
+            let ExtensionEl::AttributeGroup(grp) = ext else {
+                continue;
+            };
+            let Some(attributes) = &grp.attributes else {
+                continue;
+            };
+            for attr in attributes {
+                let AttribGroupEl::Attribute(attr) = attr else {
+                    continue;
+                };
+                let str = format!("pub {}: {},", attr.name, attr.typ);
+                attrs.push(str);
             }
         }
         let attrs = attrs.join("\n");
