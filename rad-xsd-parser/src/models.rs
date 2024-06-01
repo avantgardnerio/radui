@@ -16,13 +16,14 @@ pub enum SchemaElement {
 }
 
 #[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct Group {
     pub name: Option<String>,
     pub choice: Option<Choice>,
     #[serde(rename = "ref")]
     pub reference: Option<String>,
-    pub minOccurs: Option<String>,
-    pub maxOccurs: Option<String>,
+    pub min_occurs: Option<String>,
+    pub max_occurs: Option<String>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -39,9 +40,10 @@ pub enum ChoiceOption {
 }
 
 #[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct Any {
     pub namespace: String,
-    pub processContents: String,
+    pub process_contents: String,
 }
 
 #[derive(Deserialize, Debug)]
