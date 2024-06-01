@@ -15,6 +15,8 @@
              substitutionGroup='mx:_X_mx.containers.Container'/>
     <element name='_X_MovieClip' type='mx:_I_MovieClip' abstract='true' substitutionGroup='mx:_X_Object'/>
     <element name='_X_Object' type='mx:_I_Object' abstract='true'/>
+    <element name='_X_VBox' type='mx:_I_mx.containers.VBox' abstract='true' substitutionGroup='mx:_X_Box'/>
+    <element name='VBox' type='mx:mx.containers.VBox' substitutionGroup='mx:_X_VBox'/>
     <element name='_X_mx.containers.Container' type='mx:_I_mx.containers.Container' abstract='true'
              substitutionGroup='mx:_X_mx.core.View'/>
     <element name='_X_mx.core.UIComponent' type='mx:_I_mx.core.UIComponent' abstract='true'
@@ -39,6 +41,55 @@
             <extension base='mx:_I_mx.core.View'/>
         </complexContent>
     </complexType>
+    <group name='_G_mx.containers.VBox'>
+        <choice>
+            <any namespace="##other" processContents="lax"/>
+            <element ref="mx:_X_MovieClip"/>
+        </choice>
+    </group>
+    <attributeGroup name='_A_mx.containers.VBox'>
+        <attribute name='backgroundColor' type='string'/>
+        <attribute name='borderColor' type='string'/>
+        <attribute name='borderStyle' type='string'/>
+        <attribute name='borderThickness' type='string'/>
+        <attribute name='color' type='string'/>
+        <attribute name='fontSize' type='string'/>
+        <attribute name='hPosition' type='string'/>
+        <attribute name='hScrollPolicy' type='string'/>
+        <attribute name='height' type='string'/>
+        <attribute name='horizontalAlign' type='string'/>
+        <attribute name='marginBottom' type='string'/>
+        <attribute name='marginLeft' type='string'/>
+        <attribute name='marginRight' type='string'/>
+        <attribute name='marginTop' type='string'/>
+        <attribute name='maxHeight' type='string'/>
+        <attribute name='maxWidth' type='string'/>
+        <attribute name='minHeight' type='string'/>
+        <attribute name='minWidth' type='string'/>
+        <attribute name='preferredHeight' type='string'/>
+        <attribute name='preferredWidth' type='string'/>
+        <attribute name='scroll' type='string'/>
+        <attribute name='vPosition' type='string'/>
+        <attribute name='vScrollPolicy' type='string'/>
+        <attribute name='verticalAlign' type='string'/>
+        <attribute name='width' type='string'/>
+        <attribute name='widthFlex' type='string'/>
+        <attributeGroup ref="mx:id.attr"/>
+
+    </attributeGroup>
+    <complexType mixed='true' name='_I_mx.containers.VBox'>
+        <complexContent>
+            <extension base='mx:_I_mx.containers.Box'/>
+        </complexContent>
+    </complexType>
+    <complexType mixed='true' name='mx.containers.VBox'>
+        <complexContent>
+            <extension base='mx:_I_mx.containers.VBox'>
+                <group ref='mx:_G_mx.containers.VBox' minOccurs='0' maxOccurs='unbounded'/>
+                <attributeGroup ref='mx:_A_mx.containers.VBox'/>
+            </extension>
+        </complexContent>
+    </complexType>
     <group name='_G_mx.core.Application'>
         <choice>
             <any namespace="##other" processContents="lax"/>
@@ -51,9 +102,7 @@
         <attribute name='borderStyle' type='string'/>
         <attribute name='borderThickness' type='string'/>
         <attribute name='color' type='string'/>
-        <attribute name='fontFamily' type='string'/>
         <attribute name='fontSize' type='string'/>
-        <attribute name='fontStyle' type='string'/>
         <attribute name='hPosition' type='string'/>
         <attribute name='hScrollPolicy' type='string'/>
         <attribute name='height' type='string'/>
