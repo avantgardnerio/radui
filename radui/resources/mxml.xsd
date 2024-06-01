@@ -13,15 +13,23 @@
     <element name='Application' type='mx:mx.core.Application' substitutionGroup='mx:_X_Application'/>
     <element name='_X_Box' type='mx:_I_mx.containers.Box' abstract='true'
              substitutionGroup='mx:_X_mx.containers.Container'/>
+    <element name='_X_DataGrid' type='mx:_I_mx.controls.DataGrid' abstract='true' substitutionGroup='mx:_X_List'/>
+    <element name='DataGrid' type='mx:mx.controls.DataGrid' substitutionGroup='mx:_X_DataGrid'/>
     <element name='_X_HBox' type='mx:_I_mx.containers.HBox' abstract='true' substitutionGroup='mx:_X_Box'/>
     <element name='HBox' type='mx:mx.containers.HBox' substitutionGroup='mx:_X_HBox'/>
     <element name='_X_Label' type='mx:_I_mx.controls.Label' abstract='true' substitutionGroup='mx:_X_mx.core.UIObject'/>
     <element name='Label' type='mx:mx.controls.Label' substitutionGroup='mx:_X_Label'/>
+    <element name='_X_List' type='mx:_I_mx.controls.List' abstract='true'
+             substitutionGroup='mx:_X_mx.controls.listclasses.ScrollSelectList'/>
     <element name='_X_MovieClip' type='mx:_I_MovieClip' abstract='true' substitutionGroup='mx:_X_Object'/>
     <element name='_X_Object' type='mx:_I_Object' abstract='true'/>
     <element name='_X_VBox' type='mx:_I_mx.containers.VBox' abstract='true' substitutionGroup='mx:_X_Box'/>
     <element name='VBox' type='mx:mx.containers.VBox' substitutionGroup='mx:_X_VBox'/>
     <element name='_X_mx.containers.Container' type='mx:_I_mx.containers.Container' abstract='true'
+             substitutionGroup='mx:_X_mx.core.View'/>
+    <element name='_X_mx.controls.listclasses.ScrollSelectList' type='mx:_I_mx.controls.listclasses.ScrollSelectList'
+             abstract='true' substitutionGroup='mx:_X_mx.core.ScrollView'/>
+    <element name='_X_mx.core.ScrollView' type='mx:_I_mx.core.ScrollView' abstract='true'
              substitutionGroup='mx:_X_mx.core.View'/>
     <element name='_X_mx.core.UIComponent' type='mx:_I_mx.core.UIComponent' abstract='true'
              substitutionGroup='mx:_X_mx.core.UIObject'/>
@@ -153,7 +161,6 @@
     <attributeGroup name='_A_mx.core.Application'>
         <attribute name='backgroundColor' type='string'/>
         <attribute name='borderColor' type='string'/>
-        <attribute name='borderStyle' type='string'/>
         <attribute name='borderThickness' type='string'/>
         <attribute name='color' type='string'/>
         <attribute name='fontSize' type='string'/>
@@ -181,6 +188,60 @@
         <attribute name='y' type='string'/>
         <attributeGroup ref="mx:id.attr"/>
     </attributeGroup>
+    <group name='_G_mx.controls.DataGrid'>
+        <choice>
+            <any namespace="##other" processContents="lax"/>
+            <element ref="mx:_X_MovieClip"/>
+        </choice>
+    </group>
+    <attributeGroup name='_A_mx.controls.DataGrid'>
+        <attribute name='alternatingRowColors' type='string'/>
+        <attribute name='backgroundColor' type='string'/>
+        <attribute name='borderThickness' type='string'/>
+        <attribute name='class' type='string'/>
+        <attribute name='columnNames' type='string'/>
+        <attribute name='columnStretch' type='string'/>
+        <attribute name='columns' type='string'/>
+        <attribute name='fontSize' type='string'/>
+        <attribute name='hPosition' type='string'/>
+        <attribute name='hScrollPolicy' type='string'/>
+        <attribute name='height' type='string'/>
+        <attribute name='highlightColor' type='string'/>
+        <attribute name='marginBottom' type='string'/>
+        <attribute name='marginLeft' type='string'/>
+        <attribute name='marginRight' type='string'/>
+        <attribute name='marginTop' type='string'/>
+        <attribute name='maxHPosition' type='string'/>
+        <attribute name='maxHeight' type='string'/>
+        <attribute name='maxWidth' type='string'/>
+        <attribute name='minHeight' type='string'/>
+        <attribute name='minWidth' type='string'/>
+        <attribute name='preferredHeight' type='string'/>
+        <attribute name='preferredWidth' type='string'/>
+        <attribute name='scroll' type='string'/>
+        <attribute name='selectedIndex' type='string'/>
+        <attribute name='selectedIndices' type='string'/>
+        <attribute name='vPosition' type='string'/>
+        <attribute name='vScrollPolicy' type='string'/>
+        <attribute name='verticalAlign' type='string'/>
+        <attribute name='width' type='string'/>
+        <attribute name='x' type='string'/>
+        <attribute name='y' type='string'/>
+        <attributeGroup ref="mx:id.attr"/>
+    </attributeGroup>
+    <complexType mixed='true' name='_I_mx.controls.DataGrid'>
+        <complexContent>
+            <extension base='mx:_I_mx.controls.List'/>
+        </complexContent>
+    </complexType>
+    <complexType mixed='true' name='mx.controls.DataGrid'>
+        <complexContent>
+            <extension base='mx:_I_mx.controls.DataGrid'>
+                <group ref='mx:_G_mx.controls.DataGrid' minOccurs='0' maxOccurs='unbounded'/>
+                <attributeGroup ref='mx:_A_mx.controls.DataGrid'/>
+            </extension>
+        </complexContent>
+    </complexType>
     <group name='_G_mx.controls.Label'>
         <choice>
             <element name='autoSize'/>
@@ -210,6 +271,21 @@
                 <group ref='mx:_G_mx.controls.Label' minOccurs='0' maxOccurs='unbounded'/>
                 <attributeGroup ref='mx:_A_mx.controls.Label'/>
             </extension>
+        </complexContent>
+    </complexType>
+    <complexType mixed='true' name='_I_mx.controls.List'>
+        <complexContent>
+            <extension base='mx:_I_mx.controls.listclasses.ScrollSelectList'/>
+        </complexContent>
+    </complexType>
+    <complexType mixed='true' name='_I_mx.controls.listclasses.ScrollSelectList'>
+        <complexContent>
+            <extension base='mx:_I_mx.core.ScrollView'/>
+        </complexContent>
+    </complexType>
+    <complexType mixed='true' name='_I_mx.core.ScrollView'>
+        <complexContent>
+            <extension base='mx:_I_mx.core.View'/>
         </complexContent>
     </complexType>
     <complexType mixed='true' name='_I_mx.core.Application'>

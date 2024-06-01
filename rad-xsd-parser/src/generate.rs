@@ -45,7 +45,7 @@ pub fn generate(schema: LogicalSchema) -> String {
                         "string" => "String",
                         _ => panic!("Unknown type: {}", attr.typ),
                     };
-                    let str = format!("pub {}: {},", attr.name, attr.typ);
+                    let str = format!("pub {}: {typ},", attr.name);
                     attrs.push(str);
                 }
             }
