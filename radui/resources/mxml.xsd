@@ -8,7 +8,6 @@
 >
     <attributeGroup name="id.attr">
         <attribute name="id" type="ID"/>
-        <!-- todo restrict type to valid AS identifiers -->
     </attributeGroup>
     <complexType mixed='true' name='_I_Object'></complexType>
     <element name='_X_mx.core.UIComponent' type='mx:_I_mx.core.UIComponent' abstract='true'
