@@ -13,6 +13,8 @@
     <element name='Application' type='mx:mx.core.Application' substitutionGroup='mx:_X_Application'/>
     <element name='_X_Box' type='mx:_I_mx.containers.Box' abstract='true'
              substitutionGroup='mx:_X_mx.containers.Container'/>
+    <element name='_X_HBox' type='mx:_I_mx.containers.HBox' abstract='true' substitutionGroup='mx:_X_Box'/>
+    <element name='HBox' type='mx:mx.containers.HBox' substitutionGroup='mx:_X_HBox'/>
     <element name='_X_MovieClip' type='mx:_I_MovieClip' abstract='true' substitutionGroup='mx:_X_Object'/>
     <element name='_X_Object' type='mx:_I_Object' abstract='true'/>
     <element name='_X_VBox' type='mx:_I_mx.containers.VBox' abstract='true' substitutionGroup='mx:_X_Box'/>
@@ -41,16 +43,15 @@
             <extension base='mx:_I_mx.core.View'/>
         </complexContent>
     </complexType>
-    <group name='_G_mx.containers.VBox'>
+    <group name='_G_mx.containers.HBox'>
         <choice>
             <any namespace="##other" processContents="lax"/>
             <element ref="mx:_X_MovieClip"/>
         </choice>
     </group>
-    <attributeGroup name='_A_mx.containers.VBox'>
+    <attributeGroup name='_A_mx.containers.HBox'>
         <attribute name='backgroundColor' type='string'/>
         <attribute name='borderColor' type='string'/>
-        <attribute name='borderStyle' type='string'/>
         <attribute name='borderThickness' type='string'/>
         <attribute name='color' type='string'/>
         <attribute name='fontSize' type='string'/>
@@ -74,8 +75,59 @@
         <attribute name='verticalAlign' type='string'/>
         <attribute name='width' type='string'/>
         <attribute name='widthFlex' type='string'/>
+        <attribute name='x' type='string'/>
+        <attribute name='y' type='string'/>
         <attributeGroup ref="mx:id.attr"/>
 
+    </attributeGroup>
+    <complexType mixed='true' name='_I_mx.containers.HBox'>
+        <complexContent>
+            <extension base='mx:_I_mx.containers.Box'/>
+        </complexContent>
+    </complexType>
+    <complexType mixed='true' name='mx.containers.HBox'>
+        <complexContent>
+            <extension base='mx:_I_mx.containers.HBox'>
+                <group ref='mx:_G_mx.containers.HBox' minOccurs='0' maxOccurs='unbounded'/>
+                <attributeGroup ref='mx:_A_mx.containers.HBox'/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <group name='_G_mx.containers.VBox'>
+        <choice>
+            <any namespace="##other" processContents="lax"/>
+            <element ref="mx:_X_MovieClip"/>
+        </choice>
+    </group>
+    <attributeGroup name='_A_mx.containers.VBox'>
+        <attribute name='backgroundColor' type='string'/>
+        <attribute name='borderColor' type='string'/>
+        <attribute name='borderThickness' type='string'/>
+        <attribute name='color' type='string'/>
+        <attribute name='fontSize' type='string'/>
+        <attribute name='hPosition' type='string'/>
+        <attribute name='hScrollPolicy' type='string'/>
+        <attribute name='height' type='string'/>
+        <attribute name='horizontalAlign' type='string'/>
+        <attribute name='marginBottom' type='string'/>
+        <attribute name='marginLeft' type='string'/>
+        <attribute name='marginRight' type='string'/>
+        <attribute name='marginTop' type='string'/>
+        <attribute name='maxHeight' type='string'/>
+        <attribute name='maxWidth' type='string'/>
+        <attribute name='minHeight' type='string'/>
+        <attribute name='minWidth' type='string'/>
+        <attribute name='preferredHeight' type='string'/>
+        <attribute name='preferredWidth' type='string'/>
+        <attribute name='scroll' type='string'/>
+        <attribute name='vPosition' type='string'/>
+        <attribute name='vScrollPolicy' type='string'/>
+        <attribute name='verticalAlign' type='string'/>
+        <attribute name='width' type='string'/>
+        <attribute name='widthFlex' type='string'/>
+        <attribute name='x' type='string'/>
+        <attribute name='y' type='string'/>
+        <attributeGroup ref="mx:id.attr"/>
     </attributeGroup>
     <complexType mixed='true' name='_I_mx.containers.VBox'>
         <complexContent>
@@ -123,6 +175,8 @@
         <attribute name='verticalAlign' type='string'/>
         <attribute name='width' type='string'/>
         <attribute name='widthFlex' type='string'/>
+        <attribute name='x' type='string'/>
+        <attribute name='y' type='string'/>
         <attributeGroup ref="mx:id.attr"/>
     </attributeGroup>
     <complexType mixed='true' name='_I_mx.core.Application'>
