@@ -1,6 +1,6 @@
-use std::slice::{Iter, IterMut};
-use femtovg::{Canvas, Color, FontId, Paint, Path};
 use femtovg::renderer::OpenGl;
+use femtovg::{Canvas, Color, FontId, Paint, Path};
+use std::slice::{Iter, IterMut};
 use uuid::Uuid;
 
 use crate::generated::models;

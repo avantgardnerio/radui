@@ -9,8 +9,8 @@ use yaserde::de::from_str;
 use crate::events::{Signal, SignalType};
 use crate::widgets;
 use crate::widgets::label::Label;
-use crate::widgets::{IWidget, PositionedWidget};
 use crate::widgets::vbox::Vbox;
+use crate::widgets::{IWidget, PositionedWidget};
 
 pub struct FileChooser {
     pub name: String,

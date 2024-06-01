@@ -1,13 +1,12 @@
-mod models;
-mod generate;
 mod expected;
+mod generate;
 mod logical;
+mod models;
 
 #[cfg(test)]
 mod tests {
-    use std::fs;
     use crate::models::Schema;
-    use super::*;
+    use std::fs;
 
     #[test]
     fn it_works() {

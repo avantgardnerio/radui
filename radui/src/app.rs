@@ -57,10 +57,9 @@ impl App {
                             let ev = Signal { source: vec![], dest: vec![], typ: SignalType::Click(mouse_pos.clone()) };
                             {
                                 let ar = &mut events;
-                                let mut dispatch: Box<dyn FnMut(Signal) + '_> =
-                                    Box::new(move |ev: Signal| {
-                                        ar.push(ev);
-                                    });
+                                let mut dispatch: Box<dyn FnMut(Signal) + '_> = Box::new(move |ev: Signal| {
+                                    ar.push(ev);
+                                });
                                 win.handle_event(&mut vec![], &ev, &mut dispatch);
                             }
 
