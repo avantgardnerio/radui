@@ -9,13 +9,18 @@
     <attributeGroup name="id.attr">
         <attribute name="id" type="ID"/>
     </attributeGroup>
-    <complexType mixed='true' name='_I_Object'></complexType>
+    <element name='_X_Application' type='mx:_I_mx.core.Application' abstract='true' substitutionGroup='mx:_X_Box'/>
+    <element name='Application' type='mx:mx.core.Application' substitutionGroup='mx:_X_Application'/>
+    <element name='_X_Box' type='mx:_I_mx.containers.Box' abstract='true'
+             substitutionGroup='mx:_X_mx.containers.Container'/>
+    <element name='_X_MovieClip' type='mx:_I_MovieClip' abstract='true' substitutionGroup='mx:_X_Object'/>
+    <element name='_X_Object' type='mx:_I_Object' abstract='true'/>
+    <element name='_X_mx.containers.Container' type='mx:_I_mx.containers.Container' abstract='true'
+             substitutionGroup='mx:_X_mx.core.View'/>
     <element name='_X_mx.core.UIComponent' type='mx:_I_mx.core.UIComponent' abstract='true'
              substitutionGroup='mx:_X_mx.core.UIObject'/>
     <element name='_X_mx.core.UIObject' type='mx:_I_mx.core.UIObject' abstract='true'
              substitutionGroup='mx:_X_MovieClip'/>
-    <element name='_X_Object' type='mx:_I_Object' abstract='true'/>
-    <element name='_X_MovieClip' type='mx:_I_MovieClip' abstract='true' substitutionGroup='mx:_X_Object'/>
     <element name='_X_mx.core.View' type='mx:_I_mx.core.View' abstract='true'
              substitutionGroup='mx:_X_mx.core.UIComponent'/>
     <complexType mixed='true' name='_I_MovieClip'>
@@ -23,19 +28,10 @@
             <extension base='mx:_I_Object'/>
         </complexContent>
     </complexType>
-    <complexType mixed='true' name='_I_mx.core.UIObject'>
+    <complexType mixed='true' name='_I_Object'></complexType>
+    <complexType mixed='true' name='_I_mx.containers.Box'>
         <complexContent>
-            <extension base='mx:_I_MovieClip'/>
-        </complexContent>
-    </complexType>
-    <complexType mixed='true' name='_I_mx.core.UIComponent'>
-        <complexContent>
-            <extension base='mx:_I_mx.core.UIObject'/>
-        </complexContent>
-    </complexType>
-    <complexType mixed='true' name='_I_mx.core.View'>
-        <complexContent>
-            <extension base='mx:_I_mx.core.UIComponent'/>
+            <extension base='mx:_I_mx.containers.Container'/>
         </complexContent>
     </complexType>
     <complexType mixed='true' name='_I_mx.containers.Container'>
@@ -43,30 +39,12 @@
             <extension base='mx:_I_mx.core.View'/>
         </complexContent>
     </complexType>
-    <element name='_X_mx.containers.Container' type='mx:_I_mx.containers.Container' abstract='true'
-             substitutionGroup='mx:_X_mx.core.View'/>
-    <element name='_X_Box' type='mx:_I_mx.containers.Box' abstract='true'
-             substitutionGroup='mx:_X_mx.containers.Container'/>
-    <complexType mixed='true' name='_I_mx.containers.Box'>
-        <complexContent>
-            <extension base='mx:_I_mx.containers.Container'/>
-        </complexContent>
-    </complexType>
-    <complexType mixed='true' name='_I_mx.core.Application'>
-        <complexContent>
-            <extension base='mx:_I_mx.containers.Box'/>
-        </complexContent>
-    </complexType>
-    <complexType mixed='true' name='mx.core.Application'>
-        <complexContent>
-            <extension base='mx:_I_mx.core.Application'>
-                <group ref='mx:_G_mx.core.Application' minOccurs='0' maxOccurs='unbounded'/>
-                <attributeGroup ref='mx:_A_mx.core.Application'/>
-            </extension>
-        </complexContent>
-    </complexType>
-    <element name='_X_Application' type='mx:_I_mx.core.Application' abstract='true' substitutionGroup='mx:_X_Box'/>
-    <element name='Application' type='mx:mx.core.Application' substitutionGroup='mx:_X_Application'/>
+    <group name='_G_mx.core.Application'>
+        <choice>
+            <any namespace="##other" processContents="lax"/>
+            <element ref="mx:_X_MovieClip"/>
+        </choice>
+    </group>
     <attributeGroup name='_A_mx.core.Application'>
         <attribute name='backgroundColor' type='string'/>
         <attribute name='borderColor' type='string'/>
@@ -98,10 +76,32 @@
         <attribute name='widthFlex' type='string'/>
         <attributeGroup ref="mx:id.attr"/>
     </attributeGroup>
-    <group name='_G_mx.core.Application'>
-        <choice>
-            <any namespace="##other" processContents="lax"/>
-            <element ref="mx:_X_MovieClip"/>
-        </choice>
-    </group>
+    <complexType mixed='true' name='_I_mx.core.Application'>
+        <complexContent>
+            <extension base='mx:_I_mx.containers.Box'/>
+        </complexContent>
+    </complexType>
+    <complexType mixed='true' name='mx.core.Application'>
+        <complexContent>
+            <extension base='mx:_I_mx.core.Application'>
+                <group ref='mx:_G_mx.core.Application' minOccurs='0' maxOccurs='unbounded'/>
+                <attributeGroup ref='mx:_A_mx.core.Application'/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType mixed='true' name='_I_mx.core.UIComponent'>
+        <complexContent>
+            <extension base='mx:_I_mx.core.UIObject'/>
+        </complexContent>
+    </complexType>
+    <complexType mixed='true' name='_I_mx.core.UIObject'>
+        <complexContent>
+            <extension base='mx:_I_MovieClip'/>
+        </complexContent>
+    </complexType>
+    <complexType mixed='true' name='_I_mx.core.View'>
+        <complexContent>
+            <extension base='mx:_I_mx.core.UIComponent'/>
+        </complexContent>
+    </complexType>
 </schema>
