@@ -15,6 +15,8 @@
              substitutionGroup='mx:_X_mx.containers.Container'/>
     <element name='_X_HBox' type='mx:_I_mx.containers.HBox' abstract='true' substitutionGroup='mx:_X_Box'/>
     <element name='HBox' type='mx:mx.containers.HBox' substitutionGroup='mx:_X_HBox'/>
+    <element name='_X_Label' type='mx:_I_mx.controls.Label' abstract='true' substitutionGroup='mx:_X_mx.core.UIObject'/>
+    <element name='Label' type='mx:mx.controls.Label' substitutionGroup='mx:_X_Label'/>
     <element name='_X_MovieClip' type='mx:_I_MovieClip' abstract='true' substitutionGroup='mx:_X_Object'/>
     <element name='_X_Object' type='mx:_I_Object' abstract='true'/>
     <element name='_X_VBox' type='mx:_I_mx.containers.VBox' abstract='true' substitutionGroup='mx:_X_Box'/>
@@ -179,6 +181,37 @@
         <attribute name='y' type='string'/>
         <attributeGroup ref="mx:id.attr"/>
     </attributeGroup>
+    <group name='_G_mx.controls.Label'>
+        <choice>
+            <element name='autoSize'/>
+            <element name='disabledColor'/>
+            <element name='html'/>
+            <element name='htmlText'/>
+            <element name='text'/>
+            <group ref='mx:_G_mx.core.UIObject'/>
+        </choice>
+    </group>
+    <attributeGroup name='_A_mx.controls.Label'>
+        <attribute name='autoSize' type='string'/>
+        <attribute name='disabledColor' type='string'/>
+        <attribute name='html' type='string'/>
+        <attribute name='htmlText' type='string'/>
+        <attribute name='text' type='string'/>
+        <attributeGroup ref='mx:_A_mx.core.UIObject'/>
+    </attributeGroup>
+    <complexType mixed='true' name='_I_mx.controls.Label'>
+        <complexContent>
+            <extension base='mx:_I_mx.core.UIObject'/>
+        </complexContent>
+    </complexType>
+    <complexType mixed='true' name='mx.controls.Label'>
+        <complexContent>
+            <extension base='mx:_I_mx.controls.Label'>
+                <group ref='mx:_G_mx.controls.Label' minOccurs='0' maxOccurs='unbounded'/>
+                <attributeGroup ref='mx:_A_mx.controls.Label'/>
+            </extension>
+        </complexContent>
+    </complexType>
     <complexType mixed='true' name='_I_mx.core.Application'>
         <complexContent>
             <extension base='mx:_I_mx.containers.Box'/>
@@ -197,6 +230,28 @@
             <extension base='mx:_I_mx.core.UIObject'/>
         </complexContent>
     </complexType>
+    <attributeGroup name='_A_mx.core.UIObject'>
+        <attribute name='class' type='string'/>
+        <attribute name='color' type='string'/>
+        <attribute name='fontSize' type='string'/>
+        <attribute name='height' type='string'/>
+        <attribute name='marginLeft' type='string'/>
+        <attribute name='marginRight' type='string'/>
+        <attribute name='maxHeight' type='string'/>
+        <attribute name='maxWidth' type='string'/>
+        <attribute name='minHeight' type='string'/>
+        <attribute name='minWidth' type='string'/>
+        <attribute name='preferredHeight' type='string'/>
+        <attribute name='preferredWidth' type='string'/>
+        <attribute name='width' type='string'/>
+        <attribute name='x' type='string'/>
+        <attribute name='y' type='string'/>
+        <attributeGroup ref="mx:id.attr"/>
+    </attributeGroup>
+    <group name='_G_mx.core.UIObject'>
+        <choice>
+        </choice>
+    </group>
     <complexType mixed='true' name='_I_mx.core.UIObject'>
         <complexContent>
             <extension base='mx:_I_MovieClip'/>

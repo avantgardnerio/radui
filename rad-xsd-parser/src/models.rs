@@ -29,7 +29,7 @@ pub struct Group {
 #[derive(Deserialize, Debug)]
 pub struct Choice {
     #[serde(rename = "$value")]
-    pub options: Vec<ChoiceOption>,
+    pub options: Option<Vec<ChoiceOption>>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -37,6 +37,7 @@ pub struct Choice {
 pub enum ChoiceOption {
     Any(Any),
     Element(Element),
+    Group(Group),
 }
 
 #[derive(Deserialize, Debug)]
