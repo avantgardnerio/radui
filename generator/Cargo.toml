@@ -1,0 +1,14 @@
+[package]
+name = "generator"
+edition.workspace = true
+license.workspace = true
+readme.workspace = true
+repository.workspace = true
+version.workspace = true
+description.workspace = true
+homepage.workspace = true
+
+[dependencies]
+as3_parser = { git = "https://github.com/hydroper/as3parser" }
+dirs = "5.0.1"
+glob = "0.3.1"

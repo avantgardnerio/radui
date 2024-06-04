@@ -2,7 +2,7 @@
 members = [
     "radui",
     "examples/parquet_viewer"
-, "rad-xsd-parser"]
+, "rad-xsd-parser", "generator"]
 resolver = "2"
 
 [workspace.package]
