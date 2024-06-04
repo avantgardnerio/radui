@@ -1,10 +1,17 @@
-use std::{env, fs};
-use std::collections::{HashMap, HashSet};
+use std::{fs};
+use std::collections::{HashMap};
 use as3_parser::compilation_unit::CompilationUnit;
 use as3_parser::ns::{Expression, FunctionName, QualifiedIdentifierIdentifier};
 use as3_parser::parser::ParserFacade;
 use as3_parser::tree::Directive;
 use glob::glob;
+
+#[derive(Debug)]
+pub struct Class {
+    pub name: String,
+    pub extends: Option<String>,
+    pub setters: Vec<String>,
+}
 
 fn main() {
     let home = dirs::home_dir().unwrap();
@@ -12,10 +19,24 @@ fn main() {
     let home = home.to_str().unwrap();
     println!("home={home:?}");
 
-    let mut extends = HashMap::<String, Vec<String>>::new();
+    let classes = load_classes(home);
+
+    let mut class_name = "VBox";
+    while let Some(class) = classes.get(class_name) {
+        println!("{} extends {:?}", class_name, class.extends);
+        println!("{:?}", class.setters);
+        if let Some(parent) = &class.extends {
+            class_name = parent.as_ref();
+        } else {
+            break;
+        }
+    }
+}
+
+fn load_classes(home: &str) -> HashMap::<String, Class>{
+    let mut classes = HashMap::<String, Class>::new();
     for e in glob(home).expect("Failed to read glob pattern") {
         let source_path = e.unwrap();
-        println!("{}", source_path.display());
         let source_content = fs::read_to_string(source_path.clone()).unwrap();
         let source_path = source_path.to_str().unwrap().to_string();
         let compilation_unit = CompilationUnit::new(Some(source_path), source_content);
@@ -23,44 +44,39 @@ fn main() {
 
         for package in program.packages.iter() {
             for directive in package.block.directives.iter() {
-                match directive.as_ref() {
-                    Directive::ClassDefinition(defn) => {
-                        let class_name = defn.name.0.to_string();
-                        println!("class={}", defn.name.0);
-                        if let Some(ext) = &defn.extends_clause {
-                            if let Expression::QualifiedIdentifier(id) = ext.as_ref() {
-                                if let QualifiedIdentifierIdentifier::Id((name, _)) = &id.id {
-                                    extends.entry(name.clone())
-                                        .and_modify(|hs| hs.push(class_name.clone()))
-                                        .or_insert_with(|| vec![class_name.clone()]);
-                                    println!("extends {name}");
-                                }
-                            }
+                let Directive::ClassDefinition(defn) = directive.as_ref() else {
+                    continue;
+                };
+                let class_name = defn.name.0.to_string();
+                let mut extends = None;
+                if let Some(ext) = &defn.extends_clause {
+                    if let Expression::QualifiedIdentifier(id) = ext.as_ref() {
+                        if let QualifiedIdentifierIdentifier::Id((name, _)) = &id.id {
+                            extends = Some(name.clone());
                         }
-                        for directive in defn.block.directives.iter() {
-                            match directive.as_ref() {
-                                Directive::FunctionDefinition(func) => {
-                                    match &func.name {
-                                        FunctionName::Identifier(_) => {}
-                                        FunctionName::Getter(_) => {}
-                                        FunctionName::Setter((name, loc)) => {
-                                            // println!("set {name}");
-                                        }
-                                        FunctionName::Constructor(_) => {}
-                                    }
-                                }
-                                _ => {}
-                            }
-                            // if print {
-                            //     println!("{directive:#?}\n");
-                            // }
-                        }
-                    },
-
-                    _ => {},
+                    }
                 }
+
+                let mut setters = vec![];
+                for directive in defn.block.directives.iter() {
+                    let Directive::FunctionDefinition(func) = directive.as_ref() else {
+                        continue;
+                    };
+                    match &func.name {
+                        FunctionName::Identifier(_) => {}
+                        FunctionName::Getter(_) => {}
+                        FunctionName::Setter((name, _)) => setters.push(name.clone()),
+                        FunctionName::Constructor(_) => {}
+                    }
+                }
+                let class = Class {
+                    name: class_name.clone(),
+                    extends,
+                    setters,
+                };
+                classes.insert(class_name, class);
             }
         }
-
     }
+    classes
 }
