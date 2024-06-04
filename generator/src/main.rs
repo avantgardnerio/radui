@@ -1,7 +1,7 @@
 use std::{fs};
 use std::collections::{HashMap, HashSet};
 use as3_parser::compilation_unit::CompilationUnit;
-use as3_parser::ns::{Expression, FunctionName, QualifiedIdentifierIdentifier};
+use as3_parser::ns::{Attribute, Expression, FunctionName, QualifiedIdentifierIdentifier};
 use as3_parser::parser::ParserFacade;
 use as3_parser::tree::Directive;
 use glob::glob;
@@ -22,7 +22,7 @@ fn main() {
     let classes = load_classes(home);
 
     let mut export = HashSet::<String>::new();
-    let class_names = ["VBox", "HBox", "DataGrid"];
+    let class_names = ["VBox", "HBox", "Label", "DataGrid"];
     for mut class_name in class_names {
         while let Some(class) = classes.get(class_name) {
             export.insert(class_name.to_string());
@@ -38,7 +38,14 @@ fn main() {
 }
 
 fn load_classes(home: &str) -> HashMap::<String, Class>{
-    let black_list = ["accessibility", "rotation"];
+    let black_list = ["accessibility", "rotation", "creat", "focus", "auto", "data", "drag",
+        "style", "cache", "drop", "valid", "effect", "matrix", "transform", "render", "count",
+        "editor", "tween", "enabled", "manager", "transition", "project", "repeater", "layout",
+        "select", "columns", "initialized", "processed", "flex", "tool", "depth", "nest",
+        "factory", "layer", "flag", "button", "icon", "descriptor", "document", "state",
+        "indices", "error", "center", "owner", "baseline", "scale", "visible", "alpha", "blend",
+        "filters"
+    ];
     let mut classes = HashMap::<String, Class>::new();
     for e in glob(home).expect("Failed to read glob pattern") {
         let source_path = e.unwrap();
@@ -67,6 +74,19 @@ fn load_classes(home: &str) -> HashMap::<String, Class>{
                     let Directive::FunctionDefinition(func) = directive.as_ref() else {
                         continue;
                     };
+                    let bad = func.attributes.iter().filter(|attr| {
+                        match attr {
+                            Attribute::Private(_) => true,
+                            Attribute::Protected(_) => true,
+                            Attribute::Internal(_) => true,
+                            Attribute::Static(_) => true,
+                            // Attribute::Override(_) => true,
+                            _ => false,
+                        }
+                    }).last().is_some();
+                    if bad {
+                        continue;
+                    }
                     match &func.name {
                         FunctionName::Identifier(_) => {}
                         FunctionName::Getter(_) => {}
@@ -76,7 +96,7 @@ fn load_classes(home: &str) -> HashMap::<String, Class>{
                             }
                             let blacked_out = black_list
                                 .iter()
-                                .filter(|term| name.contains(*term))
+                                .filter(|term| name.to_lowercase().contains(*term))
                                 .last()
                                 .is_some();
                             if blacked_out {
