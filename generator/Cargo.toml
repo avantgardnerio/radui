@@ -9,6 +9,6 @@ description.workspace = true
 homepage.workspace = true
 
 [dependencies]
-as3_parser = { git = "https://github.com/hydroper/as3parser" }
+as3_parser = { git = "https://github.com/hydroper/as3parser", rev="c069ab209daa3ce6dd2bcd9d5f505e1597b5be93" }
 dirs = "5.0.1"
 glob = "0.3.1"

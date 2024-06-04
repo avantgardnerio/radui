@@ -109,7 +109,7 @@ checksum = "5b8a30a44e99a1c83ccb2a6298c563c888952a1c9134953db26876528f84c93a"
 [[package]]
 name = "as3_parser"
 version = "1.0.25"
-source = "git+https://github.com/hydroper/as3parser#8039f3ada18250c7e628d541621779acb3c095d6"
+source = "git+https://github.com/hydroper/as3parser?rev=c069ab209daa3ce6dd2bcd9d5f505e1597b5be93#c069ab209daa3ce6dd2bcd9d5f505e1597b5be93"
 dependencies = [
  "bitflags 2.5.0",
  "by_address",
