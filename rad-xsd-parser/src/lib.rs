@@ -1,7 +1,7 @@
-mod expected;
-mod generate;
-mod logical;
-mod models;
+pub mod expected;
+pub mod generate;
+pub mod logical;
+pub mod models;
 
 #[cfg(test)]
 mod tests {

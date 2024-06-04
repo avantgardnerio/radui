@@ -475,6 +475,7 @@ dependencies = [
  "as3_parser",
  "dirs",
  "glob",
+ "rad-xsd-parser",
 ]
 
 [[package]]

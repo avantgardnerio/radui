@@ -5,6 +5,7 @@ use as3_parser::ns::{Attribute, Expression, FunctionName, QualifiedIdentifierIde
 use as3_parser::parser::ParserFacade;
 use as3_parser::tree::Directive;
 use glob::glob;
+use rad_xsd_parser::models::Schema;
 
 #[derive(Debug)]
 pub struct Class {
@@ -34,6 +35,10 @@ fn main() {
                 break;
             }
         }
+    }
+
+    let mut schema = Schema { schema_elements: vec![] };
+    for class_name in &export {
     }
 }
 
