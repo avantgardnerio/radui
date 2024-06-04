@@ -11,7 +11,7 @@ use rad_xsd_parser::models::Schema;
 pub struct Class {
     pub name: String,
     pub extends: Option<String>,
-    pub setters: Vec<String>,
+    pub setters: HashSet<String>,
 }
 
 fn main() {
@@ -20,36 +20,55 @@ fn main() {
     let home = home.to_str().unwrap();
     println!("home={home:?}");
 
-    let classes = load_classes(home);
+    let mut classes = load_classes(home);
 
     let mut export = HashSet::<String>::new();
     let class_names = ["VBox", "HBox", "Label", "DataGrid"];
     for mut class_name in class_names {
-        while let Some(class) = classes.get(class_name) {
-            export.insert(class_name.to_string());
-            println!("{} extends {:?}", class_name, class.extends);
-            println!("{:?}", class.setters);
-            if let Some(parent) = &class.extends {
-                class_name = &parent.as_str();
-            } else {
-                break;
-            }
-        }
+        let _ = add_class(class_name, &mut classes, &mut export);
     }
 
     let mut schema = Schema { schema_elements: vec![] };
     for class_name in &export {
+        println!("{class_name} {:?}", classes.get(class_name).map(|c| &c.setters));
     }
 }
 
-fn load_classes(home: &str) -> HashMap::<String, Class>{
+fn add_class(
+    name: &str,
+    classes: &mut HashMap<String, Class>,
+    exports: &mut HashSet<String>
+) -> HashSet<String> {
+    let parent = if let Some(class) = classes.get_mut(name) {
+        exports.insert(name.to_string());
+        if let Some(parent) = &class.extends {
+            parent.clone()
+        } else {
+            return class.setters.clone(); // no parent: my props
+        }
+    } else {
+        return HashSet::new(); // not found: no props
+    };
+
+    let mut parent_props = HashSet::new();
+    if let Some(parent) = classes.get(&parent).map(|p| p.name.clone()) {
+        parent_props = add_class(parent.as_str(), classes, exports);
+    }
+    
+    let mut class = classes.get_mut(name).unwrap();
+    class.setters.retain(|x| !parent_props.contains(x));
+    parent_props.extend(class.setters.clone());
+    parent_props
+}
+
+fn load_classes(home: &str) -> HashMap<String, Class> {
     let black_list = ["accessibility", "rotation", "creat", "focus", "auto", "data", "drag",
         "style", "cache", "drop", "valid", "effect", "matrix", "transform", "render", "count",
         "editor", "tween", "enabled", "manager", "transition", "project", "repeater", "layout",
         "select", "columns", "initialized", "processed", "flex", "tool", "depth", "nest",
         "factory", "layer", "flag", "button", "icon", "descriptor", "document", "state",
         "indices", "error", "center", "owner", "baseline", "scale", "visible", "alpha", "blend",
-        "filters"
+        "filters", "measured", "percent", "explicit", "min", "max", "z",
     ];
     let mut classes = HashMap::<String, Class>::new();
     for e in glob(home).expect("Failed to read glob pattern") {
@@ -74,7 +93,7 @@ fn load_classes(home: &str) -> HashMap::<String, Class>{
                     }
                 }
 
-                let mut setters = vec![];
+                let mut setters = HashSet::new();
                 for directive in defn.block.directives.iter() {
                     let Directive::FunctionDefinition(func) = directive.as_ref() else {
                         continue;
@@ -107,7 +126,7 @@ fn load_classes(home: &str) -> HashMap::<String, Class>{
                             if blacked_out {
                                 continue;
                             }
-                            setters.push(name.clone());
+                            setters.insert(name.clone());
                         },
                         FunctionName::Constructor(_) => {}
                     }
