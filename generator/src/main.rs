@@ -1,5 +1,5 @@
 use std::{fs};
-use std::collections::{HashMap};
+use std::collections::{HashMap, HashSet};
 use as3_parser::compilation_unit::CompilationUnit;
 use as3_parser::ns::{Expression, FunctionName, QualifiedIdentifierIdentifier};
 use as3_parser::parser::ParserFacade;
@@ -21,19 +21,24 @@ fn main() {
 
     let classes = load_classes(home);
 
-    let mut class_name = "VBox";
-    while let Some(class) = classes.get(class_name) {
-        println!("{} extends {:?}", class_name, class.extends);
-        println!("{:?}", class.setters);
-        if let Some(parent) = &class.extends {
-            class_name = parent.as_ref();
-        } else {
-            break;
+    let mut export = HashSet::<String>::new();
+    let class_names = ["VBox", "HBox", "DataGrid"];
+    for mut class_name in class_names {
+        while let Some(class) = classes.get(class_name) {
+            export.insert(class_name.to_string());
+            println!("{} extends {:?}", class_name, class.extends);
+            println!("{:?}", class.setters);
+            if let Some(parent) = &class.extends {
+                class_name = &parent.as_str();
+            } else {
+                break;
+            }
         }
     }
 }
 
 fn load_classes(home: &str) -> HashMap::<String, Class>{
+    let black_list = ["accessibility", "rotation"];
     let mut classes = HashMap::<String, Class>::new();
     for e in glob(home).expect("Failed to read glob pattern") {
         let source_path = e.unwrap();
@@ -65,7 +70,20 @@ fn load_classes(home: &str) -> HashMap::<String, Class>{
                     match &func.name {
                         FunctionName::Identifier(_) => {}
                         FunctionName::Getter(_) => {}
-                        FunctionName::Setter((name, _)) => setters.push(name.clone()),
+                        FunctionName::Setter((name, _)) => {
+                            if name.starts_with("$") {
+                                continue;
+                            }
+                            let blacked_out = black_list
+                                .iter()
+                                .filter(|term| name.contains(*term))
+                                .last()
+                                .is_some();
+                            if blacked_out {
+                                continue;
+                            }
+                            setters.push(name.clone());
+                        },
                         FunctionName::Constructor(_) => {}
                     }
                 }
