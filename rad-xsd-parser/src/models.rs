@@ -1,12 +1,12 @@
-use serde_derive::Deserialize;
+use serde_derive::{Deserialize, Serialize};
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Schema {
     #[serde(rename = "$value")]
     pub schema_elements: Vec<SchemaElement>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub enum SchemaElement {
     AttributeGroup(AttributeGroup),
@@ -15,7 +15,7 @@ pub enum SchemaElement {
     Group(Group),
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Group {
     pub name: Option<String>,
@@ -26,13 +26,13 @@ pub struct Group {
     pub max_occurs: Option<String>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Choice {
     #[serde(rename = "$value")]
     pub options: Option<Vec<ChoiceOption>>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub enum ChoiceOption {
     Any(Any),
@@ -40,14 +40,14 @@ pub enum ChoiceOption {
     Group(Group),
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Any {
     pub namespace: String,
     pub process_contents: String,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Element {
     pub name: Option<String>,
@@ -59,14 +59,14 @@ pub struct Element {
     pub substitution_group: Option<String>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub enum AttribGroupEl {
     AttributeGroup(AttributeGroup),
     Attribute(Attribute),
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct AttributeGroup {
     pub name: Option<String>,
     #[serde(rename = "ref")]
@@ -75,35 +75,43 @@ pub struct AttributeGroup {
     pub attributes: Option<Vec<AttribGroupEl>>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct ComplexType {
     pub mixed: bool,
     pub name: String,
     pub complex_content: Option<ComplexContent>,
+    pub sequence: Option<Sequence>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
+pub struct Sequence {
+    #[serde(rename = "$value")]
+    pub elements: Vec<Element>,
+}
+
+#[derive(Deserialize, Serialize, Debug)]
 pub struct ComplexContent {
     #[serde(rename = "$value")]
     pub extension: Option<Extension>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Extension {
     pub base: String,
     #[serde(rename = "$value")]
     pub extensions: Option<Vec<ExtensionEl>>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub enum ExtensionEl {
     AttributeGroup(AttributeGroup),
     Group(Group),
+    Sequence(Sequence),
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Attribute {
     pub name: String,
     #[serde(rename = "type")]

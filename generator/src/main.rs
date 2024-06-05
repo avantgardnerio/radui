@@ -1,11 +1,13 @@
 use std::{fs};
 use std::collections::{HashMap, HashSet};
+use std::fs::File;
+use std::io::Write;
 use as3_parser::compilation_unit::CompilationUnit;
 use as3_parser::ns::{Attribute, Expression, FunctionName, QualifiedIdentifierIdentifier};
 use as3_parser::parser::ParserFacade;
 use as3_parser::tree::Directive;
 use glob::glob;
-use rad_xsd_parser::models::Schema;
+use rad_xsd_parser::models::{ComplexContent, ComplexType, Element, Extension, ExtensionEl, Schema, SchemaElement, Sequence};
 
 #[derive(Debug)]
 pub struct Class {
@@ -20,18 +22,53 @@ fn main() {
     let home = home.to_str().unwrap();
     println!("home={home:?}");
 
+    // load
     let mut classes = load_classes(home);
 
+    // convert to mem
     let mut export = HashSet::<String>::new();
     let class_names = ["VBox", "HBox", "Label", "DataGrid"];
-    for mut class_name in class_names {
+    for class_name in class_names {
         let _ = add_class(class_name, &mut classes, &mut export);
     }
 
+    // convert to xml
     let mut schema = Schema { schema_elements: vec![] };
     for class_name in &export {
+        let class = classes.get(class_name).unwrap();
+        let mut sequence = None;
+        let mut complex_content = None;
+        let elements = class.setters.iter().map(|name| {
+            Element {
+                name: Some(name.clone()),
+                reference: None,
+                typ: None,
+                is_abstract: None,
+                substitution_group: None,
+            }
+        }).collect();
+        if let Some(parent) = &class.extends {
+            let sequence = Sequence { elements };
+            let extensions = Some(vec![ExtensionEl::Sequence(sequence)]);
+            let extension = Some(Extension { base: parent.clone(), extensions });
+            complex_content = Some(ComplexContent { extension });
+        } else {
+            sequence = Some(Sequence { elements });
+        }
+        let typ = ComplexType {
+            mixed: false,
+            name: class_name.clone(),
+            complex_content,
+            sequence,
+        };
+        schema.schema_elements.push(SchemaElement::ComplexType(typ));
         println!("{class_name} {:?}", classes.get(class_name).map(|c| &c.setters));
     }
+
+    // save
+    let xml = quick_xml::se::to_string(&schema).unwrap();
+    let mut output = File::create("radui.xsd").unwrap();
+    output.write_all(&xml.as_bytes()).unwrap();
 }
 
 fn add_class(
@@ -55,7 +92,7 @@ fn add_class(
         parent_props = add_class(parent.as_str(), classes, exports);
     }
     
-    let mut class = classes.get_mut(name).unwrap();
+    let class = classes.get_mut(name).unwrap();
     class.setters.retain(|x| !parent_props.contains(x));
     parent_props.extend(class.setters.clone());
     parent_props

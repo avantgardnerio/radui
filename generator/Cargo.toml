@@ -13,3 +13,6 @@ as3_parser = { git = "https://github.com/hydroper/as3parser", rev="c069ab209daa3
 dirs = "5.0.1"
 glob = "0.3.1"
 rad-xsd-parser = { path = "../rad-xsd-parser" }
+serde_derive = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+quick-xml = {version = "0.31.0", features = ["serialize"]}
