@@ -1,5 +1,5 @@
 use crate::logical::LogicalSchema;
-use crate::models::{AttribGroupEl, ExtensionEl};
+use crate::models::{AttribGroupEl, ComplexContentEl, ExtensionEl};
 
 pub fn generate(schema: LogicalSchema) -> String {
     schema
@@ -18,13 +18,16 @@ pub fn generate(schema: LogicalSchema) -> String {
             let Some(content) = &typ.complex_content else {
                 return None;
             };
-            let Some(extension) = &content.extension else {
+            let Some(content) = &content.content else {
                 return None;
             };
-            let Some(extension) = &extension.extensions else {
+            let ComplexContentEl::Extension(extension) = content else {
                 return None;
             };
-            for ext in extension {
+            let Some(extensions) = &extension.extensions else {
+                return None;
+            };
+            for ext in extensions {
                 let ExtensionEl::AttributeGroup(grp) = ext else {
                     continue;
                 };

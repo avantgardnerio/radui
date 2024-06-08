@@ -87,13 +87,31 @@ pub struct ComplexType {
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Sequence {
     #[serde(rename = "$value")]
-    pub elements: Vec<Element>,
+    pub elements: Vec<SequenceEl>,
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+pub enum SequenceEl {
+    Element(Element),
+    Sequence,
+    All,
+    Annotation,
+    Any,
+    Choice,
+    Group,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct ComplexContent {
     #[serde(rename = "$value")]
-    pub extension: Option<Extension>,
+    pub content: Option<ComplexContentEl>,
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+pub enum ComplexContentEl {
+    Annotation,
+    Extension(Extension),
+    Restriction,
 }
 
 #[derive(Deserialize, Serialize, Debug)]

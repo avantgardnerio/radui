@@ -7,7 +7,7 @@ use as3_parser::ns::{Attribute, Expression, FunctionName, QualifiedIdentifierIde
 use as3_parser::parser::ParserFacade;
 use as3_parser::tree::Directive;
 use glob::glob;
-use rad_xsd_parser::models::{ComplexContent, ComplexType, Element, Extension, ExtensionEl, Schema, SchemaElement, Sequence};
+use rad_xsd_parser::models::{ComplexContent, ComplexContentEl, ComplexType, Element, Extension, ExtensionEl, Schema, SchemaElement, Sequence, SequenceEl};
 
 #[derive(Debug)]
 pub struct Class {
@@ -39,19 +39,20 @@ fn main() {
         let mut sequence = None;
         let mut complex_content = None;
         let elements = class.setters.iter().map(|name| {
-            Element {
+            SequenceEl::Element(Element {
                 name: Some(name.clone()),
                 reference: None,
                 typ: None,
                 is_abstract: None,
                 substitution_group: None,
-            }
+            })
         }).collect();
         if let Some(parent) = &class.extends {
             let sequence = Sequence { elements };
             let extensions = Some(vec![ExtensionEl::Sequence(sequence)]);
-            let extension = Some(Extension { base: parent.clone(), extensions });
-            complex_content = Some(ComplexContent { extension });
+            let extension = Extension { base: parent.clone(), extensions };
+            let content = Some(ComplexContentEl::Extension(extension));
+            complex_content = Some(ComplexContent { content });
         } else {
             sequence = Some(Sequence { elements });
         }
