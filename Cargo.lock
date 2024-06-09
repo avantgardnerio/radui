@@ -1148,8 +1148,8 @@ dependencies = [
 name = "rad-xsd-parser"
 version = "0.1.0"
 dependencies = [
+ "quick-xml",
  "serde",
- "serde-xml-rs",
  "serde_derive",
 ]
 
@@ -1307,18 +1307,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7253ab4de971e72fb7be983802300c30b5a7f0c2e56fab8abfc6a214307c0094"
 dependencies = [
  "serde_derive",
-]
-
-[[package]]
-name = "serde-xml-rs"
-version = "0.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f0bf1ba0696ccf0872866277143ff1fd14d22eec235d2b23702f95e6660f7dfa"
-dependencies = [
- "log",
- "serde",
- "thiserror",
- "xml-rs",
 ]
 
 [[package]]

@@ -11,4 +11,4 @@ homepage.workspace = true
 [dependencies]
 serde_derive = "1.0"
 serde = { version = "1.0", features = ["derive"] }
-serde-xml-rs = "0.4"
+quick-xml = {version = "0.31.0", features = ["serialize"]}
