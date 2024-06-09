@@ -7,7 +7,10 @@ use as3_parser::ns::{Attribute, Expression, FunctionName, QualifiedIdentifierIde
 use as3_parser::parser::ParserFacade;
 use as3_parser::tree::Directive;
 use glob::glob;
-use rad_xsd_parser::models::{ComplexContent, ComplexContentEl, ComplexType, Element, Extension, ExtensionEl, Schema, SchemaElement, Sequence, SequenceEl};
+use quick_xml::se::Serializer;
+use serde::Serialize;
+use rad_xsd_parser::models;
+use rad_xsd_parser::models::{ComplexContent, ComplexContentEl, ComplexType, ComplexTypeEl, Element, Extension, ExtensionEl, Schema, SchemaElement, Sequence, SequenceEl};
 
 #[derive(Debug)]
 pub struct Class {
@@ -33,43 +36,56 @@ fn main() {
     }
 
     // convert to xml
-    let mut schema = Schema { schema_elements: vec![] };
+    let mut schema = Schema {
+        schema_elements: vec![],
+        target_namespace: "http://www.macromedia.com/2003/mxml".to_string(),
+        mx: "http://www.macromedia.com/2003/mxml".to_string(),
+        xmlns: "http://www.w3.org/2001/XMLSchema".to_string(),
+        element_form_default: "qualified".to_string(),
+        attribute_form_default: "unqualified".to_string()
+    };
     for class_name in &export {
         let class = classes.get(class_name).unwrap();
-        let mut sequence = None;
+        let mut value: Option<Vec<ComplexTypeEl>> = None;
         let mut complex_content = None;
-        let elements = class.setters.iter().map(|name| {
-            SequenceEl::Element(Element {
-                name: Some(name.clone()),
-                reference: None,
-                typ: None,
-                is_abstract: None,
-                substitution_group: None,
-            })
+        let attributes: Vec<models::Attribute> = class.setters.iter().map(|name| {
+            models::Attribute {
+                name: name.clone(),
+                typ: "string".to_string(),
+            }
         }).collect();
         if let Some(parent) = &class.extends {
-            let sequence = Sequence { elements };
-            let extensions = Some(vec![ExtensionEl::Sequence(sequence)]);
-            let extension = Extension { base: parent.clone(), extensions };
+            let extensions = attributes.into_iter().map(|attr| ExtensionEl::Attribute(attr))
+                .collect::<Vec<_>>();
+            let extension = Extension {
+                base: format!("mx:{parent}"),
+                extensions: Some(extensions),
+            };
             let content = Some(ComplexContentEl::Extension(extension));
             complex_content = Some(ComplexContent { content });
         } else {
-            sequence = Some(Sequence { elements });
+            value = Some(attributes.into_iter().map(|attr| ComplexTypeEl::Attribute(attr)).collect());
         }
         let typ = ComplexType {
             mixed: false,
             name: class_name.clone(),
             complex_content,
-            sequence,
+            value,
         };
         schema.schema_elements.push(SchemaElement::ComplexType(typ));
         println!("{class_name} {:?}", classes.get(class_name).map(|c| &c.setters));
     }
 
     // save
-    let xml = quick_xml::se::to_string(&schema).unwrap();
+    let mut buffer = String::new();
+    let mut ser = Serializer::new(&mut buffer);
+    ser.expand_empty_elements(false);
+    ser.indent('\t', 1);
+    schema.serialize(ser).unwrap();
+
+    // let xml = quick_xml::se::to_string(&schema).unwrap();
     let mut output = File::create("radui.xsd").unwrap();
-    output.write_all(&xml.as_bytes()).unwrap();
+    output.write_all(&buffer.as_bytes()).unwrap();
 }
 
 fn add_class(
