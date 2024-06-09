@@ -1,6 +1,6 @@
 use serde_derive::{Deserialize, Serialize};
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 #[serde(rename = "schema")]
 pub struct Schema {
@@ -18,7 +18,7 @@ pub struct Schema {
     pub attribute_form_default: String,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub enum SchemaElement {
     AttributeGroup(AttributeGroup),
@@ -27,7 +27,7 @@ pub enum SchemaElement {
     Group(Group),
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Group {
     #[serde(rename = "@name")]
@@ -38,15 +38,9 @@ pub struct Group {
     #[serde(rename = "@ref")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
-    #[serde(rename = "@minOccurs")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub min_occurs: Option<String>,
-    #[serde(rename = "@maxOccurs")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_occurs: Option<String>,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Choice {
     #[serde(rename = "$value")]
@@ -54,7 +48,7 @@ pub struct Choice {
     pub options: Option<Vec<ChoiceOption>>,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub enum ChoiceOption {
     Any(Any),
@@ -62,7 +56,7 @@ pub enum ChoiceOption {
     Group(Group),
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Any {
     #[serde(rename = "@namespace")]
@@ -71,7 +65,7 @@ pub struct Any {
     pub process_contents: String,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Element {
     #[serde(rename = "@name")]
@@ -90,14 +84,14 @@ pub struct Element {
     pub substitution_group: Option<String>,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub enum AttribGroupEl {
     AttributeGroup(AttributeGroup),
     Attribute(Attribute),
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct AttributeGroup {
     #[serde(rename = "@name")]
@@ -111,7 +105,7 @@ pub struct AttributeGroup {
     pub attributes: Option<Vec<AttribGroupEl>>,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct ComplexType {
     #[serde(rename = "@mixed")]
@@ -125,21 +119,28 @@ pub struct ComplexType {
     pub value: Option<Vec<ComplexTypeEl>>,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub enum ComplexTypeEl {
     Attribute(Attribute),
+    Sequence(Sequence),
     ComplexContent(ComplexContent),
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Sequence {
     #[serde(rename = "$value")]
     pub elements: Vec<SequenceEl>,
+    #[serde(rename = "@minOccurs")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub min_occurs: Option<String>,
+    #[serde(rename = "@maxOccurs")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_occurs: Option<String>,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub enum SequenceEl {
     Element(Element),
@@ -148,10 +149,10 @@ pub enum SequenceEl {
     Annotation,
     Any,
     Choice,
-    Group,
+    Group(Group),
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct ComplexContent {
     #[serde(rename = "$value")]
@@ -159,7 +160,7 @@ pub struct ComplexContent {
     pub content: Option<ComplexContentEl>,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub enum ComplexContentEl {
     Annotation,
@@ -167,7 +168,7 @@ pub enum ComplexContentEl {
     Restriction,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Extension {
     #[serde(rename = "@base")]
@@ -177,7 +178,7 @@ pub struct Extension {
     pub extensions: Option<Vec<ExtensionEl>>,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub enum ExtensionEl {
     Attribute(Attribute),
@@ -186,7 +187,7 @@ pub enum ExtensionEl {
     Sequence(Sequence),
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Attribute {
     #[serde(rename = "@name")]
