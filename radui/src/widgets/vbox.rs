@@ -8,6 +8,7 @@ use uuid::Uuid;
 
 use crate::events::{Signal, SignalType};
 use crate::generated::models;
+use crate::generated::models::Components;
 use crate::geom::{Point2d, Size};
 use crate::widgets::{IWidget, PositionedWidget};
 
@@ -111,22 +112,25 @@ impl IWidget for Vbox {
 
 impl From<models::VBox> for Box<dyn IWidget> {
     fn from(mut value: models::VBox) -> Self {
-        println!("childrec={}", value.children.len());
-        let children: Vec<_> = value
-            .children
-            .drain(..)
-            .map(|c| {
-                let widget: Box<dyn IWidget> = match *c.widget_choice {
-                    WidgetChoice::GridView(c) => c.into(),
-                    WidgetChoice::Hbox(c) => c.into(),
-                    WidgetChoice::Vbox(c) => c.into(),
-                    WidgetChoice::Label(c) => c.into(),
-                    WidgetChoice::__Unknown__(_) => panic!("Unknown element"),
-                };
-                let bounds = [0, 0, 0, 0];
-                PositionedWidget { bounds, widget }
-            })
-            .collect();
+        let children = if let Some(children) = &mut value.children {
+            println!("childrec={}", children.len());
+            children
+                .drain(..)
+                .map(|child| {
+                    let widget: Box<dyn IWidget> = match child {
+                        Components::VBox(c) => c.into(),
+                        Components::HBox(c) => c.into(),
+                        Components::Label(c) => c.into(),
+                        Components::DataGrid(c) => c.into(),
+                        _ => unimplemented!("Not instantiable"),
+                    };
+                    let bounds = [0, 0, 0, 0];
+                    PositionedWidget { bounds, widget }
+                })
+                .collect::<Vec<_>>()
+        } else {
+            vec![]
+        };
         let me = Vbox { id: Uuid::new_v4(), model: value, children, width: 0, height: 0 };
         Box::new(me)
     }

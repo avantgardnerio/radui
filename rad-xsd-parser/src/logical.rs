@@ -1,4 +1,4 @@
-use crate::models::{AttributeGroup, ComplexType, Element, Schema, SchemaElement};
+use crate::models::{AttributeGroup, ComplexType, Element, Group, Schema, SchemaElement};
 use std::collections::HashMap;
 
 #[derive(Default)]
@@ -6,6 +6,7 @@ pub struct LogicalSchema {
     pub attribute_groups: HashMap<String, AttributeGroup>,
     pub types: HashMap<String, ComplexType>,
     pub elements: HashMap<String, Element>,
+    pub groups: HashMap<String, Group>,
 }
 
 impl From<Schema> for LogicalSchema {
@@ -25,7 +26,11 @@ impl From<Schema> for LogicalSchema {
                     logical.elements.insert(name, el);
                 }
             }
-            SchemaElement::Group(_) => {}
+            SchemaElement::Group(grp) => {
+                if let Some(name) = grp.name.clone() {
+                    logical.groups.insert(name, grp);
+                }
+            }
         });
         logical
     }

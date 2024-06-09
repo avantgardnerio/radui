@@ -3,7 +3,31 @@ use crate::models::{ComplexContentEl, ExtensionEl};
 use convert_case::{Case, Casing};
 
 pub fn generate(schema: LogicalSchema) -> String {
-    schema
+    let groups = schema
+        .groups
+        .iter()
+        .filter_map(|(name, _group)| {
+            let mut str = format!("#[derive(Deserialize)]\npub enum {name} {{\n");
+            for (_name, el) in &schema.elements {
+                let Some(typ) = &el.typ else {
+                    continue;
+                };
+                if typ == "string" {
+                    continue;
+                }
+                let mut typ = typ.strip_prefix("mx:I").unwrap();
+                if typ == "Box" {
+                    typ = "MxBox";
+                }
+                str.push_str(format!("\t{}({}),\n", typ, typ).as_str());
+            }
+            str.push_str("}\n");
+            Some(str)
+        })
+        .collect::<Vec<_>>()
+        .join("\n");
+
+    let elements = schema
         .elements
         .iter()
         .filter_map(|(_name, el)| {
@@ -59,6 +83,7 @@ pub fn generate(schema: LogicalSchema) -> String {
                     _ => break,
                 };
             }
+            attrs.push(format!("#[serde(rename = \"$value\")]\n\tpub children: Option<Vec<Components>>,"));
 
             let attrs = attrs.join("\n\t");
             let mut name = el.name.as_ref().unwrap().as_str();
@@ -71,5 +96,7 @@ pub fn generate(schema: LogicalSchema) -> String {
             Some(res)
         })
         .collect::<Vec<_>>()
-        .join("\n")
+        .join("\n");
+
+    format!("{}\n{}", groups, elements)
 }
