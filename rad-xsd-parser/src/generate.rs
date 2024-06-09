@@ -14,7 +14,7 @@ pub fn generate(schema: LogicalSchema) -> String {
                 return None;
             };
             let typ = typ.strip_prefix("mx:").unwrap().to_string();
-            let mut typ = schema.types.get(&typ).expect(format!("Can't find complexType: {typ}").as_str());
+            let typ = schema.types.get(&typ).expect(format!("Can't find complexType: {typ}").as_str());
             let mut attrs = vec![];
             let Some(content) = &typ.complex_content else {
                 return None;
@@ -41,7 +41,10 @@ pub fn generate(schema: LogicalSchema) -> String {
             }
 
             while let Some(typ) = schema.types.get(extension.base.strip_prefix("mx:").unwrap()) {
-                let name = typ.name.strip_prefix("I").unwrap();
+                let mut name = typ.name.strip_prefix("I").unwrap();
+                if name == "Box" {
+                    name = "MxBox";
+                }
                 let str = format!("#[serde(flatten)]\n\tpub {}: {},", name.to_case(Case::Snake), name);
                 attrs.push(str);
 
@@ -58,7 +61,11 @@ pub fn generate(schema: LogicalSchema) -> String {
             }
 
             let attrs = attrs.join("\n\t");
-            let mut res = format!("#[derive(Deserialize)]\npub struct {} {{\n\t", el.name.as_ref().unwrap());
+            let mut name = el.name.as_ref().unwrap().as_str();
+            if name == "Box" {
+                name = "MxBox";
+            }
+            let mut res = format!("#[derive(Deserialize)]\npub struct {} {{\n\t", name);
             res.push_str(attrs.as_str());
             res.push_str("\n}\n");
             Some(res)

@@ -19,6 +19,8 @@ itertools = "0.12.1"
 resource = "0.5.0"
 as-any = "0.3.1"
 uuid = { workspace = true }
+serde = { version = "1.0.203", features = ["derive"] }
 
 [build-dependencies]
-xsd-parser = {git = "https://github.com/avantgardnerio/xsd-parser-rs.git", rev = "c5099f9e865cdbb916465a62f16f6eb2013f1c06", version = "0.1.0"}
+quick-xml = {version = "0.31.0", features = ["serialize"]}
+rad-xsd-parser = { path = "../rad-xsd-parser" }
