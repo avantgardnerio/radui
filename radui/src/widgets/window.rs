@@ -4,7 +4,6 @@ use std::slice::{Iter, IterMut};
 use uuid::Uuid;
 
 use crate::generated::models;
-use crate::generated::models::WidgetChoice;
 use crate::geom::Bounds2d;
 use crate::widgets::{IWidget, PositionedWidget};
 

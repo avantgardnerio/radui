@@ -8,13 +8,12 @@ use uuid::Uuid;
 
 use crate::events::{Signal, SignalType};
 use crate::generated::models;
-use crate::generated::models::WidgetChoice;
 use crate::geom::{Point2d, Size};
 use crate::widgets::{IWidget, PositionedWidget};
 
 pub struct Vbox {
     pub id: Uuid,
-    pub model: models::Vbox,
+    pub model: models::VBox,
     pub children: Vec<PositionedWidget>,
     pub width: u32,
     pub height: u32,
@@ -110,8 +109,8 @@ impl IWidget for Vbox {
     }
 }
 
-impl From<models::Vbox> for Box<dyn IWidget> {
-    fn from(mut value: models::Vbox) -> Self {
+impl From<models::VBox> for Box<dyn IWidget> {
+    fn from(mut value: models::VBox) -> Self {
         println!("childrec={}", value.children.len());
         let children: Vec<_> = value
             .children

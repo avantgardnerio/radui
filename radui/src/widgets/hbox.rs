@@ -13,7 +13,7 @@ use crate::widgets::{IWidget, PositionedWidget};
 
 pub struct HBox {
     pub id: Uuid,
-    pub model: models::widgets::WidgetsChoice::Hbox(),
+    pub model: HBox,
     pub children: Vec<PositionedWidget>,
     pub width: u32,
     pub height: u32,
@@ -110,8 +110,8 @@ impl IWidget for HBox {
     }
 }
 
-impl From<models::Hbox> for Box<dyn IWidget> {
-    fn from(mut value: models::Hbox) -> Self {
+impl From<models::HBox> for Box<dyn IWidget> {
+    fn from(mut value: models::HBox) -> Self {
         println!("childrec={}", value.children.len());
         let children: Vec<_> = value
             .children

@@ -5,12 +5,13 @@ use femtovg::{Canvas, Color, FontId, Paint, Path};
 use uuid::Uuid;
 
 use crate::generated::models;
+use crate::generated::models::DataGrid;
 use crate::geom::Size;
 use crate::widgets::{IWidget, PositionedWidget};
 
 pub struct GridView {
     pub id: Uuid,
-    pub model: models::GridView,
+    pub model: DataGrid,
     pub width: u32,
     pub height: u32,
     pub children: Vec<PositionedWidget>,
@@ -49,8 +50,8 @@ impl IWidget for GridView {
     }
 }
 
-impl From<models::GridView> for Box<dyn IWidget> {
-    fn from(value: models::GridView) -> Self {
+impl From<models::DataGrid> for Box<dyn IWidget> {
+    fn from(value: models::DataGrid) -> Self {
         let me = GridView { id: Uuid::new_v4(), model: value, width: 0, height: 0, children: vec![] };
         Box::new(me)
     }

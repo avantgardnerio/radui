@@ -57,7 +57,7 @@ impl IWidget for Label {
         let mut paint = Paint::color(Color::black());
         paint.set_font(&[*font]);
         paint.set_font_size(FONT_SIZE);
-        let metrics = canvas.measure_text(0.0, 0.0, self.model.text.as_str(), &paint).unwrap();
+        let metrics = canvas.measure_text(0.0, 0.0, self.model.text_base.text.as_str(), &paint).unwrap();
         let width = metrics.height() + PADDING * 2.0;
         Size::Absolute(width as u32)
     }
