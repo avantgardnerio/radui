@@ -1,10 +1,9 @@
 use crate::geom::Point2d;
-use uuid::Uuid;
 
 #[derive(Debug, Clone)]
 pub struct Signal {
-    pub source: Vec<Uuid>,
-    pub dest: Vec<Uuid>,
+    pub source: Vec<String>,
+    pub dest: Vec<String>,
     pub typ: SignalType,
 }
 

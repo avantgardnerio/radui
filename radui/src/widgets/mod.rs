@@ -4,18 +4,18 @@ use std::slice::{Iter, IterMut};
 use as_any::AsAny;
 use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, FontId};
-use uuid::Uuid;
 
 use crate::events::{Signal, SignalType};
 use crate::geom::{Bounds2d, Size};
 
+pub mod app_window;
 pub mod colors;
+pub mod data_grid;
 pub mod file_chooser;
-pub mod grid_view;
-mod hbox;
+pub mod hbox;
 pub mod label;
+pub mod modal;
 pub mod vbox;
-pub mod window;
 
 pub struct PositionedWidget {
     pub bounds: Bounds2d<u32>,
@@ -45,13 +45,13 @@ pub trait IWidget: AsAny {
         Size::Absolute(size)
     }
 
-    fn add_event_listener(&mut self, _typ: SignalType, _id: Vec<Uuid>) {
+    fn add_event_listener(&mut self, _typ: SignalType, _id: Vec<String>) {
         todo!()
     }
 
     fn get_name(&self) -> Option<&str>;
 
-    fn get_id(&self) -> &Uuid;
+    fn get_id(&self) -> &String;
 
     fn get_children_mut(&mut self) -> IterMut<'_, PositionedWidget>;
 
@@ -72,7 +72,7 @@ pub trait IWidget: AsAny {
         self.get_children_mut().for_each(|c| c.widget.layout(width, height, canvas, font));
     }
 
-    fn handle_event(&mut self, path: &mut Vec<Uuid>, event: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
+    fn handle_event(&mut self, path: &mut Vec<String>, event: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
         path.push(self.get_id().clone());
 
         self.get_children_mut().for_each(|widget| widget.widget.handle_event(path, event, dispatch));
@@ -83,7 +83,7 @@ pub trait IWidget: AsAny {
 
     fn handle_own_event(
         &mut self,
-        _path: &mut Vec<Uuid>,
+        _path: &mut Vec<String>,
         _event: &Signal,
         _dispatch: &mut Box<dyn FnMut(Signal) + '_>,
     ) {

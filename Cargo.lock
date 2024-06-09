@@ -1076,6 +1076,7 @@ dependencies = [
 name = "parquet_viewer"
 version = "0.1.0"
 dependencies = [
+ "quick-xml",
  "radui",
  "uuid",
 ]

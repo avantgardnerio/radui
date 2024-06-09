@@ -5,19 +5,17 @@ use femtovg::{Canvas, Color, FontId, Paint, Path};
 use uuid::Uuid;
 
 use crate::generated::models;
-use crate::generated::models::DataGrid;
 use crate::geom::Size;
 use crate::widgets::{IWidget, PositionedWidget};
 
-pub struct GridView {
-    pub id: Uuid,
-    pub model: DataGrid,
+pub struct DataGrid {
+    pub model: models::DataGrid,
     pub width: u32,
     pub height: u32,
     pub children: Vec<PositionedWidget>,
 }
 
-impl IWidget for GridView {
+impl IWidget for DataGrid {
     fn draw(&self, canvas: &mut Canvas<OpenGl>, _font: &FontId) {
         let mut path = Path::new();
         path.rect(0.0, 0.0, self.width as f32, self.height as f32);
@@ -45,14 +43,15 @@ impl IWidget for GridView {
         self.children.iter_mut()
     }
 
-    fn get_id(&self) -> &Uuid {
-        &self.id
+    fn get_id(&self) -> &String {
+        self.model.ui_component.uid.as_ref().unwrap()
     }
 }
 
 impl From<models::DataGrid> for Box<dyn IWidget> {
-    fn from(value: models::DataGrid) -> Self {
-        let me = GridView { id: Uuid::new_v4(), model: value, width: 0, height: 0, children: vec![] };
+    fn from(mut value: models::DataGrid) -> Self {
+        value.ui_component.uid = Some(Uuid::new_v4().to_string());
+        let me = DataGrid { model: value, width: 0, height: 0, children: vec![] };
         Box::new(me)
     }
 }

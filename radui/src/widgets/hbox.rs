@@ -13,7 +13,6 @@ use crate::geom::{Point2d, Size};
 use crate::widgets::{IWidget, PositionedWidget};
 
 pub struct HBox {
-    pub id: Uuid,
     pub model: models::HBox,
     pub children: Vec<PositionedWidget>,
     pub width: u32,
@@ -75,7 +74,7 @@ impl IWidget for HBox {
         }
     }
 
-    fn handle_event(&mut self, path: &mut Vec<Uuid>, ev: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
+    fn handle_event(&mut self, path: &mut Vec<String>, ev: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
         path.push(self.get_id().clone());
         match &ev.typ {
             SignalType::Click(pos) => {
@@ -106,8 +105,8 @@ impl IWidget for HBox {
         self.children.iter()
     }
 
-    fn get_id(&self) -> &Uuid {
-        &self.id
+    fn get_id(&self) -> &String {
+        self.model.ui_component.uid.as_ref().unwrap()
     }
 }
 
@@ -132,7 +131,8 @@ impl From<models::HBox> for Box<dyn IWidget> {
         } else {
             vec![]
         };
-        let me = HBox { id: Uuid::new_v4(), model: value, children, width: 0, height: 0 };
+        value.ui_component.uid = Some(Uuid::new_v4().to_string());
+        let me = HBox { model: value, children, width: 0, height: 0 };
         Box::new(me)
     }
 }

@@ -23,12 +23,12 @@ use winit::window::WindowBuilder;
 use winit::{dpi::PhysicalSize, window::Window};
 
 use crate::geom::Point2d;
-use crate::widgets::window::IWindow;
+use crate::widgets::app_window::IAppWindow;
 
 pub struct App {}
 
 impl App {
-    pub fn run<W: IWindow>(mut win: W) {
+    pub fn run<W: IAppWindow>(mut win: W) {
         let event_loop = EventLoopBuilder::<Signal>::with_user_event().build();
         let (context, gl_display, window, surface) = create_window(&event_loop, win.get_title());
 

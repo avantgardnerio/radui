@@ -7,7 +7,7 @@ use crate::generated::models;
 use crate::generated::models::Components;
 use crate::widgets::{IWidget, PositionedWidget};
 
-pub trait IWindow: IWidget {
+pub trait IAppWindow: IWidget {
     fn get_title(&self) -> &str;
 
     fn get_popups_mut(&mut self) -> IterMut<'_, PositionedWidget>;
@@ -15,8 +15,7 @@ pub trait IWindow: IWidget {
     fn get_popups(&self) -> Iter<'_, PositionedWidget>;
 }
 
-pub struct Window {
-    pub id: Uuid,
+pub struct AppWindow {
     pub model: models::WindowedApplication,
     pub children: Vec<PositionedWidget>,
     pub popups: Vec<PositionedWidget>,
@@ -24,7 +23,7 @@ pub struct Window {
     pub height: u32,
 }
 
-impl IWindow for Window {
+impl IAppWindow for AppWindow {
     fn get_title(&self) -> &str {
         self.model.title.as_ref().map(|str| str.as_str()).unwrap_or("")
     }
@@ -38,13 +37,13 @@ impl IWindow for Window {
     }
 }
 
-impl IWidget for Window {
+impl IWidget for AppWindow {
     fn get_name(&self) -> Option<&str> {
         self.model.ui_component.id.as_ref().map(|str| str.as_str())
     }
 
-    fn get_id(&self) -> &Uuid {
-        &self.id
+    fn get_id(&self) -> &String {
+        self.model.ui_component.uid.as_ref().unwrap()
     }
 
     fn layout(&mut self, width: u32, height: u32, canvas: &Canvas<OpenGl>, font: &FontId) {
@@ -86,7 +85,7 @@ impl IWidget for Window {
     }
 }
 
-impl From<models::WindowedApplication> for Window {
+impl From<models::WindowedApplication> for AppWindow {
     fn from(mut value: models::WindowedApplication) -> Self {
         let children = if let Some(children) = &mut value.children {
             println!("childrec={}", children.len());
@@ -107,6 +106,7 @@ impl From<models::WindowedApplication> for Window {
         } else {
             vec![]
         };
-        Window { id: Uuid::new_v4(), model: value, children, width: 0, height: 0, popups: vec![] }
+        value.ui_component.uid = Some(Uuid::new_v4().to_string());
+        AppWindow { model: value, children, width: 0, height: 0, popups: vec![] }
     }
 }

@@ -1,3 +1,4 @@
+use quick_xml::de::from_str;
 use std::slice::{Iter, IterMut};
 use uuid::Uuid;
 
@@ -5,28 +6,26 @@ use radui::events::{Signal, SignalType};
 use radui::generated::models::WindowedApplication;
 use radui::geom::Bounds2d;
 use radui::widgets;
+use radui::widgets::app_window::IAppWindow;
 use radui::widgets::file_chooser::FileChooser;
-use radui::widgets::window::IWindow;
 use radui::widgets::{IWidget, PositionedWidget};
 
 pub struct ParquetViewerWindow {
-    pub id: Uuid,
+    pub id: String,
     pub children: Vec<PositionedWidget>,
     pub popups: Vec<PositionedWidget>,
-    pub lbl_open_id: Uuid,
+    pub lbl_open_id: String,
 }
 
 impl ParquetViewerWindow {
     pub fn new() -> Self {
         let bytes = include_bytes!("../resources/app.xml");
         let content = String::from_utf8_lossy(bytes);
-        let mut windows: WindowedApplication = from_str(&content).unwrap();
+        let window: WindowedApplication = from_str(&content).unwrap();
 
-        let idx = windows.window.iter().position(|w| w.name == "appWindow").unwrap();
-        let win = windows.window.remove(idx);
-        let mut win: widgets::window::Window = win.into();
+        let mut win: widgets::app_window::AppWindow = window.into();
 
-        let id = Uuid::new_v4();
+        let id = Uuid::new_v4().to_string();
         let label = win.find_by_name("lblOpen").unwrap();
         label.add_event_listener(SignalType::Activated, vec![id.clone()]);
         let lbl_open_id = label.get_id().clone();
@@ -39,7 +38,12 @@ impl ParquetViewerWindow {
 }
 
 impl IWidget for ParquetViewerWindow {
-    fn handle_own_event(&mut self, path: &mut Vec<Uuid>, event: &Signal, _dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
+    fn handle_own_event(
+        &mut self,
+        path: &mut Vec<String>,
+        event: &Signal,
+        _dispatch: &mut Box<dyn FnMut(Signal) + '_>,
+    ) {
         println!("App event source={:?} lbl_open_id={:?}", event.source, self.lbl_open_id);
         if event.source.last() == Some(&self.lbl_open_id) && event.typ == SignalType::Activated {
             println!("showing file dialog");
@@ -63,12 +67,12 @@ impl IWidget for ParquetViewerWindow {
         self.children.iter()
     }
 
-    fn get_id(&self) -> &Uuid {
+    fn get_id(&self) -> &String {
         &self.id
     }
 }
 
-impl IWindow for ParquetViewerWindow {
+impl IAppWindow for ParquetViewerWindow {
     fn get_title(&self) -> &str {
         "Parquet Viewer"
     }

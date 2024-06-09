@@ -7,33 +7,33 @@ use uuid::Uuid;
 
 use crate::events::{Signal, SignalType};
 use crate::generated::models::TitleWindow;
-use crate::widgets;
 use crate::widgets::label::Label;
+use crate::widgets::modal::Modal;
 use crate::widgets::{IWidget, PositionedWidget};
 
 pub struct FileChooser {
     pub name: String,
-    pub id: Uuid,
+    pub id: String,
     pub current_dir: PathBuf,
     pub children: Vec<PositionedWidget>,
-    pub lbl_up_id: Vec<Uuid>,
+    pub lbl_up_id: Vec<String>,
 }
 
 impl FileChooser {
-    pub fn new(name: &str, path: &Vec<Uuid>) -> Self {
+    pub fn new(name: &str, path: &Vec<String>) -> Self {
         println!("new FC");
         let bytes = include_bytes!("../../resources/lib.xml");
         let content = String::from_utf8_lossy(bytes);
-        let mut window: TitleWindow = from_str(&content).unwrap();
+        let window: TitleWindow = from_str(&content).unwrap();
 
-        let mut window: widgets::window::Window = window.into();
+        let mut window: Modal = window.into();
 
         let current_dir = env::current_dir().unwrap();
         let lbl_path = window.find_by_name("lblPath").unwrap();
         let lbl_path = lbl_path.as_mut().as_any_mut().downcast_mut::<Label>().unwrap();
         lbl_path.model.text_base.text = current_dir.to_str().map(|str| str.to_string());
 
-        let id = Uuid::new_v4();
+        let id = Uuid::new_v4().to_string();
         let my_path = path.iter().cloned().chain(once(id.clone())).collect();
         let label = window.find_by_name("lblUp").unwrap();
         label.add_event_listener(SignalType::Activated, my_path);
@@ -47,7 +47,12 @@ impl FileChooser {
 }
 
 impl IWidget for FileChooser {
-    fn handle_own_event(&mut self, _path: &mut Vec<Uuid>, event: &Signal, _dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
+    fn handle_own_event(
+        &mut self,
+        _path: &mut Vec<String>,
+        event: &Signal,
+        _dispatch: &mut Box<dyn FnMut(Signal) + '_>,
+    ) {
         if event.source == self.lbl_up_id {
             println!("Up");
             let current_dir = self.current_dir.parent().unwrap().to_path_buf();
@@ -70,7 +75,7 @@ impl IWidget for FileChooser {
         self.children.iter()
     }
 
-    fn get_id(&self) -> &Uuid {
+    fn get_id(&self) -> &String {
         &self.id
     }
 }

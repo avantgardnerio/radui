@@ -15,16 +15,15 @@ const FONT_SIZE: f32 = 24.0;
 const PADDING: f32 = 2.0;
 
 pub struct Label {
-    pub id: Uuid,
     pub model: models::Label,
     pub width: u32,
     pub height: u32,
     pub children: Vec<PositionedWidget>,
-    pub listeners: HashMap<SignalType, Vec<Vec<Uuid>>>,
+    pub listeners: HashMap<SignalType, Vec<Vec<String>>>,
 }
 
 impl IWidget for Label {
-    fn add_event_listener(&mut self, typ: SignalType, id: Vec<Uuid>) {
+    fn add_event_listener(&mut self, typ: SignalType, id: Vec<String>) {
         self.listeners.entry(typ).and_modify(|v| v.push(id.clone())).or_insert_with(|| vec![id]);
     }
 
@@ -65,8 +64,8 @@ impl IWidget for Label {
         Size::Absolute(width as u32)
     }
 
-    fn handle_own_event(&mut self, path: &mut Vec<Uuid>, event: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
-        let my_path = path.iter().cloned().chain(once(self.id)).collect::<Vec<_>>();
+    fn handle_own_event(&mut self, path: &mut Vec<String>, event: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
+        let my_path = path.iter().cloned().chain(once(self.get_id().clone())).collect::<Vec<_>>();
         match &event.typ {
             SignalType::Click(_pos) => {
                 if let Some(listeners) = self.listeners.get(&SignalType::Activated) {
@@ -95,21 +94,15 @@ impl IWidget for Label {
         self.children.iter_mut()
     }
 
-    fn get_id(&self) -> &Uuid {
-        &self.id
+    fn get_id(&self) -> &String {
+        self.model.ui_component.uid.as_ref().unwrap()
     }
 }
 
 impl From<models::Label> for Box<dyn IWidget> {
-    fn from(value: models::Label) -> Self {
-        let me = Label {
-            id: Uuid::new_v4(),
-            model: value,
-            width: 0,
-            height: 0,
-            children: vec![],
-            listeners: Default::default(),
-        };
+    fn from(mut value: models::Label) -> Self {
+        value.ui_component.uid = Some(Uuid::new_v4().to_string());
+        let me = Label { model: value, width: 0, height: 0, children: vec![], listeners: Default::default() };
         Box::new(me)
     }
 }
