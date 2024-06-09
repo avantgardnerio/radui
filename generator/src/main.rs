@@ -10,7 +10,7 @@ use glob::glob;
 use quick_xml::se::Serializer;
 use serde::Serialize;
 use rad_xsd_parser::models;
-use rad_xsd_parser::models::{ComplexContent, ComplexContentEl, ComplexType, ComplexTypeEl, Element, Extension, ExtensionEl, Schema, SchemaElement, Sequence, SequenceEl};
+use rad_xsd_parser::models::{ComplexContent, ComplexContentEl, ComplexType, ComplexTypeEl, Extension, ExtensionEl, Schema, SchemaElement};
 
 #[derive(Debug)]
 pub struct Class {
@@ -75,6 +75,13 @@ fn main() {
         schema.schema_elements.push(SchemaElement::ComplexType(typ));
         println!("{class_name} {:?}", classes.get(class_name).map(|c| &c.setters));
     }
+    let typ = ComplexType {
+        mixed: false,
+        name: "Sprite".to_string(),
+        complex_content: None,
+        value: None,
+    };
+    schema.schema_elements.push(SchemaElement::ComplexType(typ));
 
     // save
     let mut buffer = String::new();
@@ -83,8 +90,7 @@ fn main() {
     ser.indent('\t', 1);
     schema.serialize(ser).unwrap();
 
-    // let xml = quick_xml::se::to_string(&schema).unwrap();
-    let mut output = File::create("radui.xsd").unwrap();
+    let mut output = File::create("radui/resources/radui.xsd").unwrap();
     output.write_all(&buffer.as_bytes()).unwrap();
 }
 
