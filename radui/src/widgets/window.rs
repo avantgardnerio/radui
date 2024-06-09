@@ -4,7 +4,7 @@ use std::slice::{Iter, IterMut};
 use uuid::Uuid;
 
 use crate::generated::models;
-use crate::geom::Bounds2d;
+use crate::generated::models::Components;
 use crate::widgets::{IWidget, PositionedWidget};
 
 pub trait IWindow: IWidget {
@@ -88,19 +88,25 @@ impl IWidget for Window {
 
 impl From<models::WindowedApplication> for Window {
     fn from(mut value: models::WindowedApplication) -> Self {
-        let child = value.child.take();
-        let children = child.map_or(vec![], |c| {
-            let widget: Box<dyn IWidget> = match *c.widget_choice {
-                WidgetChoice::GridView(c) => c.into(),
-                WidgetChoice::Hbox(c) => c.into(),
-                WidgetChoice::Vbox(c) => c.into(),
-                WidgetChoice::Label(c) => c.into(),
-                WidgetChoice::__Unknown__(_) => panic!("Unknown element"),
-            };
-            let bounds: Bounds2d<u32> = [0, 0, 0, 0];
-            vec![PositionedWidget { bounds, widget }]
-        });
-
+        let children = if let Some(children) = &mut value.children {
+            println!("childrec={}", children.len());
+            children
+                .drain(..)
+                .map(|child| {
+                    let widget: Box<dyn IWidget> = match child {
+                        Components::VBox(c) => c.into(),
+                        Components::HBox(c) => c.into(),
+                        Components::Label(c) => c.into(),
+                        Components::DataGrid(c) => c.into(),
+                        _ => unimplemented!("Not instantiable"),
+                    };
+                    let bounds = [0, 0, 0, 0];
+                    PositionedWidget { bounds, widget }
+                })
+                .collect::<Vec<_>>()
+        } else {
+            vec![]
+        };
         Window { id: Uuid::new_v4(), model: value, children, width: 0, height: 0, popups: vec![] }
     }
 }
