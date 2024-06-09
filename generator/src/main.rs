@@ -10,7 +10,7 @@ use glob::glob;
 use quick_xml::se::Serializer;
 use serde::Serialize;
 use rad_xsd_parser::models;
-use rad_xsd_parser::models::{ComplexContent, ComplexContentEl, ComplexType, ComplexTypeEl, Extension, ExtensionEl, Schema, SchemaElement};
+use rad_xsd_parser::models::{ComplexContent, ComplexContentEl, ComplexType, ComplexTypeEl, Element, Extension, ExtensionEl, Schema, SchemaElement};
 
 #[derive(Debug)]
 pub struct Class {
@@ -58,7 +58,7 @@ fn main() {
             let extensions = attributes.into_iter().map(|attr| ExtensionEl::Attribute(attr))
                 .collect::<Vec<_>>();
             let extension = Extension {
-                base: format!("mx:{parent}"),
+                base: format!("mx:I{parent}"),
                 extensions: Some(extensions),
             };
             let content = Some(ComplexContentEl::Extension(extension));
@@ -68,16 +68,24 @@ fn main() {
         }
         let typ = ComplexType {
             mixed: false,
-            name: class_name.clone(),
+            name: format!("I{}", class_name),
             complex_content,
             value,
         };
+        let el = Element {
+            name: Some(class_name.clone()),
+            reference: None,
+            typ: Some(format!("mx:{}", typ.name.clone())),
+            is_abstract: None,
+            substitution_group: None,
+        };
         schema.schema_elements.push(SchemaElement::ComplexType(typ));
+        schema.schema_elements.push(SchemaElement::Element(el));
         println!("{class_name} {:?}", classes.get(class_name).map(|c| &c.setters));
     }
     let typ = ComplexType {
         mixed: false,
-        name: "Sprite".to_string(),
+        name: "ISprite".to_string(),
         complex_content: None,
         value: None,
     };
@@ -90,7 +98,7 @@ fn main() {
     ser.indent('\t', 1);
     schema.serialize(ser).unwrap();
 
-    let mut output = File::create("radui/resources/radui.xsd").unwrap();
+    let mut output = File::create("radui/resources/mxml.xsd").unwrap();
     output.write_all(&buffer.as_bytes()).unwrap();
 }
 
