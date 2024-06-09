@@ -30,11 +30,11 @@ impl IWidget for GridView {
     }
 
     fn get_height(&self, _canvas: &Canvas<OpenGl>, _font: &FontId) -> Size {
-        self.model.height.as_deref().unwrap_or("100%").parse().unwrap()
+        self.model.ui_component.height.as_ref().map(|h| h.as_str()).unwrap_or("100%").parse().unwrap()
     }
 
     fn get_name(&self) -> Option<&str> {
-        self.model.name.as_deref()
+        self.model.ui_component.id.as_deref()
     }
 
     fn get_children(&self) -> Iter<'_, PositionedWidget> {

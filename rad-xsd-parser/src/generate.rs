@@ -1,6 +1,6 @@
-use convert_case::{Case, Casing};
 use crate::logical::LogicalSchema;
 use crate::models::{ComplexContentEl, ExtensionEl};
+use convert_case::{Case, Casing};
 
 pub fn generate(schema: LogicalSchema) -> String {
     schema
@@ -33,10 +33,10 @@ pub fn generate(schema: LogicalSchema) -> String {
                     continue;
                 };
                 let typ = match attr.typ.as_str() {
-                    "string" => "String",
+                    "string" => "Option<String>",
                     _ => panic!("Unknown type: {}", attr.typ),
                 };
-                let str = format!("#[serde(rename = \"@{}\")]\n\tpub {}: {typ},", attr.name, attr.name.to_case(Case::Snake));
+                let str = format!("#[serde(skip_serializing_if = \"Option::is_none\")]\n\t#[serde(rename = \"@{}\")]\n\tpub {}: {typ},", attr.name, attr.name.to_case(Case::Snake));
                 attrs.push(str);
             }
 

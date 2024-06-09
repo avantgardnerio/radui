@@ -5,5 +5,4 @@ edition = { workspace = true }
 
 [dependencies]
 radui = { workspace = true }
-yaserde = { workspace = true }
 uuid = { workspace = true }

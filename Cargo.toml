@@ -16,6 +16,5 @@ homepage = "https://github.com/avantgardnerio/radui"
 
 [workspace.dependencies]
 radui = { path = "radui" }
-yaserde = "0.7.1"
 winit = "0.28.1"
 uuid = { version = "1.8.0", features = ["v4"] }

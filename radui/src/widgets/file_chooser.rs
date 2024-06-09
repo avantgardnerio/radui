@@ -1,15 +1,14 @@
+use quick_xml::de::from_str;
 use std::env;
 use std::iter::once;
 use std::path::PathBuf;
 use std::slice::{Iter, IterMut};
 use uuid::Uuid;
 
-use yaserde::de::from_str;
-
 use crate::events::{Signal, SignalType};
+use crate::generated::models::TitleWindow;
 use crate::widgets;
 use crate::widgets::label::Label;
-use crate::widgets::vbox::Vbox;
 use crate::widgets::{IWidget, PositionedWidget};
 
 pub struct FileChooser {
@@ -25,16 +24,14 @@ impl FileChooser {
         println!("new FC");
         let bytes = include_bytes!("../../resources/lib.xml");
         let content = String::from_utf8_lossy(bytes);
-        let mut windows: Vbox = from_str(&content).unwrap();
+        let mut window: TitleWindow = from_str(&content).unwrap();
 
-        let idx = windows.window.iter().position(|w| w.name == "file_chooser").unwrap();
-        let window = windows.window.remove(idx);
         let mut window: widgets::window::Window = window.into();
 
         let current_dir = env::current_dir().unwrap();
         let lbl_path = window.find_by_name("lblPath").unwrap();
         let lbl_path = lbl_path.as_mut().as_any_mut().downcast_mut::<Label>().unwrap();
-        lbl_path.model.text = current_dir.to_str().unwrap().to_string();
+        lbl_path.model.text_base.text = current_dir.to_str().map(|str| str.to_string());
 
         let id = Uuid::new_v4();
         let my_path = path.iter().cloned().chain(once(id.clone())).collect();
@@ -56,7 +53,7 @@ impl IWidget for FileChooser {
             let current_dir = self.current_dir.parent().unwrap().to_path_buf();
             let lbl_path = self.find_by_name("lblPath").unwrap();
             let lbl_path = lbl_path.as_mut().as_any_mut().downcast_mut::<Label>().unwrap();
-            lbl_path.model.text = current_dir.to_str().unwrap().to_string();
+            lbl_path.model.text_base.text = current_dir.to_str().map(|str| str.to_string());
             self.current_dir = current_dir;
         }
     }

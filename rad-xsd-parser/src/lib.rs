@@ -8,8 +8,8 @@ mod tests {
     use crate::generate::generate;
     use crate::logical::LogicalSchema;
     use crate::models::Schema;
-    use std::fs;
     use quick_xml::de::from_str;
+    use std::fs;
 
     #[test]
     fn it_works() {

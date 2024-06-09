@@ -33,10 +33,11 @@ impl IWidget for Label {
         path.rect(0.0, 0.0, self.width as f32, self.height as f32);
         canvas.fill_path(&path, &Paint::color(Color::rgb(246, 245, 244)));
 
+        let text = self.model.text_base.text.as_ref().map(|str| str.as_str()).unwrap_or("");
         let mut paint = Paint::color(Color::black());
         paint.set_font(&[*font]);
         paint.set_font_size(FONT_SIZE);
-        canvas.fill_text(0.0, FONT_SIZE, self.model.text.as_str(), &paint).expect("Can't write");
+        canvas.fill_text(0.0, FONT_SIZE, text, &paint).expect("Can't write");
     }
 
     fn layout(&mut self, width: u32, height: u32, _canvas: &Canvas<OpenGl>, _font: &FontId) {
@@ -48,16 +49,18 @@ impl IWidget for Label {
         let mut paint = Paint::color(Color::black());
         paint.set_font(&[*font]);
         paint.set_font_size(FONT_SIZE);
-        let metrics = canvas.measure_text(0.0, 0.0, self.model.text.as_str(), &paint).unwrap();
+        let text = self.model.text_base.text.as_ref().map(|str| str.as_str()).unwrap_or("");
+        let metrics = canvas.measure_text(0.0, 0.0, text, &paint).unwrap();
         let width = metrics.width() + PADDING * 2.0;
         Size::Absolute(width as u32)
     }
 
     fn get_height(&self, canvas: &Canvas<OpenGl>, font: &FontId) -> Size {
+        let text = self.model.text_base.text.as_ref().map(|str| str.as_str()).unwrap_or("");
         let mut paint = Paint::color(Color::black());
         paint.set_font(&[*font]);
         paint.set_font_size(FONT_SIZE);
-        let metrics = canvas.measure_text(0.0, 0.0, self.model.text_base.text.as_str(), &paint).unwrap();
+        let metrics = canvas.measure_text(0.0, 0.0, text, &paint).unwrap();
         let width = metrics.height() + PADDING * 2.0;
         Size::Absolute(width as u32)
     }
@@ -81,7 +84,7 @@ impl IWidget for Label {
     }
 
     fn get_name(&self) -> Option<&str> {
-        self.model.name.as_deref()
+        self.model.ui_component.id.as_deref()
     }
 
     fn get_children(&self) -> Iter<'_, PositionedWidget> {

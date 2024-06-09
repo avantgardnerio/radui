@@ -1,10 +1,8 @@
 use std::slice::{Iter, IterMut};
 use uuid::Uuid;
 
-use yaserde::de::from_str;
-
 use radui::events::{Signal, SignalType};
-use radui::generated::models::Windows;
+use radui::generated::models::WindowedApplication;
 use radui::geom::Bounds2d;
 use radui::widgets;
 use radui::widgets::file_chooser::FileChooser;
@@ -22,7 +20,7 @@ impl ParquetViewerWindow {
     pub fn new() -> Self {
         let bytes = include_bytes!("../resources/app.xml");
         let content = String::from_utf8_lossy(bytes);
-        let mut windows: Windows = from_str(&content).unwrap();
+        let mut windows: WindowedApplication = from_str(&content).unwrap();
 
         let idx = windows.window.iter().position(|w| w.name == "appWindow").unwrap();
         let win = windows.window.remove(idx);

@@ -1,10 +1,10 @@
-use std::fs;
-use std::fs::OpenOptions;
-use std::io::Write;
 use quick_xml::de::from_str;
 use rad_xsd_parser::generate::generate;
 use rad_xsd_parser::logical::LogicalSchema;
 use rad_xsd_parser::models::Schema;
+use std::fs;
+use std::fs::OpenOptions;
+use std::io::Write;
 
 fn main() {
     let input = "resources/mxml.xsd";

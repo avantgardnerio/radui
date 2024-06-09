@@ -34,7 +34,7 @@ fn main() {
 
     // convert to mem
     let mut export = HashSet::<String>::new();
-    let class_names = ["VBox", "HBox", "Label", "DataGrid"];
+    let class_names = ["VBox", "HBox", "Label", "DataGrid", "TitleWindow", "WindowedApplication"];
     for class_name in class_names {
         let _ = add_class(class_name, &mut classes, &mut export);
     }
@@ -94,9 +94,7 @@ fn main() {
     schema.schema_elements.push(SchemaElement::ComplexType(typ));
     let group = SchemaElement::Group(Group {
         name: Some("Components".to_string()),
-        choice: Some(Choice {
-            options: Some(group),
-        }),
+        choice: Some(Choice { options: Some(group) }),
         reference: None,
     });
     schema.schema_elements.push(group);

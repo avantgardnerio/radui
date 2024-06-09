@@ -9,42 +9,6 @@
 		</complexContent>
 	</complexType>
 	<element name="VBox" type="mx:IVBox"/>
-	<complexType mixed="false" name="IContainer">
-		<complexContent>
-			<extension base="mx:IUIComponent">
-				<sequence minOccurs="0" maxOccurs="unbounded">
-					<group ref="mx:Components"/>
-				</sequence>
-				<attribute name="forceClipping" type="string"/>
-				<attribute name="verticalScrollPolicy" type="string"/>
-				<attribute name="verticalScrollBar" type="string"/>
-				<attribute name="label" type="string"/>
-				<attribute name="clipContent" type="string"/>
-				<attribute name="verticalScrollPosition" type="string"/>
-			</extension>
-		</complexContent>
-	</complexType>
-	<element name="Container" type="mx:IContainer"/>
-	<complexType mixed="false" name="IHBox">
-		<complexContent>
-			<extension base="mx:IBox">
-				<sequence minOccurs="0" maxOccurs="unbounded">
-					<group ref="mx:Components"/>
-				</sequence>
-			</extension>
-		</complexContent>
-	</complexType>
-	<element name="HBox" type="mx:IHBox"/>
-	<complexType mixed="false" name="ILabel">
-		<complexContent>
-			<extension base="mx:ITextBase">
-				<sequence minOccurs="0" maxOccurs="unbounded">
-					<group ref="mx:Components"/>
-				</sequence>
-			</extension>
-		</complexContent>
-	</complexType>
-	<element name="Label" type="mx:ILabel"/>
 	<complexType mixed="false" name="IBox">
 		<complexContent>
 			<extension base="mx:IContainer">
@@ -56,23 +20,113 @@
 		</complexContent>
 	</complexType>
 	<element name="Box" type="mx:IBox"/>
-	<complexType mixed="false" name="IDataGrid">
+	<complexType mixed="false" name="ITitleWindow">
 		<complexContent>
-			<extension base="mx:ISkinnableContainerBase">
+			<extension base="mx:IPanel">
 				<sequence minOccurs="0" maxOccurs="unbounded">
 					<group ref="mx:Components"/>
 				</sequence>
-				<attribute name="variableRowHeight" type="string"/>
-				<attribute name="doubleClickMode" type="string"/>
-				<attribute name="editable" type="string"/>
-				<attribute name="imeMode" type="string"/>
-				<attribute name="rowHeight" type="string"/>
-				<attribute name="typicalItem" type="string"/>
-				<attribute name="tabIndex" type="string"/>
 			</extension>
 		</complexContent>
 	</complexType>
-	<element name="DataGrid" type="mx:IDataGrid"/>
+	<element name="TitleWindow" type="mx:ITitleWindow"/>
+	<complexType mixed="false" name="ISkinnableComponent">
+		<complexContent>
+			<extension base="mx:IUIComponent">
+				<sequence minOccurs="0" maxOccurs="unbounded">
+					<group ref="mx:Components"/>
+				</sequence>
+				<attribute name="mouseChildren" type="string"/>
+				<attribute name="skinDestructionPolicy" type="string"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="SkinnableComponent" type="mx:ISkinnableComponent"/>
+	<complexType mixed="false" name="ILabel">
+		<complexContent>
+			<extension base="mx:ITextBase">
+				<sequence minOccurs="0" maxOccurs="unbounded">
+					<group ref="mx:Components"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="Label" type="mx:ILabel"/>
+	<complexType mixed="false" name="IFlexSprite">
+		<complexContent>
+			<extension base="mx:ISprite">
+				<sequence minOccurs="0" maxOccurs="unbounded">
+					<group ref="mx:Components"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="FlexSprite" type="mx:IFlexSprite"/>
+	<complexType mixed="false" name="IUIComponent">
+		<complexContent>
+			<extension base="mx:IFlexSprite">
+				<sequence minOccurs="0" maxOccurs="unbounded">
+					<group ref="mx:Components"/>
+				</sequence>
+				<attribute name="left" type="string"/>
+				<attribute name="x" type="string"/>
+				<attribute name="uid" type="string"/>
+				<attribute name="y" type="string"/>
+				<attribute name="right" type="string"/>
+				<attribute name="height" type="string"/>
+				<attribute name="isPopUp" type="string"/>
+				<attribute name="id" type="string"/>
+				<attribute name="width" type="string"/>
+				<attribute name="top" type="string"/>
+				<attribute name="bottom" type="string"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="UIComponent" type="mx:IUIComponent"/>
+	<complexType mixed="false" name="IPanel">
+		<complexContent>
+			<extension base="mx:ISkinnableContainer">
+				<sequence minOccurs="0" maxOccurs="unbounded">
+					<group ref="mx:Components"/>
+				</sequence>
+				<attribute name="controlBarContent" type="string"/>
+				<attribute name="title" type="string"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="Panel" type="mx:IPanel"/>
+	<complexType mixed="false" name="IContainer">
+		<complexContent>
+			<extension base="mx:IUIComponent">
+				<sequence minOccurs="0" maxOccurs="unbounded">
+					<group ref="mx:Components"/>
+				</sequence>
+				<attribute name="label" type="string"/>
+				<attribute name="verticalScrollPosition" type="string"/>
+				<attribute name="forceClipping" type="string"/>
+				<attribute name="verticalScrollPolicy" type="string"/>
+				<attribute name="verticalScrollBar" type="string"/>
+				<attribute name="clipContent" type="string"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="Container" type="mx:IContainer"/>
+	<complexType mixed="false" name="IWindowedApplication">
+		<complexContent>
+			<extension base="mx:IApplication">
+				<sequence minOccurs="0" maxOccurs="unbounded">
+					<group ref="mx:Components"/>
+				</sequence>
+				<attribute name="showStatusBar" type="string"/>
+				<attribute name="alwaysInFront" type="string"/>
+				<attribute name="backgroundFrameRate" type="string"/>
+				<attribute name="menu" type="string"/>
+				<attribute name="status" type="string"/>
+				<attribute name="title" type="string"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="WindowedApplication" type="mx:IWindowedApplication"/>
 	<complexType mixed="false" name="ITextBase">
 		<complexContent>
 			<extension base="mx:IUIComponent">
@@ -85,6 +139,34 @@
 		</complexContent>
 	</complexType>
 	<element name="TextBase" type="mx:ITextBase"/>
+	<complexType mixed="false" name="ISkinnableContainer">
+		<complexContent>
+			<extension base="mx:ISkinnableContainerBase">
+				<sequence minOccurs="0" maxOccurs="unbounded">
+					<group ref="mx:Components"/>
+				</sequence>
+				<attribute name="mxmlContent" type="string"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="SkinnableContainer" type="mx:ISkinnableContainer"/>
+	<complexType mixed="false" name="IApplication">
+		<complexContent>
+			<extension base="mx:ISkinnableContainer">
+				<sequence minOccurs="0" maxOccurs="unbounded">
+					<group ref="mx:Components"/>
+				</sequence>
+				<attribute name="applicationDPI" type="string"/>
+				<attribute name="colorCorrection" type="string"/>
+				<attribute name="runtimeDPIProvider" type="string"/>
+				<attribute name="tabIndex" type="string"/>
+				<attribute name="viewSourceURL" type="string"/>
+				<attribute name="controlBarContent" type="string"/>
+				<attribute name="splashScreenImage" type="string"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="Application" type="mx:IApplication"/>
 	<complexType mixed="false" name="ISkinnableContainerBase">
 		<complexContent>
 			<extension base="mx:ISkinnableComponent">
@@ -95,63 +177,52 @@
 		</complexContent>
 	</complexType>
 	<element name="SkinnableContainerBase" type="mx:ISkinnableContainerBase"/>
-	<complexType mixed="false" name="IFlexSprite">
+	<complexType mixed="false" name="IHBox">
 		<complexContent>
-			<extension base="mx:ISprite">
+			<extension base="mx:IBox">
 				<sequence minOccurs="0" maxOccurs="unbounded">
 					<group ref="mx:Components"/>
 				</sequence>
 			</extension>
 		</complexContent>
 	</complexType>
-	<element name="FlexSprite" type="mx:IFlexSprite"/>
-	<complexType mixed="false" name="ISkinnableComponent">
+	<element name="HBox" type="mx:IHBox"/>
+	<complexType mixed="false" name="IDataGrid">
 		<complexContent>
-			<extension base="mx:IUIComponent">
+			<extension base="mx:ISkinnableContainerBase">
 				<sequence minOccurs="0" maxOccurs="unbounded">
 					<group ref="mx:Components"/>
 				</sequence>
-				<attribute name="skinDestructionPolicy" type="string"/>
-				<attribute name="mouseChildren" type="string"/>
+				<attribute name="rowHeight" type="string"/>
+				<attribute name="editable" type="string"/>
+				<attribute name="doubleClickMode" type="string"/>
+				<attribute name="typicalItem" type="string"/>
+				<attribute name="imeMode" type="string"/>
+				<attribute name="variableRowHeight" type="string"/>
+				<attribute name="tabIndex" type="string"/>
 			</extension>
 		</complexContent>
 	</complexType>
-	<element name="SkinnableComponent" type="mx:ISkinnableComponent"/>
-	<complexType mixed="false" name="IUIComponent">
-		<complexContent>
-			<extension base="mx:IFlexSprite">
-				<sequence minOccurs="0" maxOccurs="unbounded">
-					<group ref="mx:Components"/>
-				</sequence>
-				<attribute name="x" type="string"/>
-				<attribute name="width" type="string"/>
-				<attribute name="left" type="string"/>
-				<attribute name="top" type="string"/>
-				<attribute name="isPopUp" type="string"/>
-				<attribute name="height" type="string"/>
-				<attribute name="uid" type="string"/>
-				<attribute name="bottom" type="string"/>
-				<attribute name="id" type="string"/>
-				<attribute name="y" type="string"/>
-				<attribute name="right" type="string"/>
-			</extension>
-		</complexContent>
-	</complexType>
-	<element name="UIComponent" type="mx:IUIComponent"/>
+	<element name="DataGrid" type="mx:IDataGrid"/>
 	<complexType mixed="false" name="ISprite"/>
 	<group name="Components">
 		<choice>
 			<element name="VBox" type="mx:IVBox"/>
-			<element name="Container" type="mx:IContainer"/>
-			<element name="HBox" type="mx:IHBox"/>
-			<element name="Label" type="mx:ILabel"/>
 			<element name="Box" type="mx:IBox"/>
-			<element name="DataGrid" type="mx:IDataGrid"/>
-			<element name="TextBase" type="mx:ITextBase"/>
-			<element name="SkinnableContainerBase" type="mx:ISkinnableContainerBase"/>
-			<element name="FlexSprite" type="mx:IFlexSprite"/>
+			<element name="TitleWindow" type="mx:ITitleWindow"/>
 			<element name="SkinnableComponent" type="mx:ISkinnableComponent"/>
+			<element name="Label" type="mx:ILabel"/>
+			<element name="FlexSprite" type="mx:IFlexSprite"/>
 			<element name="UIComponent" type="mx:IUIComponent"/>
+			<element name="Panel" type="mx:IPanel"/>
+			<element name="Container" type="mx:IContainer"/>
+			<element name="WindowedApplication" type="mx:IWindowedApplication"/>
+			<element name="TextBase" type="mx:ITextBase"/>
+			<element name="SkinnableContainer" type="mx:ISkinnableContainer"/>
+			<element name="Application" type="mx:IApplication"/>
+			<element name="SkinnableContainerBase" type="mx:ISkinnableContainerBase"/>
+			<element name="HBox" type="mx:IHBox"/>
+			<element name="DataGrid" type="mx:IDataGrid"/>
 		</choice>
 	</group>
 </schema>

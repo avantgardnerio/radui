@@ -1,5 +1,5 @@
 use femtovg::renderer::OpenGl;
-use femtovg::{Canvas, Color, FontId, Paint, Path};
+use femtovg::{Canvas, FontId, Path};
 use std::slice::{Iter, IterMut};
 use uuid::Uuid;
 
@@ -17,7 +17,7 @@ pub trait IWindow: IWidget {
 
 pub struct Window {
     pub id: Uuid,
-    pub model: models::Window,
+    pub model: models::WindowedApplication,
     pub children: Vec<PositionedWidget>,
     pub popups: Vec<PositionedWidget>,
     pub width: u32,
@@ -26,7 +26,7 @@ pub struct Window {
 
 impl IWindow for Window {
     fn get_title(&self) -> &str {
-        self.model.title.as_str()
+        self.model.title.as_ref().map(|str| str.as_str()).unwrap_or("")
     }
 
     fn get_popups_mut(&mut self) -> IterMut<'_, PositionedWidget> {
@@ -40,7 +40,7 @@ impl IWindow for Window {
 
 impl IWidget for Window {
     fn get_name(&self) -> Option<&str> {
-        Some(self.model.name.as_ref())
+        self.model.ui_component.id.as_ref().map(|str| str.as_str())
     }
 
     fn get_id(&self) -> &Uuid {
@@ -86,8 +86,8 @@ impl IWidget for Window {
     }
 }
 
-impl From<models::Window> for Window {
-    fn from(mut value: models::Window) -> Self {
+impl From<models::WindowedApplication> for Window {
+    fn from(mut value: models::WindowedApplication) -> Self {
         let child = value.child.take();
         let children = child.map_or(vec![], |c| {
             let widget: Box<dyn IWidget> = match *c.widget_choice {

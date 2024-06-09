@@ -13,7 +13,7 @@ use crate::widgets::{IWidget, PositionedWidget};
 
 pub struct HBox {
     pub id: Uuid,
-    pub model: HBox,
+    pub model: models::HBox,
     pub children: Vec<PositionedWidget>,
     pub width: u32,
     pub height: u32,
