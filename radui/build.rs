@@ -19,14 +19,17 @@ fn main() {
     let logical: LogicalSchema = schema.into();
     let code = generate(logical);
 
-    // let mut file = OpenOptions::new().write(true).truncate(true).create(true).open(dest_path).unwrap();
+    let mut file = OpenOptions::new().write(true).truncate(true).create(true).open(dest_path).unwrap();
 
     let imports = r#"use serde_derive::{Deserialize, Serialize};
+use std::fmt;
+use serde::{de, Deserializer};
+use serde::de::{MapAccess, Visitor};
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug, Clone, Default)]
 pub struct Sprite {}
-
+                      
 "#;
-    // file.write_all(imports.as_bytes()).unwrap();
-    // file.write_all(code.as_bytes()).unwrap();
+    file.write_all(imports.as_bytes()).unwrap();
+    file.write_all(code.as_bytes()).unwrap();
 }
