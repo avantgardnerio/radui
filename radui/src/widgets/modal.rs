@@ -31,9 +31,8 @@ impl IWidget for Modal {
 
 impl From<models::TitleWindow> for Modal {
     fn from(mut value: models::TitleWindow) -> Self {
-        let children = if let Some(children) = &mut value.children {
-            println!("childrec={}", children.len());
-            children
+            println!("childrec={}", value.children.len());
+            let children = value.children
                 .drain(..)
                 .map(|child| {
                     let widget: Box<dyn IWidget> = match child {
@@ -46,10 +45,7 @@ impl From<models::TitleWindow> for Modal {
                     let bounds = [0, 0, 0, 0];
                     PositionedWidget { bounds, widget }
                 })
-                .collect::<Vec<_>>()
-        } else {
-            vec![]
-        };
+                .collect::<Vec<_>>();
         value.ui_component.uid = Some(Uuid::new_v4().to_string());
         Modal { model: value, children, width: 0, height: 0 }
     }

@@ -14,19 +14,19 @@ fn main() {
     let dest_path = "src/generated/models.rs";
     // println!("cargo:warning=generating {}", dest_path); // example log statement
 
-    let content = fs::read_to_string(input).expect("Unable to read file");
+    let content = fs::read_to_string(input).expect("Unable to  read file");
     let schema: Schema = from_str(&*content).unwrap();
     let logical: LogicalSchema = schema.into();
     let code = generate(logical);
 
-    let mut file = OpenOptions::new().write(true).truncate(true).create(true).open(dest_path).unwrap();
+    // let mut file = OpenOptions::new().write(true).truncate(true).create(true).open(dest_path).unwrap();
 
-    let imports = r#"use serde::Deserialize;
+    let imports = r#"use serde_derive::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
 pub struct Sprite {}
 
 "#;
-    file.write_all(imports.as_bytes()).unwrap();
-    file.write_all(code.as_bytes()).unwrap();
+    // file.write_all(imports.as_bytes()).unwrap();
+    // file.write_all(code.as_bytes()).unwrap();
 }

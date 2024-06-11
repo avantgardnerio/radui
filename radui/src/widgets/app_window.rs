@@ -87,10 +87,8 @@ impl IWidget for AppWindow {
 
 impl From<models::WindowedApplication> for AppWindow {
     fn from(mut value: models::WindowedApplication) -> Self {
-        let children = if let Some(children) = &mut value.children {
-            println!("childrec={}", children.len());
-            children
-                .drain(..)
+            println!("childrec={}", value.children.len());
+            let children = value.children.drain(..)
                 .map(|child| {
                     let widget: Box<dyn IWidget> = match child {
                         Components::VBox(c) => c.into(),
@@ -102,10 +100,7 @@ impl From<models::WindowedApplication> for AppWindow {
                     let bounds = [0, 0, 0, 0];
                     PositionedWidget { bounds, widget }
                 })
-                .collect::<Vec<_>>()
-        } else {
-            vec![]
-        };
+                .collect::<Vec<_>>();
         value.ui_component.uid = Some(Uuid::new_v4().to_string());
         AppWindow { model: value, children, width: 0, height: 0, popups: vec![] }
     }

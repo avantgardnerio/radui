@@ -38,8 +38,11 @@ pub fn generate(schema: LogicalSchema) -> String {
                 return None;
             };
             let typ = typ.strip_prefix("mx:").unwrap().to_string();
-            let typ = schema.types.get(&typ).expect(format!("Can't find complexType: {typ}").as_str());
             let mut attrs = vec![];
+            if el.name.as_ref().unwrap().as_str() == "FlexSprite" {
+                // attrs.push(format!("#[serde(default)]\n\tpub children: Vec<Components>,"));
+            }
+            let typ = schema.types.get(&typ).expect(format!("Can't find complexType: {typ}").as_str());
             let Some(content) = &typ.complex_content else {
                 return None;
             };
@@ -83,7 +86,7 @@ pub fn generate(schema: LogicalSchema) -> String {
                     _ => break,
                 };
             }
-            attrs.push(format!("#[serde(rename = \"$value\")]\n\tpub children: Option<Vec<Components>>,"));
+            attrs.push(format!("#[serde(default)]\n\tpub children: Vec<Components>,"));
 
             let attrs = attrs.join("\n\t");
             let mut name = el.name.as_ref().unwrap().as_str();

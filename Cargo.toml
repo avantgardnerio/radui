@@ -18,3 +18,4 @@ homepage = "https://github.com/avantgardnerio/radui"
 radui = { path = "radui" }
 winit = "0.28.1"
 uuid = { version = "1.8.0", features = ["v4"] }
+quick-xml = {version = "0.32.0", features = ["serialize"]}
