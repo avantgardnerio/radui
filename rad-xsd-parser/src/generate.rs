@@ -2,6 +2,7 @@ use crate::logical::LogicalSchema;
 use crate::models::{ComplexContentEl, ComplexType, Element, ExtensionEl};
 use convert_case::{Case, Casing};
 use std::collections::HashMap;
+use quick_xml::se::to_string;
 
 pub fn generate(schema: LogicalSchema) -> String {
     let groups = schema
@@ -190,7 +191,9 @@ pub fn generate_deserializer(schema: &LogicalSchema, el: &Element) -> String {
         str.push_str(format!("\t\t\t\t\t\t\"@{field}\" => strct.{snake} = Some(map.next_value()?),\n").as_str());
     }
     str.push_str(
-        r#"                        _ => { let _: de::IgnoredAny = map.next_value()?; },
+        r#"
+                        "$value" => strct.children = map.next_value()?,
+                        _ => { let _: de::IgnoredAny = map.next_value()?; },
                     }
                 }
                 Ok(strct)
@@ -198,6 +201,7 @@ pub fn generate_deserializer(schema: &LogicalSchema, el: &Element) -> String {
         }
         "#,
     );
+    fields.insert("$value".to_string(), "".to_string());
     let fields = fields.iter().map(|(k, _v)| format!("\"{k}\"")).collect::<Vec<_>>().join(",\n\t\t\t");
     str.push_str(format!("const FIELDS: &[&str] = &[\n\t\t\t{fields}\n\t\t];\n").as_str());
     str.push_str(format!("\t\tdeserializer.deserialize_struct(\"{name}\", FIELDS, MyVisitor)").as_str());
