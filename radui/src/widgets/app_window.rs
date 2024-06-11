@@ -39,11 +39,27 @@ impl IAppWindow for AppWindow {
 
 impl IWidget for AppWindow {
     fn get_name(&self) -> Option<&str> {
-        self.model.ui_component.id.as_ref().map(|str| str.as_str())
+        self.model
+            .application
+            .skinnable_container
+            .skinnable_container_base
+            .skinnable_component
+            .ui_component
+            .id
+            .as_ref()
+            .map(|str| str.as_str())
     }
 
     fn get_id(&self) -> &String {
-        self.model.ui_component.uid.as_ref().unwrap()
+        self.model
+            .application
+            .skinnable_container
+            .skinnable_container_base
+            .skinnable_component
+            .ui_component
+            .uid
+            .as_ref()
+            .unwrap()
     }
 
     fn layout(&mut self, width: u32, height: u32, canvas: &Canvas<OpenGl>, font: &FontId) {
@@ -87,21 +103,24 @@ impl IWidget for AppWindow {
 
 impl From<models::WindowedApplication> for AppWindow {
     fn from(mut value: models::WindowedApplication) -> Self {
-            println!("childrec={}", value.children.len());
-            let children = value.children.drain(..)
-                .map(|child| {
-                    let widget: Box<dyn IWidget> = match child {
-                        Components::VBox(c) => c.into(),
-                        Components::HBox(c) => c.into(),
-                        Components::Label(c) => c.into(),
-                        Components::DataGrid(c) => c.into(),
-                        _ => unimplemented!("Not instantiable"),
-                    };
-                    let bounds = [0, 0, 0, 0];
-                    PositionedWidget { bounds, widget }
-                })
-                .collect::<Vec<_>>();
-        value.ui_component.uid = Some(Uuid::new_v4().to_string());
+        println!("childrec={}", value.children.len());
+        let children = value
+            .children
+            .drain(..)
+            .map(|child| {
+                let widget: Box<dyn IWidget> = match child {
+                    Components::VBox(c) => c.into(),
+                    Components::HBox(c) => c.into(),
+                    Components::Label(c) => c.into(),
+                    Components::DataGrid(c) => c.into(),
+                    _ => unimplemented!("Not instantiable"),
+                };
+                let bounds = [0, 0, 0, 0];
+                PositionedWidget { bounds, widget }
+            })
+            .collect::<Vec<_>>();
+        value.application.skinnable_container.skinnable_container_base.skinnable_component.ui_component.uid =
+            Some(Uuid::new_v4().to_string());
         AppWindow { model: value, children, width: 0, height: 0, popups: vec![] }
     }
 }

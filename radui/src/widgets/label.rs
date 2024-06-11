@@ -83,7 +83,7 @@ impl IWidget for Label {
     }
 
     fn get_name(&self) -> Option<&str> {
-        self.model.ui_component.id.as_deref()
+        self.model.text_base.ui_component.id.as_deref()
     }
 
     fn get_children(&self) -> Iter<'_, PositionedWidget> {
@@ -95,13 +95,13 @@ impl IWidget for Label {
     }
 
     fn get_id(&self) -> &String {
-        self.model.ui_component.uid.as_ref().unwrap()
+        self.model.text_base.ui_component.uid.as_ref().unwrap()
     }
 }
 
 impl From<models::Label> for Box<dyn IWidget> {
     fn from(mut value: models::Label) -> Self {
-        value.ui_component.uid = Some(Uuid::new_v4().to_string());
+        value.text_base.ui_component.uid = Some(Uuid::new_v4().to_string());
         let me = Label { model: value, width: 0, height: 0, children: vec![], listeners: Default::default() };
         Box::new(me)
     }

@@ -71,15 +71,19 @@ pub struct Element {
     #[serde(rename = "@name")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+
     #[serde(rename = "@ref")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
+
     #[serde(rename = "@type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub typ: Option<String>,
+
     #[serde(rename = "@isAbstract")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub is_abstract: Option<bool>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub substitution_group: Option<String>,
 }
@@ -110,10 +114,13 @@ pub struct AttributeGroup {
 pub struct ComplexType {
     #[serde(rename = "@mixed")]
     pub mixed: bool,
+
     #[serde(rename = "@name")]
     pub name: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub complex_content: Option<ComplexContent>,
+
     #[serde(rename = "$value")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub value: Option<Vec<ComplexTypeEl>>,

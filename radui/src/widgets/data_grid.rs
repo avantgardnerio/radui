@@ -28,11 +28,20 @@ impl IWidget for DataGrid {
     }
 
     fn get_height(&self, _canvas: &Canvas<OpenGl>, _font: &FontId) -> Size {
-        self.model.ui_component.height.as_ref().map(|h| h.as_str()).unwrap_or("100%").parse().unwrap()
+        self.model
+            .skinnable_container_base
+            .skinnable_component
+            .ui_component
+            .height
+            .as_ref()
+            .map(|h| h.as_str())
+            .unwrap_or("100%")
+            .parse()
+            .unwrap()
     }
 
     fn get_name(&self) -> Option<&str> {
-        self.model.ui_component.id.as_deref()
+        self.model.skinnable_container_base.skinnable_component.ui_component.id.as_deref()
     }
 
     fn get_children(&self) -> Iter<'_, PositionedWidget> {
@@ -44,13 +53,13 @@ impl IWidget for DataGrid {
     }
 
     fn get_id(&self) -> &String {
-        self.model.ui_component.uid.as_ref().unwrap()
+        self.model.skinnable_container_base.skinnable_component.ui_component.uid.as_ref().unwrap()
     }
 }
 
 impl From<models::DataGrid> for Box<dyn IWidget> {
     fn from(mut value: models::DataGrid) -> Self {
-        value.ui_component.uid = Some(Uuid::new_v4().to_string());
+        value.skinnable_container_base.skinnable_component.ui_component.uid = Some(Uuid::new_v4().to_string());
         let me = DataGrid { model: value, width: 0, height: 0, children: vec![] };
         Box::new(me)
     }

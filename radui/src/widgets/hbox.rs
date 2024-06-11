@@ -106,27 +106,29 @@ impl IWidget for HBox {
     }
 
     fn get_id(&self) -> &String {
-        self.model.ui_component.uid.as_ref().unwrap()
+        self.model.mx_box.container.ui_component.uid.as_ref().unwrap()
     }
 }
 
 impl From<models::HBox> for Box<dyn IWidget> {
     fn from(mut value: models::HBox) -> Self {
-            println!("childrec={}", value.children.len());
-            let children = value.children.drain(..)
-                .map(|child| {
-                    let widget: Box<dyn IWidget> = match child {
-                        Components::VBox(c) => c.into(),
-                        Components::HBox(c) => c.into(),
-                        Components::Label(c) => c.into(),
-                        Components::DataGrid(c) => c.into(),
-                        _ => unimplemented!("Not instantiable"),
-                    };
-                    let bounds = [0, 0, 0, 0];
-                    PositionedWidget { bounds, widget }
-                })
-                .collect::<Vec<_>>();
-        value.ui_component.uid = Some(Uuid::new_v4().to_string());
+        println!("childrec={}", value.children.len());
+        let children = value
+            .children
+            .drain(..)
+            .map(|child| {
+                let widget: Box<dyn IWidget> = match child {
+                    Components::VBox(c) => c.into(),
+                    Components::HBox(c) => c.into(),
+                    Components::Label(c) => c.into(),
+                    Components::DataGrid(c) => c.into(),
+                    _ => unimplemented!("Not instantiable"),
+                };
+                let bounds = [0, 0, 0, 0];
+                PositionedWidget { bounds, widget }
+            })
+            .collect::<Vec<_>>();
+        value.mx_box.container.ui_component.uid = Some(Uuid::new_v4().to_string());
         let me = HBox { model: value, children, width: 0, height: 0 };
         Box::new(me)
     }
