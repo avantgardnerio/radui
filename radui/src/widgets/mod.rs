@@ -17,7 +17,7 @@ pub mod label;
 pub mod modal;
 pub mod vbox;
 
-pub trait IWidget: AsAny {
+pub trait IUIComponent: AsAny {
     fn get_x(&self) -> f64;
 
     fn get_y(&self) -> f64;
@@ -60,9 +60,9 @@ pub trait IWidget: AsAny {
 
     fn get_id(&self) -> &String;
 
-    fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IWidget>>;
+    fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IUIComponent>>;
 
-    fn get_children(&self) -> Iter<'_, Box<dyn IWidget>>;
+    fn get_children(&self) -> Iter<'_, Box<dyn IUIComponent>>;
 
     fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId) {
         for widget in self.get_children() {
@@ -76,7 +76,9 @@ pub trait IWidget: AsAny {
     }
 
     fn layout(&mut self, width: u32, height: u32, canvas: &Canvas<OpenGl>, font: &FontId) {
-        self.get_children_mut().for_each(|c| c.layout(width, height, canvas, font));
+        self.get_children_mut().for_each(|c| {
+            c.layout(width, height, canvas, font)
+        });
     }
 
     fn handle_event(&mut self, path: &mut Vec<String>, event: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
@@ -96,7 +98,7 @@ pub trait IWidget: AsAny {
     ) {
     }
 
-    fn find_by_name(&mut self, id: &str) -> Option<&mut Box<dyn IWidget>> {
+    fn find_by_name(&mut self, id: &str) -> Option<&mut Box<dyn IUIComponent>> {
         for widget in self.get_children_mut() {
             if Some(id) == widget.get_name() {
                 return Some(widget);

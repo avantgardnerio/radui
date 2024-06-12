@@ -10,16 +10,16 @@ use crate::events::{Signal, SignalType};
 use crate::generated::models;
 use crate::generated::models::Components;
 use crate::geom::{Point2d, Size};
-use crate::widgets::IWidget;
+use crate::widgets::IUIComponent;
 
 pub struct Vbox {
     pub model: models::VBox,
-    pub children: Vec<Box<dyn IWidget>>,
+    pub children: Vec<Box<dyn IUIComponent>>,
     pub width: u32,
     pub height: u32,
 }
 
-impl IWidget for Vbox {
+impl IUIComponent for Vbox {
     fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId) {
         for (idx, widget) in self.children.iter().enumerate() {
             let top = widget.get_y();
@@ -96,11 +96,11 @@ impl IWidget for Vbox {
         None
     }
 
-    fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IWidget>> {
+    fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IUIComponent>> {
         self.children.iter_mut()
     }
 
-    fn get_children(&self) -> Iter<'_, Box<dyn IWidget>> {
+    fn get_children(&self) -> Iter<'_, Box<dyn IUIComponent>> {
         self.children.iter()
     }
 
@@ -133,14 +133,14 @@ impl IWidget for Vbox {
     }
 }
 
-impl From<models::VBox> for Box<dyn IWidget> {
+impl From<models::VBox> for Box<dyn IUIComponent> {
     fn from(mut value: models::VBox) -> Self {
         println!("childrec={}", value.children.len());
         let children = value
             .children
             .drain(..)
             .map(|child| {
-                let widget: Box<dyn IWidget> = match child {
+                let widget: Box<dyn IUIComponent> = match child {
                     Components::VBox(c) => c.into(),
                     Components::HBox(c) => c.into(),
                     Components::Label(c) => c.into(),

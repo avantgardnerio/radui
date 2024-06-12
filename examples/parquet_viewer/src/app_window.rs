@@ -7,12 +7,12 @@ use radui::generated::models::WindowedApplication;
 use radui::widgets;
 use radui::widgets::app_window::IAppWindow;
 use radui::widgets::file_chooser::FileChooser;
-use radui::widgets::IWidget;
+use radui::widgets::IUIComponent;
 
 pub struct ParquetViewerWindow {
     pub id: String,
-    pub children: Vec<Box<dyn IWidget>>,
-    pub popups: Vec<Box<dyn IWidget>>,
+    pub children: Vec<Box<dyn IUIComponent>>,
+    pub popups: Vec<Box<dyn IUIComponent>>,
     pub lbl_open_id: String,
 }
 
@@ -34,7 +34,7 @@ impl ParquetViewerWindow {
     }
 }
 
-impl IWidget for ParquetViewerWindow {
+impl IUIComponent for ParquetViewerWindow {
     fn handle_own_event(
         &mut self,
         path: &mut Vec<String>,
@@ -54,11 +54,11 @@ impl IWidget for ParquetViewerWindow {
         Some("pvApp")
     }
 
-    fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IWidget>> {
+    fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IUIComponent>> {
         self.children.iter_mut()
     }
 
-    fn get_children(&self) -> Iter<'_, Box<dyn IWidget>> {
+    fn get_children(&self) -> Iter<'_, Box<dyn IUIComponent>> {
         self.children.iter()
     }
 
@@ -96,11 +96,11 @@ impl IAppWindow for ParquetViewerWindow {
         "Parquet Viewer"
     }
 
-    fn get_popups_mut(&mut self) -> IterMut<'_, Box<dyn IWidget>> {
+    fn get_popups_mut(&mut self) -> IterMut<'_, Box<dyn IUIComponent>> {
         self.popups.iter_mut()
     }
 
-    fn get_popups(&self) -> Iter<'_, Box<dyn IWidget>> {
+    fn get_popups(&self) -> Iter<'_, Box<dyn IUIComponent>> {
         self.popups.iter()
     }
 }

@@ -9,7 +9,7 @@ use crate::events::{Signal, SignalType};
 use crate::generated::models::TitleWindow;
 use crate::widgets::label::Label;
 use crate::widgets::modal::Modal;
-use crate::widgets::IWidget;
+use crate::widgets::IUIComponent;
 
 pub struct FileChooser {
     pub name: String,
@@ -19,7 +19,7 @@ pub struct FileChooser {
     pub width: f64,
     pub height: f64,
     pub current_dir: PathBuf,
-    pub children: Vec<Box<dyn IWidget>>,
+    pub children: Vec<Box<dyn IUIComponent>>,
     pub lbl_up_id: Vec<String>,
 }
 
@@ -58,7 +58,7 @@ impl FileChooser {
     }
 }
 
-impl IWidget for FileChooser {
+impl IUIComponent for FileChooser {
     fn handle_own_event(
         &mut self,
         _path: &mut Vec<String>,
@@ -79,11 +79,11 @@ impl IWidget for FileChooser {
         Some(self.name.as_str())
     }
 
-    fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IWidget>> {
+    fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IUIComponent>> {
         self.children.iter_mut()
     }
 
-    fn get_children(&self) -> Iter<'_, Box<dyn IWidget>> {
+    fn get_children(&self) -> Iter<'_, Box<dyn IUIComponent>> {
         self.children.iter()
     }
 

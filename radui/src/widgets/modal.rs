@@ -1,17 +1,17 @@
 use crate::generated::models;
 use crate::generated::models::Components;
-use crate::widgets::IWidget;
+use crate::widgets::IUIComponent;
 use std::slice::{Iter, IterMut};
 use uuid::Uuid;
 
 pub struct Modal {
     pub model: models::TitleWindow,
-    pub children: Vec<Box<dyn IWidget>>,
+    pub children: Vec<Box<dyn IUIComponent>>,
     pub width: u32,
     pub height: u32,
 }
 
-impl IWidget for Modal {
+impl IUIComponent for Modal {
     fn get_x(&self) -> f64 {
         self.model.panel.skinnable_container.skinnable_container_base.skinnable_component.ui_component.x.unwrap()
     }
@@ -62,11 +62,11 @@ impl IWidget for Modal {
             .unwrap()
     }
 
-    fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IWidget>> {
+    fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IUIComponent>> {
         todo!()
     }
 
-    fn get_children(&self) -> Iter<'_, Box<dyn IWidget>> {
+    fn get_children(&self) -> Iter<'_, Box<dyn IUIComponent>> {
         todo!()
     }
 }
@@ -78,7 +78,7 @@ impl From<models::TitleWindow> for Modal {
             .children
             .drain(..)
             .map(|child| {
-                let widget: Box<dyn IWidget> = match child {
+                let widget: Box<dyn IUIComponent> = match child {
                     Components::VBox(c) => c.into(),
                     Components::HBox(c) => c.into(),
                     Components::Label(c) => c.into(),

@@ -9,7 +9,7 @@ use uuid::Uuid;
 use crate::events::{Signal, SignalType};
 use crate::generated::models;
 use crate::geom::Size;
-use crate::widgets::IWidget;
+use crate::widgets::IUIComponent;
 
 const FONT_SIZE: f32 = 24.0;
 const PADDING: f32 = 2.0;
@@ -18,11 +18,11 @@ pub struct Label {
     pub model: models::Label,
     pub width: u32,
     pub height: u32,
-    pub children: Vec<Box<dyn IWidget>>,
+    pub children: Vec<Box<dyn IUIComponent>>,
     pub listeners: HashMap<SignalType, Vec<Vec<String>>>,
 }
 
-impl IWidget for Label {
+impl IUIComponent for Label {
     fn add_event_listener(&mut self, typ: SignalType, id: Vec<String>) {
         self.listeners.entry(typ).and_modify(|v| v.push(id.clone())).or_insert_with(|| vec![id]);
     }
@@ -86,11 +86,11 @@ impl IWidget for Label {
         self.model.text_base.ui_component.id.as_deref()
     }
 
-    fn get_children(&self) -> Iter<'_, Box<dyn IWidget>> {
+    fn get_children(&self) -> Iter<'_, Box<dyn IUIComponent>> {
         self.children.iter()
     }
 
-    fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IWidget>> {
+    fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IUIComponent>> {
         self.children.iter_mut()
     }
 
@@ -123,7 +123,7 @@ impl IWidget for Label {
     }
 }
 
-impl From<models::Label> for Box<dyn IWidget> {
+impl From<models::Label> for Box<dyn IUIComponent> {
     fn from(mut value: models::Label) -> Self {
         value.text_base.ui_component.uid = Some(Uuid::new_v4().to_string());
         let me = Label { model: value, width: 0, height: 0, children: vec![], listeners: Default::default() };

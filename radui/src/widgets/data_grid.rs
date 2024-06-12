@@ -6,16 +6,16 @@ use uuid::Uuid;
 
 use crate::generated::models;
 use crate::geom::Size;
-use crate::widgets::IWidget;
+use crate::widgets::IUIComponent;
 
 pub struct DataGrid {
     pub model: models::DataGrid,
     pub width: u32,
     pub height: u32,
-    pub children: Vec<Box<dyn IWidget>>,
+    pub children: Vec<Box<dyn IUIComponent>>,
 }
 
-impl IWidget for DataGrid {
+impl IUIComponent for DataGrid {
     fn draw(&self, canvas: &mut Canvas<OpenGl>, _font: &FontId) {
         let mut path = Path::new();
         path.rect(0.0, 0.0, self.width as f32, self.height as f32);
@@ -39,11 +39,11 @@ impl IWidget for DataGrid {
         self.model.skinnable_container_base.skinnable_component.ui_component.id.as_deref()
     }
 
-    fn get_children(&self) -> Iter<'_, Box<dyn IWidget>> {
+    fn get_children(&self) -> Iter<'_, Box<dyn IUIComponent>> {
         self.children.iter()
     }
 
-    fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IWidget>> {
+    fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IUIComponent>> {
         self.children.iter_mut()
     }
 
@@ -76,7 +76,7 @@ impl IWidget for DataGrid {
     }
 }
 
-impl From<models::DataGrid> for Box<dyn IWidget> {
+impl From<models::DataGrid> for Box<dyn IUIComponent> {
     fn from(mut value: models::DataGrid) -> Self {
         value.skinnable_container_base.skinnable_component.ui_component.uid = Some(Uuid::new_v4().to_string());
         let me = DataGrid { model: value, width: 0, height: 0, children: vec![] };

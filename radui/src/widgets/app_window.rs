@@ -5,20 +5,20 @@ use uuid::Uuid;
 
 use crate::generated::models;
 use crate::generated::models::Components;
-use crate::widgets::IWidget;
+use crate::widgets::IUIComponent;
 
-pub trait IAppWindow: IWidget {
+pub trait IAppWindow: IUIComponent {
     fn get_title(&self) -> &str;
 
-    fn get_popups_mut(&mut self) -> IterMut<'_, Box<dyn IWidget>>;
+    fn get_popups_mut(&mut self) -> IterMut<'_, Box<dyn IUIComponent>>;
 
-    fn get_popups(&self) -> Iter<'_, Box<dyn IWidget>>;
+    fn get_popups(&self) -> Iter<'_, Box<dyn IUIComponent>>;
 }
 
 pub struct AppWindow {
     pub model: models::WindowedApplication,
-    pub children: Vec<Box<dyn IWidget>>,
-    pub popups: Vec<Box<dyn IWidget>>,
+    pub children: Vec<Box<dyn IUIComponent>>,
+    pub popups: Vec<Box<dyn IUIComponent>>,
     pub width: u32,
     pub height: u32,
 }
@@ -28,16 +28,16 @@ impl IAppWindow for AppWindow {
         self.model.title.as_ref().map(|str| str.as_str()).unwrap_or("")
     }
 
-    fn get_popups_mut(&mut self) -> IterMut<'_, Box<dyn IWidget>> {
+    fn get_popups_mut(&mut self) -> IterMut<'_, Box<dyn IUIComponent>> {
         self.popups.iter_mut()
     }
 
-    fn get_popups(&self) -> Iter<'_, Box<dyn IWidget>> {
+    fn get_popups(&self) -> Iter<'_, Box<dyn IUIComponent>> {
         self.popups.iter()
     }
 }
 
-impl IWidget for AppWindow {
+impl IUIComponent for AppWindow {
     fn get_name(&self) -> Option<&str> {
         self.model
             .application
@@ -66,14 +66,16 @@ impl IWidget for AppWindow {
         println!("window width = {width}");
         self.width = width;
         self.height = height;
-        self.get_children_mut().for_each(|c| c.layout(width, height, canvas, font));
+        self.get_children_mut().for_each(|c| {
+            c.layout(width, height, canvas, font)
+        });
     }
 
-    fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IWidget>> {
+    fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IUIComponent>> {
         self.children.iter_mut()
     }
 
-    fn get_children(&self) -> Iter<'_, Box<dyn IWidget>> {
+    fn get_children(&self) -> Iter<'_, Box<dyn IUIComponent>> {
         self.children.iter()
     }
 
@@ -136,7 +138,7 @@ impl From<models::WindowedApplication> for AppWindow {
             .children
             .drain(..)
             .map(|child| {
-                let widget: Box<dyn IWidget> = match child {
+                let widget: Box<dyn IUIComponent> = match child {
                     Components::VBox(c) => c.into(),
                     Components::HBox(c) => c.into(),
                     Components::Label(c) => c.into(),
