@@ -16,11 +16,11 @@ pub trait IUIComponent: AsAny {
     fn get_model_mut(&mut self) -> &mut models::UIComponent;
 
     fn get_x(&self) -> f64 {
-        self.get_model().x.unwrap()
+        self.get_model().x.unwrap_or(0.0)
     }
 
     fn get_y(&self) -> f64 {
-        self.get_model().y.unwrap()
+        self.get_model().y.unwrap_or(0.0)
     }
 
     fn set_x(&mut self, x: f64) {
@@ -89,7 +89,7 @@ pub trait IUIComponent: AsAny {
     //  <p>If the component has children, this method is where
     //  you would call the <code>move()</code> and <code>setActualSize()</code>
     //  methods on its children.</p>
-    fn update_display_list(&mut self, _width: f64, _height: f64, _ctx: &DrawContext) {}
+    fn update_display_list(&mut self, _width: f64, _height: f64) {}
 
     /// Validates the measured size of the component
     /// If the LayoutManager.invalidateSize() method is called with this ILayoutManagerClient,
@@ -175,15 +175,45 @@ pub trait IUIComponent: AsAny {
     }
 
     fn get_width(&self) -> f64 {
-        self.get_model().width.unwrap()
+        self.get_model().width.unwrap_or(0.0)
     }
 
     fn get_height(&self) -> f64 {
-        self.get_model().height.unwrap()
+        self.get_model().height.unwrap_or(0.0)
+    }
+
+    fn get_percent_width(&self) -> Option<f64> {
+        self.get_model().percent_width
+    }
+
+    fn get_percent_height(&self) -> Option<f64> {
+        self.get_model().percent_height
     }
 
     fn get_measured_height(&self) -> f64 {
         self.get_model().measured_height.unwrap()
+    }
+
+    fn get_min_width(&self) -> f64 {
+        self.get_model().min_width.unwrap()
+    }
+
+    fn get_min_height(&self) -> f64 {
+        self.get_model().min_height.unwrap()
+    }
+
+    fn get_explicit_or_measured_width(&self) -> f64 {
+        if let Some(explicit_width) = self.get_model().explicit_width {
+            return explicit_width;
+        }
+        self.get_measured_width()
+    }
+
+    fn get_explicit_or_measured_height(&self) -> f64 {
+        if let Some(explicit_height) = self.get_model().explicit_height {
+            return explicit_height;
+        }
+        self.get_measured_height()
     }
 
     fn add_event_listener(&mut self, _typ: SignalType, _id: Vec<String>) {

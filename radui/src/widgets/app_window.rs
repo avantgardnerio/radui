@@ -61,10 +61,10 @@ impl IUIComponent for AppWindow {
             .unwrap()
     }
 
-    fn update_display_list(&mut self, width: f64, height: f64, ctx: &DrawContext) {
+    fn update_display_list(&mut self, width: f64, height: f64) {
         println!("window width = {width}");
         self.set_actual_size(width, height);
-        self.get_children_mut().for_each(|c| c.update_display_list(width, height, ctx));
+        self.get_children_mut().for_each(|c| c.update_display_list(width, height));
     }
 
     fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IUIComponent>> {
@@ -107,7 +107,11 @@ impl IUIComponent for AppWindow {
     }
 
     fn measure(&mut self, _ctx: &mut DrawContext) {
-        todo!()
+        let model = self.get_model_mut();
+        model.measured_width = Some(model.explicit_min_width.unwrap());
+        model.measured_height = Some(model.explicit_min_height.unwrap());
+        model.measured_min_width = Some(model.explicit_min_width.unwrap());
+        model.measured_min_height = Some(model.explicit_min_height.unwrap());
     }
 }
 

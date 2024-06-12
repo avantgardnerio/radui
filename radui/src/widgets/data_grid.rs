@@ -19,7 +19,7 @@ impl IUIComponent for DataGrid {
         ctx.canvas.fill_path(&path, &Paint::color(Color::white()));
     }
 
-    fn update_display_list(&mut self, width: f64, height: f64, _ctx: &DrawContext) {
+    fn update_display_list(&mut self, width: f64, height: f64) {
         self.set_actual_size(width, height);
     }
 
@@ -48,7 +48,11 @@ impl IUIComponent for DataGrid {
     }
 
     fn measure(&mut self, _ctx: &mut DrawContext) {
-        todo!()
+        let model = self.get_model_mut();
+        model.measured_width = Some(0.0);
+        model.measured_height = Some(0.0);
+        model.measured_min_width = Some(0.0);
+        model.measured_min_height = Some(0.0);
     }
 }
 

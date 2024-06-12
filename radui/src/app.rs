@@ -66,7 +66,7 @@ impl App {
                             }
 
                             let size = window.inner_size();
-                            win.update_display_list(size.width as f64, size.height as f64, &ctx);
+                            win.update_display_list(size.width as f64, size.height as f64);
                             window.request_redraw();
                         }
                     },
@@ -80,7 +80,7 @@ impl App {
 
                     if first {
                         win.validate_size(true, &mut ctx);
-                        win.update_display_list(size.width as f64, size.height as f64, &ctx);
+                        win.update_display_list(size.width as f64, size.height as f64);
                         first = false;
                     }
 

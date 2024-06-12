@@ -1,13 +1,11 @@
-use std::iter::once;
 use std::slice::{Iter, IterMut};
 
-use itertools::{Either, Itertools};
 use uuid::Uuid;
 
 use crate::events::{Signal, SignalType};
 use crate::generated::models;
 use crate::generated::models::{Components, UIComponent};
-use crate::geom::{Point2d, Size};
+use crate::geom::Point2d;
 use crate::widgets::ui_component::{DrawContext, IUIComponent};
 
 pub struct Vbox {
@@ -32,39 +30,15 @@ impl IUIComponent for Vbox {
         }
     }
 
-    fn update_display_list(&mut self, width: f64, height: f64, ctx: &DrawContext) {
+    fn update_display_list(&mut self, width: f64, height: f64) {
         self.set_actual_size(width, height);
 
-        // calculate size of pie
-        let (abs, rel): (Vec<_>, Vec<_>) =
-            self.children.iter().map(|w| w.get_height(canvas, font)).partition_map(|h| match h {
-                Size::Absolute(n) => Either::Left(n as f32),
-                Size::Relative(n) => Either::Right(n as f32),
-            });
-        let abs_height: f32 = abs.iter().sum();
-        let rel_total: f32 = rel.iter().sum();
-        let remaining = height as f32 - abs_height;
-
-        // position tops
-        let mut cursor = 0;
-        for widget in self.children.iter_mut() {
-            widget.set_x(0.0);
-            widget.set_y(cursor as f64);
-            widget.set_width(width as f64);
-            let height = match widget.get_height(canvas, font) {
-                Size::Absolute(h) => h,
-                Size::Relative(h) => (h as f32 * remaining / rel_total) as u32,
-            };
-            cursor += height;
-        }
-
-        // layout children
-        let bottoms = self.children.iter().map(|w| w.get_y()).skip(1).chain(once(height as f64)).collect::<Vec<_>>();
-        for (idx, widget) in self.children.iter_mut().enumerate() {
-            let top = widget.get_y();
-            let height = bottoms[idx] - top;
-            widget.set_height(height);
-            widget.update_display_list(width, height, ctx);
+        let gap = 8.0;
+        let left = 0.0;
+        let mut top = 0.0;
+        for obj in self.get_children_mut() {
+            obj.moove(left, top);
+            top += obj.get_height() + gap;
         }
     }
 

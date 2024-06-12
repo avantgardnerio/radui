@@ -3,14 +3,14 @@ use std::slice::{Iter, IterMut};
 use uuid::Uuid;
 
 use radui::events::{Signal, SignalType};
-use radui::generated::models::WindowedApplication;
+use radui::generated::models::{UIComponent, WindowedApplication};
 use radui::widgets;
 use radui::widgets::app_window::IAppWindow;
 use radui::widgets::file_chooser::FileChooser;
-use radui::widgets::IUIComponent;
+use radui::widgets::ui_component::{DrawContext, IUIComponent};
 
 pub struct ParquetViewerWindow {
-    pub id: String,
+    pub model: UIComponent,
     pub children: Vec<Box<dyn IUIComponent>>,
     pub popups: Vec<Box<dyn IUIComponent>>,
     pub lbl_open_id: String,
@@ -23,14 +23,15 @@ impl ParquetViewerWindow {
         let window: WindowedApplication = from_str(&content).unwrap();
 
         let mut win: widgets::app_window::AppWindow = window.into();
+        let model =
+            win.model.application.skinnable_container.skinnable_container_base.skinnable_component.ui_component.clone();
+        let mut children = win.children.drain(..).collect::<Vec<_>>();
 
-        let id = Uuid::new_v4().to_string();
-        let label = win.find_by_name("lblOpen").unwrap();
-        label.add_event_listener(SignalType::Activated, vec![id.clone()]);
+        let label = children[0].find_by_name("lblOpen").unwrap();
+        label.add_event_listener(SignalType::Activated, vec![model.uid.clone().unwrap()]);
         let lbl_open_id = label.get_id().clone();
 
-        let widget = Box::new(win);
-        Self { id, children: vec![widget], popups: vec![], lbl_open_id }
+        Self { model, children, popups: vec![], lbl_open_id }
     }
 }
 
@@ -62,32 +63,20 @@ impl IUIComponent for ParquetViewerWindow {
         self.children.iter()
     }
 
-    fn get_id(&self) -> &String {
-        &self.id
+    fn get_model(&self) -> &UIComponent {
+        &self.model
     }
 
-    fn get_x(&self) -> f64 {
-        todo!()
+    fn get_model_mut(&mut self) -> &mut UIComponent {
+        &mut self.model
     }
 
-    fn get_y(&self) -> f64 {
-        todo!()
-    }
-
-    fn set_x(&mut self, x: f64) {
-        todo!()
-    }
-
-    fn set_y(&mut self, y: f64) {
-        todo!()
-    }
-
-    fn set_width(&mut self, width: f64) {
-        todo!()
-    }
-
-    fn set_height(&mut self, height: f64) {
-        todo!()
+    fn measure(&mut self, _ctx: &mut DrawContext) {
+        let model = self.get_model_mut();
+        model.measured_width = Some(model.explicit_min_width.unwrap());
+        model.measured_height = Some(model.explicit_min_height.unwrap());
+        model.measured_min_width = Some(model.explicit_min_width.unwrap());
+        model.measured_min_height = Some(model.explicit_min_height.unwrap());
     }
 }
 

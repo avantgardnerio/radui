@@ -3,7 +3,7 @@
         xmlns="http://www.macromedia.com/2003/mxml"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.macromedia.com/2003/mxml ../../../radui/resources/mxml.xsd"
-        percentWidth="100" percentHeight="100"
+        explicitMinWidth="1024" explicitMinHeight="768"
 >
     <HBox>
         <Label id="lblOpen" text="Open"/>

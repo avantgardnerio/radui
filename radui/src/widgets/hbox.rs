@@ -1,13 +1,11 @@
-use std::iter::once;
 use std::slice::{Iter, IterMut};
 
-use itertools::{Either, Itertools};
 use uuid::Uuid;
 
 use crate::events::{Signal, SignalType};
 use crate::generated::models;
 use crate::generated::models::{Components, UIComponent};
-use crate::geom::{Point2d, Size};
+use crate::geom::Point2d;
 use crate::widgets::ui_component::{DrawContext, IUIComponent};
 
 pub struct HBox {
@@ -32,40 +30,48 @@ impl IUIComponent for HBox {
         }
     }
 
-    fn update_display_list(&mut self, width: f64, height: f64, ctx: &DrawContext) {
-        self.set_actual_size(width, height);
+    fn measure(&mut self, ctx: &mut DrawContext) {
+        let mut min_width = 0.0;
+        let mut min_height = 0.0;
 
-        // calculate size of pie
-        let (abs, rel): (Vec<_>, Vec<_>) =
-            self.children.iter().map(|w| w.get_width(canvas, font)).partition_map(|w| match w {
-                Size::Absolute(n) => Either::Left(n as f32),
-                Size::Relative(n) => Either::Right(n as f32),
-            });
-        let abs_width: f32 = abs.iter().sum();
-        let rel_total: f32 = rel.iter().sum();
-        let remaining = width as f32 - abs_width;
+        let mut preferred_width = 0.0;
+        let mut preferred_height = 0.0;
 
-        // position tops
-        let mut cursor = 0;
-        for widget in self.children.iter_mut() {
-            widget.set_x(cursor as f64);
-            widget.set_y(0 as f64);
-            widget.set_width(height as f64);
-            let width = match widget.get_width(canvas, font) {
-                Size::Absolute(w) => w,
-                Size::Relative(w) => (w as f32 * remaining / rel_total) as u32,
-            };
-            cursor += width;
+        for child in self.get_children_mut() {
+            child.measure(ctx);
         }
 
-        // layout children
-        let rights = self.children.iter().map(|w| w.get_x()).skip(1).chain(once(width as f64)).collect::<Vec<_>>();
-        for (idx, widget) in self.children.iter_mut().enumerate() {
-            let left = widget.get_x();
-            let width = rights[idx] - left;
-            widget.set_width(width);
-            // println!("Hbox bounds={:?}", widget.bounds);
-            widget.update_display_list(width, width, ctx);
+        for child in self.get_children() {
+            let w_pref = child.get_explicit_or_measured_width();
+            let h_pref = child.get_explicit_or_measured_height();
+
+            min_width += if child.get_percent_width().is_some() { child.get_min_width() } else { w_pref };
+
+            preferred_width += w_pref;
+
+            let h = if child.get_percent_height().is_some() { child.get_min_height() } else { h_pref };
+            min_height = if h > min_height { h } else { min_height };
+            preferred_height = if h_pref > preferred_height { h_pref } else { preferred_height };
+        }
+
+        let w_padding = 8.0;
+        let model = self.get_model_mut();
+        model.measured_min_width = Some(min_width + w_padding);
+        model.measured_min_height = Some(min_height);
+        model.measured_width = Some(preferred_width + w_padding);
+        model.measured_height = Some(preferred_height);
+    }
+
+    // port of BoxLayout.updateDisplayList()
+    fn update_display_list(&mut self, width: f64, height: f64) {
+        self.set_actual_size(width, height);
+
+        let gap = 8.0;
+        let top = 0.0;
+        let mut left = 0.0;
+        for obj in self.get_children_mut() {
+            obj.moove(left, top);
+            left += obj.get_width() + gap;
         }
     }
 
@@ -102,10 +108,6 @@ impl IUIComponent for HBox {
 
     fn get_model_mut(&mut self) -> &mut UIComponent {
         &mut self.model.mx_box.container.ui_component
-    }
-
-    fn measure(&mut self, _ctx: &mut DrawContext) {
-        todo!()
     }
 }
 

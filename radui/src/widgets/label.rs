@@ -38,7 +38,7 @@ impl IUIComponent for Label {
         ctx.canvas.fill_text(0.0, FONT_SIZE, text, &paint).expect("Can't write");
     }
 
-    fn update_display_list(&mut self, width: f64, height: f64, _ctx: &DrawContext) {
+    fn update_display_list(&mut self, width: f64, height: f64) {
         self.set_actual_size(width, height);
     }
 
@@ -51,8 +51,11 @@ impl IUIComponent for Label {
         let width = metrics.width() + PADDING * 2.0;
         let height = metrics.height() + PADDING * 2.0;
 
-        self.get_model_mut().measured_width = Some(width as f64);
-        self.get_model_mut().measured_height = Some(height as f64);
+        let model = self.get_model_mut();
+        model.measured_width = Some(width as f64);
+        model.measured_height = Some(height as f64);
+        model.measured_min_width = Some(width as f64);
+        model.measured_min_height = Some(height as f64);
     }
 
     fn handle_own_event(&mut self, path: &mut Vec<String>, event: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
