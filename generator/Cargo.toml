@@ -12,6 +12,7 @@ homepage.workspace = true
 as3_parser = { git = "https://github.com/hydroper/as3parser", rev="c069ab209daa3ce6dd2bcd9d5f505e1597b5be93" }
 dirs = "5.0.1"
 glob = "0.3.1"
+itertools = "0.13.0"
 rad-xsd-parser = { path = "../rad-xsd-parser" }
 serde_derive = "1.0"
 serde = { version = "1.0", features = ["derive"] }

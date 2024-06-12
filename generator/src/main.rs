@@ -1,3 +1,4 @@
+use std::any::Any;
 use as3_parser::compilation_unit::CompilationUnit;
 use as3_parser::ns::{Attribute, Expression, FunctionName, QualifiedIdentifierIdentifier};
 use as3_parser::parser::ParserFacade;
@@ -15,12 +16,20 @@ use std::fs;
 use std::fs::File;
 use std::io::Write;
 use std::iter::once;
+use itertools::Itertools;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Class {
     pub name: String,
     pub extends: Option<String>,
-    pub setters: HashSet<String>,
+    pub setters: HashMap<String, Setter>,
+}
+
+#[derive(Debug, Clone)]
+pub struct Setter {
+    name: String,
+    typ: String,
+    doc: Option<String>,
 }
 
 fn main() {
@@ -36,7 +45,7 @@ fn main() {
     let mut export = HashSet::<String>::new();
     let class_names = ["VBox", "HBox", "Label", "DataGrid", "TitleWindow", "WindowedApplication"];
     for class_name in class_names {
-        let _ = add_class(class_name, &mut classes, &mut export);
+        add_class(class_name, &mut classes, &mut export);
     }
 
     // convert to xml
@@ -62,7 +71,7 @@ fn main() {
         let attributes: Vec<models::Attribute> = class
             .setters
             .iter()
-            .map(|name| models::Attribute { name: name.clone(), typ: "string".to_string() })
+            .map(|(name, setter)| models::Attribute { name: name.clone(), typ: setter.typ.clone() })
             .collect();
         if let Some(parent) = &class.extends {
             let extensions = once(ExtensionEl::Sequence(seq.clone()))
@@ -110,86 +119,59 @@ fn main() {
     output.write_all(&buffer.as_bytes()).unwrap();
 }
 
-fn add_class(name: &str, classes: &mut HashMap<String, Class>, exports: &mut HashSet<String>) -> HashSet<String> {
+fn add_class(name: &str, classes: &mut HashMap<String, Class>, exports: &mut HashSet<String>) {
     let parent = if let Some(class) = classes.get_mut(name) {
         exports.insert(name.to_string());
         if let Some(parent) = &class.extends {
             parent.clone()
         } else {
-            return class.setters.clone(); // no parent: my props
+            return;
         }
     } else {
-        return HashSet::new(); // not found: no props
+        return;
     };
 
-    let mut parent_props = HashSet::new();
     if let Some(parent) = classes.get(&parent).map(|p| p.name.clone()) {
-        parent_props = add_class(parent.as_str(), classes, exports);
+        add_class(parent.as_str(), classes, exports);
     }
-
-    let class = classes.get_mut(name).unwrap();
-    class.setters.retain(|x| !parent_props.contains(x));
-    parent_props.extend(class.setters.clone());
-    parent_props
 }
 
 fn load_classes(home: &str) -> HashMap<String, Class> {
+    let white_list = HashMap::from([
+        ("int", "int"),
+        ("uint", "uint"),
+        ("String", "string"),
+        ("Number", "double"),
+        ("Boolean", "boolean")
+    ]);
     let black_list = [
         "accessibility",
         "rotation",
-        "creat",
-        "focus",
-        "auto",
-        "data",
-        "drag",
-        "style",
-        "cache",
-        "drop",
-        "valid",
-        "effect",
-        "matrix",
         "transform",
-        "render",
-        "count",
-        "editor",
-        "tween",
-        "enabled",
-        "manager",
-        "transition",
-        "project",
-        "repeater",
-        "layout",
-        "select",
-        "columns",
-        "initialized",
-        "processed",
-        "flex",
-        "tool",
-        "depth",
-        "nest",
-        "factory",
-        "layer",
-        "flag",
-        "button",
-        "icon",
-        "descriptor",
-        "document",
-        "state",
-        "indices",
-        "error",
-        "center",
-        "owner",
-        "baseline",
-        "scale",
-        "visible",
-        "alpha",
+        "effect",
+        "automation",
+        "skin",
+        "framerate",
+        "projection",
         "blend",
-        "filters",
-        "measured",
-        "percent",
-        "explicit",
-        "min",
-        "max",
+        "depth",
+        "alpha",
+        "flag",
+        "focus",
+        "enabled",
+        "click",
+        "clip",
+        "policy",
+        "creat",
+        "drag",
+        "drop",
+        "cache",
+        "deferred",
+        "front",
+        "state",
+        "url",
+        "tip",
+        "tab",
         "z",
     ];
     let mut classes = HashMap::<String, Class>::new();
@@ -215,7 +197,7 @@ fn load_classes(home: &str) -> HashMap<String, Class> {
                     }
                 }
 
-                let mut setters = HashSet::new();
+                let mut setters = HashMap::new();
                 for directive in defn.block.directives.iter() {
                     let Directive::FunctionDefinition(func) = directive.as_ref() else {
                         continue;
@@ -238,22 +220,38 @@ fn load_classes(home: &str) -> HashMap<String, Class> {
                     if bad {
                         continue;
                     }
-                    match &func.name {
-                        FunctionName::Identifier(_) => {}
-                        FunctionName::Getter(_) => {}
-                        FunctionName::Setter((name, _)) => {
-                            if name.starts_with("$") {
-                                continue;
-                            }
-                            let blacked_out =
-                                black_list.iter().filter(|term| name.to_lowercase().contains(*term)).last().is_some();
-                            if blacked_out {
-                                continue;
-                            }
-                            setters.insert(name.clone());
-                        }
-                        FunctionName::Constructor(_) => {}
+                    let FunctionName::Setter((name, _)) = &func.name else {
+                        continue;
+                    };
+                    if name.starts_with("$") {
+                        continue;
                     }
+                    let Ok(param) = func.common.signature.parameters.iter().exactly_one() else {
+                        continue;
+                    };
+                    let typ = param.destructuring.type_annotation.as_ref().unwrap();
+                    let Expression::QualifiedIdentifier(id) = &**typ else {
+                        continue;
+                    };
+                    let QualifiedIdentifierIdentifier::Id((typ, _)) = &id.id else {
+                        continue;
+                    };
+                    let Some(typ) = white_list.get(typ.as_str()) else {
+                        println!("Skipping {class_name}.{name}:{typ}");
+                        continue;
+                    };
+                    let blacked_out =
+                        black_list.iter().filter(|term| name.to_lowercase().contains(*term)).last().is_some();
+                    if blacked_out {
+                        continue;
+                    }
+                    let doc = func.asdoc.as_ref().map(|doc| doc.main_body.as_ref().map(|body| body.0.clone())).flatten();
+                    let setter = Setter {
+                        name: name.clone(),
+                        typ: typ.to_string(),
+                        doc,
+                    };
+                    setters.insert(name.clone(), setter);
                 }
                 let class = Class { name: class_name.clone(), extends, setters };
                 classes.insert(class_name, class);
