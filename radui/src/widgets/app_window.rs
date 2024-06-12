@@ -5,20 +5,20 @@ use uuid::Uuid;
 
 use crate::generated::models;
 use crate::generated::models::Components;
-use crate::widgets::{IWidget, PositionedWidget};
+use crate::widgets::IWidget;
 
 pub trait IAppWindow: IWidget {
     fn get_title(&self) -> &str;
 
-    fn get_popups_mut(&mut self) -> IterMut<'_, PositionedWidget>;
+    fn get_popups_mut(&mut self) -> IterMut<'_, Box<dyn IWidget>>;
 
-    fn get_popups(&self) -> Iter<'_, PositionedWidget>;
+    fn get_popups(&self) -> Iter<'_, Box<dyn IWidget>>;
 }
 
 pub struct AppWindow {
     pub model: models::WindowedApplication,
-    pub children: Vec<PositionedWidget>,
-    pub popups: Vec<PositionedWidget>,
+    pub children: Vec<Box<dyn IWidget>>,
+    pub popups: Vec<Box<dyn IWidget>>,
     pub width: u32,
     pub height: u32,
 }
@@ -28,11 +28,11 @@ impl IAppWindow for AppWindow {
         self.model.title.as_ref().map(|str| str.as_str()).unwrap_or("")
     }
 
-    fn get_popups_mut(&mut self) -> IterMut<'_, PositionedWidget> {
+    fn get_popups_mut(&mut self) -> IterMut<'_, Box<dyn IWidget>> {
         self.popups.iter_mut()
     }
 
-    fn get_popups(&self) -> Iter<'_, PositionedWidget> {
+    fn get_popups(&self) -> Iter<'_, Box<dyn IWidget>> {
         self.popups.iter()
     }
 }
@@ -66,23 +66,23 @@ impl IWidget for AppWindow {
         println!("window width = {width}");
         self.width = width;
         self.height = height;
-        self.get_children_mut().for_each(|c| c.widget.layout(width, height, canvas, font));
+        self.get_children_mut().for_each(|c| c.layout(width, height, canvas, font));
     }
 
-    fn get_children_mut(&mut self) -> IterMut<'_, PositionedWidget> {
+    fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IWidget>> {
         self.children.iter_mut()
     }
 
-    fn get_children(&self) -> Iter<'_, PositionedWidget> {
+    fn get_children(&self) -> Iter<'_, Box<dyn IWidget>> {
         self.children.iter()
     }
 
     fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId) {
         for widget in self.get_children() {
             canvas.save();
-            canvas.translate(widget.bounds[0] as f32, widget.bounds[1] as f32);
+            canvas.translate(widget.get_x() as f32, widget.get_y() as f32);
 
-            widget.widget.draw(canvas, font);
+            widget.draw(canvas, font);
 
             canvas.restore();
         }
@@ -98,6 +98,34 @@ impl IWidget for AppWindow {
                 // canvas.fill_path(&path, &Paint::color(Color::rgba(0, 0, 0, 128)));
             }
         }
+    }
+
+    fn get_x(&self) -> f64 {
+        self.model.application.skinnable_container.skinnable_container_base.skinnable_component.ui_component.x.unwrap()
+    }
+
+    fn get_y(&self) -> f64 {
+        self.model.application.skinnable_container.skinnable_container_base.skinnable_component.ui_component.y.unwrap()
+    }
+
+    fn set_x(&mut self, x: f64) {
+        self.model.application.skinnable_container.skinnable_container_base.skinnable_component.ui_component.x =
+            Some(x);
+    }
+
+    fn set_y(&mut self, y: f64) {
+        self.model.application.skinnable_container.skinnable_container_base.skinnable_component.ui_component.y =
+            Some(y);
+    }
+
+    fn set_width(&mut self, width: f64) {
+        self.model.application.skinnable_container.skinnable_container_base.skinnable_component.ui_component.width =
+            Some(width);
+    }
+
+    fn set_height(&mut self, height: f64) {
+        self.model.application.skinnable_container.skinnable_container_base.skinnable_component.ui_component.height =
+            Some(height);
     }
 }
 
@@ -115,8 +143,7 @@ impl From<models::WindowedApplication> for AppWindow {
                     Components::DataGrid(c) => c.into(),
                     _ => unimplemented!("Not instantiable"),
                 };
-                let bounds = [0, 0, 0, 0];
-                PositionedWidget { bounds, widget }
+                widget
             })
             .collect::<Vec<_>>();
         value.application.skinnable_container.skinnable_container_base.skinnable_component.ui_component.uid =

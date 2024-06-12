@@ -202,7 +202,10 @@ fn load_classes(home: &str) -> HashMap<String, Class> {
                     }
                 }
 
-                let mut getter_doc = defn.block.directives.iter()
+                let mut getter_doc = defn
+                    .block
+                    .directives
+                    .iter()
                     .filter_map(|directive| {
                         let Directive::FunctionDefinition(func) = directive.as_ref() else {
                             return None;
@@ -217,7 +220,8 @@ fn load_classes(home: &str) -> HashMap<String, Class> {
                             return None;
                         };
                         Some((name.clone(), doc.clone()))
-                    }).collect::<HashMap<String, String>>();
+                    })
+                    .collect::<HashMap<String, String>>();
                 let mut setters = HashMap::new();
                 for directive in defn.block.directives.iter() {
                     let Directive::FunctionDefinition(func) = directive.as_ref() else {

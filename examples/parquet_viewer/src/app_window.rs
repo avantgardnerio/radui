@@ -4,16 +4,15 @@ use uuid::Uuid;
 
 use radui::events::{Signal, SignalType};
 use radui::generated::models::WindowedApplication;
-use radui::geom::Bounds2d;
 use radui::widgets;
 use radui::widgets::app_window::IAppWindow;
 use radui::widgets::file_chooser::FileChooser;
-use radui::widgets::{IWidget, PositionedWidget};
+use radui::widgets::IWidget;
 
 pub struct ParquetViewerWindow {
     pub id: String,
-    pub children: Vec<PositionedWidget>,
-    pub popups: Vec<PositionedWidget>,
+    pub children: Vec<Box<dyn IWidget>>,
+    pub popups: Vec<Box<dyn IWidget>>,
     pub lbl_open_id: String,
 }
 
@@ -30,10 +29,8 @@ impl ParquetViewerWindow {
         label.add_event_listener(SignalType::Activated, vec![id.clone()]);
         let lbl_open_id = label.get_id().clone();
 
-        let bounds = [0, 0, 0, 0];
         let widget = Box::new(win);
-        let child = PositionedWidget { bounds, widget };
-        Self { id, children: vec![child], popups: vec![], lbl_open_id }
+        Self { id, children: vec![widget], popups: vec![], lbl_open_id }
     }
 }
 
@@ -48,10 +45,8 @@ impl IWidget for ParquetViewerWindow {
         if event.source.last() == Some(&self.lbl_open_id) && event.typ == SignalType::Activated {
             println!("showing file dialog");
             let file_chooser = FileChooser::new("fcMain", path);
-            let bounds: Bounds2d<u32> = [100, 100, 200, 200];
             let widget = Box::new(file_chooser);
-            let child = PositionedWidget { bounds, widget };
-            self.popups.push(child);
+            self.popups.push(widget);
         }
     }
 
@@ -59,16 +54,40 @@ impl IWidget for ParquetViewerWindow {
         Some("pvApp")
     }
 
-    fn get_children_mut(&mut self) -> IterMut<'_, PositionedWidget> {
+    fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IWidget>> {
         self.children.iter_mut()
     }
 
-    fn get_children(&self) -> Iter<'_, PositionedWidget> {
+    fn get_children(&self) -> Iter<'_, Box<dyn IWidget>> {
         self.children.iter()
     }
 
     fn get_id(&self) -> &String {
         &self.id
+    }
+
+    fn get_x(&self) -> f64 {
+        todo!()
+    }
+
+    fn get_y(&self) -> f64 {
+        todo!()
+    }
+
+    fn set_x(&mut self, x: f64) {
+        todo!()
+    }
+
+    fn set_y(&mut self, y: f64) {
+        todo!()
+    }
+
+    fn set_width(&mut self, width: f64) {
+        todo!()
+    }
+
+    fn set_height(&mut self, height: f64) {
+        todo!()
     }
 }
 
@@ -77,11 +96,11 @@ impl IAppWindow for ParquetViewerWindow {
         "Parquet Viewer"
     }
 
-    fn get_popups_mut(&mut self) -> IterMut<'_, PositionedWidget> {
+    fn get_popups_mut(&mut self) -> IterMut<'_, Box<dyn IWidget>> {
         self.popups.iter_mut()
     }
 
-    fn get_popups(&self) -> Iter<'_, PositionedWidget> {
+    fn get_popups(&self) -> Iter<'_, Box<dyn IWidget>> {
         self.popups.iter()
     }
 }

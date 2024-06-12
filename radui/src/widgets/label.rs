@@ -9,7 +9,7 @@ use uuid::Uuid;
 use crate::events::{Signal, SignalType};
 use crate::generated::models;
 use crate::geom::Size;
-use crate::widgets::{IWidget, PositionedWidget};
+use crate::widgets::IWidget;
 
 const FONT_SIZE: f32 = 24.0;
 const PADDING: f32 = 2.0;
@@ -18,7 +18,7 @@ pub struct Label {
     pub model: models::Label,
     pub width: u32,
     pub height: u32,
-    pub children: Vec<PositionedWidget>,
+    pub children: Vec<Box<dyn IWidget>>,
     pub listeners: HashMap<SignalType, Vec<Vec<String>>>,
 }
 
@@ -86,16 +86,40 @@ impl IWidget for Label {
         self.model.text_base.ui_component.id.as_deref()
     }
 
-    fn get_children(&self) -> Iter<'_, PositionedWidget> {
+    fn get_children(&self) -> Iter<'_, Box<dyn IWidget>> {
         self.children.iter()
     }
 
-    fn get_children_mut(&mut self) -> IterMut<'_, PositionedWidget> {
+    fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IWidget>> {
         self.children.iter_mut()
     }
 
     fn get_id(&self) -> &String {
         self.model.text_base.ui_component.uid.as_ref().unwrap()
+    }
+
+    fn get_x(&self) -> f64 {
+        self.model.text_base.ui_component.x.unwrap()
+    }
+
+    fn get_y(&self) -> f64 {
+        self.model.text_base.ui_component.y.unwrap()
+    }
+
+    fn set_x(&mut self, x: f64) {
+        self.model.text_base.ui_component.x = Some(x);
+    }
+
+    fn set_y(&mut self, y: f64) {
+        self.model.text_base.ui_component.y = Some(y);
+    }
+
+    fn set_width(&mut self, width: f64) {
+        self.model.text_base.ui_component.width = Some(width);
+    }
+
+    fn set_height(&mut self, height: f64) {
+        self.model.text_base.ui_component.height = Some(height);
     }
 }
 

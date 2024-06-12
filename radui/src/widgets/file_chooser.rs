@@ -9,13 +9,17 @@ use crate::events::{Signal, SignalType};
 use crate::generated::models::TitleWindow;
 use crate::widgets::label::Label;
 use crate::widgets::modal::Modal;
-use crate::widgets::{IWidget, PositionedWidget};
+use crate::widgets::IWidget;
 
 pub struct FileChooser {
     pub name: String,
     pub id: String,
+    pub x: f64,
+    pub y: f64,
+    pub width: f64,
+    pub height: f64,
     pub current_dir: PathBuf,
-    pub children: Vec<PositionedWidget>,
+    pub children: Vec<Box<dyn IWidget>>,
     pub lbl_up_id: Vec<String>,
 }
 
@@ -40,9 +44,17 @@ impl FileChooser {
         let lbl_up_id = path.iter().cloned().chain(once(label.get_id().clone())).collect();
 
         let widget = Box::new(window);
-        let bounds = [0, 0, 0, 0];
-        let child = PositionedWidget { bounds, widget };
-        Self { name: name.to_string(), id, current_dir, children: vec![child], lbl_up_id }
+        Self {
+            name: name.to_string(),
+            id,
+            x: 0.0,
+            y: 0.0,
+            width: 0.0,
+            height: 0.0,
+            current_dir,
+            children: vec![widget],
+            lbl_up_id,
+        }
     }
 }
 
@@ -67,15 +79,39 @@ impl IWidget for FileChooser {
         Some(self.name.as_str())
     }
 
-    fn get_children_mut(&mut self) -> IterMut<'_, PositionedWidget> {
+    fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IWidget>> {
         self.children.iter_mut()
     }
 
-    fn get_children(&self) -> Iter<'_, PositionedWidget> {
+    fn get_children(&self) -> Iter<'_, Box<dyn IWidget>> {
         self.children.iter()
     }
 
     fn get_id(&self) -> &String {
         &self.id
+    }
+
+    fn get_x(&self) -> f64 {
+        self.x
+    }
+
+    fn get_y(&self) -> f64 {
+        self.y
+    }
+
+    fn set_x(&mut self, x: f64) {
+        self.x = x;
+    }
+
+    fn set_y(&mut self, y: f64) {
+        self.y = y;
+    }
+
+    fn set_width(&mut self, width: f64) {
+        self.width = width;
+    }
+
+    fn set_height(&mut self, height: f64) {
+        self.height = height;
     }
 }

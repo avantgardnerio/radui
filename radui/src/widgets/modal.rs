@@ -1,19 +1,53 @@
 use crate::generated::models;
 use crate::generated::models::Components;
-use crate::widgets::{IWidget, PositionedWidget};
+use crate::widgets::IWidget;
 use std::slice::{Iter, IterMut};
 use uuid::Uuid;
 
 pub struct Modal {
     pub model: models::TitleWindow,
-    pub children: Vec<PositionedWidget>,
+    pub children: Vec<Box<dyn IWidget>>,
     pub width: u32,
     pub height: u32,
 }
 
 impl IWidget for Modal {
+    fn get_x(&self) -> f64 {
+        self.model.panel.skinnable_container.skinnable_container_base.skinnable_component.ui_component.x.unwrap()
+    }
+
+    fn get_y(&self) -> f64 {
+        self.model.panel.skinnable_container.skinnable_container_base.skinnable_component.ui_component.y.unwrap()
+    }
+
+    fn set_x(&mut self, x: f64) {
+        self.model.panel.skinnable_container.skinnable_container_base.skinnable_component.ui_component.x = Some(x);
+    }
+
+    fn set_y(&mut self, y: f64) {
+        self.model.panel.skinnable_container.skinnable_container_base.skinnable_component.ui_component.y = Some(y);
+    }
+
+    fn set_width(&mut self, width: f64) {
+        self.model.panel.skinnable_container.skinnable_container_base.skinnable_component.ui_component.width =
+            Some(width);
+    }
+
+    fn set_height(&mut self, height: f64) {
+        self.model.panel.skinnable_container.skinnable_container_base.skinnable_component.ui_component.height =
+            Some(height);
+    }
+
     fn get_name(&self) -> Option<&str> {
-        todo!()
+        self.model
+            .panel
+            .skinnable_container
+            .skinnable_container_base
+            .skinnable_component
+            .ui_component
+            .id
+            .as_ref()
+            .map(|id| id.as_str())
     }
 
     fn get_id(&self) -> &String {
@@ -28,11 +62,11 @@ impl IWidget for Modal {
             .unwrap()
     }
 
-    fn get_children_mut(&mut self) -> IterMut<'_, PositionedWidget> {
+    fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IWidget>> {
         todo!()
     }
 
-    fn get_children(&self) -> Iter<'_, PositionedWidget> {
+    fn get_children(&self) -> Iter<'_, Box<dyn IWidget>> {
         todo!()
     }
 }
@@ -51,8 +85,7 @@ impl From<models::TitleWindow> for Modal {
                     Components::DataGrid(c) => c.into(),
                     _ => unimplemented!("Not instantiable"),
                 };
-                let bounds = [0, 0, 0, 0];
-                PositionedWidget { bounds, widget }
+                widget
             })
             .collect::<Vec<_>>();
         value.panel.skinnable_container.skinnable_container_base.skinnable_component.ui_component.uid =
