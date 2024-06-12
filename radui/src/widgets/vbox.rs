@@ -8,27 +8,25 @@ use uuid::Uuid;
 
 use crate::events::{Signal, SignalType};
 use crate::generated::models;
-use crate::generated::models::Components;
+use crate::generated::models::{Components, UIComponent};
 use crate::geom::{Point2d, Size};
 use crate::widgets::IUIComponent;
 
 pub struct Vbox {
     pub model: models::VBox,
     pub children: Vec<Box<dyn IUIComponent>>,
-    pub width: u32,
-    pub height: u32,
 }
 
 impl IUIComponent for Vbox {
     fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId) {
         for (idx, widget) in self.children.iter().enumerate() {
             let top = widget.get_y();
-            let bottom = self.children.get(idx + 1).map(|w| w.get_y()).unwrap_or(self.height as f64);
+            let bottom = self.children.get(idx + 1).map(|w| w.get_y()).unwrap_or(self.get_height());
             let height = bottom - top;
 
             canvas.save();
             canvas.translate(0.0, top as f32);
-            canvas.scissor(0.0, 0.0, self.width as f32, height as f32);
+            canvas.scissor(0.0, 0.0, self.get_width() as f32, height as f32);
 
             widget.draw(canvas, font);
 
@@ -37,8 +35,8 @@ impl IUIComponent for Vbox {
     }
 
     fn layout(&mut self, width: u32, height: u32, canvas: &Canvas<OpenGl>, font: &FontId) {
-        self.width = width;
-        self.height = height;
+        self.set_width(width as f64);
+        self.set_height(height as f64);
 
         // calculate size of pie
         let (abs, rel): (Vec<_>, Vec<_>) =
@@ -92,10 +90,6 @@ impl IUIComponent for Vbox {
         path.pop();
     }
 
-    fn get_name(&self) -> Option<&str> {
-        None
-    }
-
     fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IUIComponent>> {
         self.children.iter_mut()
     }
@@ -104,32 +98,12 @@ impl IUIComponent for Vbox {
         self.children.iter()
     }
 
-    fn get_id(&self) -> &String {
-        self.model.mx_box.container.ui_component.uid.as_ref().unwrap()
+    fn get_model(&self) -> &UIComponent {
+        &self.model.mx_box.container.ui_component
     }
 
-    fn get_x(&self) -> f64 {
-        self.model.mx_box.container.ui_component.x.unwrap()
-    }
-
-    fn get_y(&self) -> f64 {
-        self.model.mx_box.container.ui_component.y.unwrap()
-    }
-
-    fn set_x(&mut self, x: f64) {
-        self.model.mx_box.container.ui_component.x = Some(x)
-    }
-
-    fn set_y(&mut self, y: f64) {
-        self.model.mx_box.container.ui_component.y = Some(y)
-    }
-
-    fn set_width(&mut self, width: f64) {
-        self.model.mx_box.container.ui_component.width = Some(width)
-    }
-
-    fn set_height(&mut self, height: f64) {
-        self.model.mx_box.container.ui_component.height = Some(height)
+    fn get_model_mut(&mut self) -> &mut UIComponent {
+        &mut self.model.mx_box.container.ui_component
     }
 }
 
@@ -151,7 +125,7 @@ impl From<models::VBox> for Box<dyn IUIComponent> {
             })
             .collect::<Vec<_>>();
         value.mx_box.container.ui_component.uid = Some(Uuid::new_v4().to_string());
-        let me = Vbox { model: value, children, width: 0, height: 0 };
+        let me = Vbox { model: value, children };
         Box::new(me)
     }
 }

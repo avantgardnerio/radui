@@ -8,7 +8,7 @@ use uuid::Uuid;
 
 use crate::events::{Signal, SignalType};
 use crate::generated::models;
-use crate::generated::models::Components;
+use crate::generated::models::{Components, UIComponent};
 use crate::geom::{Point2d, Size};
 use crate::widgets::IUIComponent;
 
@@ -93,10 +93,6 @@ impl IUIComponent for HBox {
         path.pop();
     }
 
-    fn get_name(&self) -> Option<&str> {
-        None
-    }
-
     fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IUIComponent>> {
         self.children.iter_mut()
     }
@@ -105,32 +101,12 @@ impl IUIComponent for HBox {
         self.children.iter()
     }
 
-    fn get_id(&self) -> &String {
-        self.model.mx_box.container.ui_component.uid.as_ref().unwrap()
+    fn get_model(&self) -> &UIComponent {
+        &self.model.mx_box.container.ui_component
     }
 
-    fn get_x(&self) -> f64 {
-        self.model.mx_box.container.ui_component.x.unwrap()
-    }
-
-    fn get_y(&self) -> f64 {
-        self.model.mx_box.container.ui_component.y.unwrap()
-    }
-
-    fn set_x(&mut self, x: f64) {
-        self.model.mx_box.container.ui_component.x = Some(x);
-    }
-
-    fn set_y(&mut self, y: f64) {
-        self.model.mx_box.container.ui_component.y = Some(y);
-    }
-
-    fn set_width(&mut self, width: f64) {
-        self.model.mx_box.container.ui_component.width = Some(width);
-    }
-
-    fn set_height(&mut self, height: f64) {
-        self.model.mx_box.container.ui_component.height = Some(height);
+    fn get_model_mut(&mut self) -> &mut UIComponent {
+        &mut self.model.mx_box.container.ui_component
     }
 }
 

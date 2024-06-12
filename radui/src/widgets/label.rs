@@ -8,7 +8,7 @@ use uuid::Uuid;
 
 use crate::events::{Signal, SignalType};
 use crate::generated::models;
-use crate::geom::Size;
+use crate::generated::models::UIComponent;
 use crate::widgets::IUIComponent;
 
 const FONT_SIZE: f32 = 24.0;
@@ -44,24 +44,17 @@ impl IUIComponent for Label {
         self.height = height;
     }
 
-    fn get_width(&self, canvas: &Canvas<OpenGl>, font: &FontId) -> Size {
+    fn measure(&mut self, canvas: &Canvas<OpenGl>, font: &FontId) {
         let mut paint = Paint::color(Color::black());
         paint.set_font(&[*font]);
         paint.set_font_size(FONT_SIZE);
         let text = self.model.text_base.text.as_ref().map(|str| str.as_str()).unwrap_or("");
         let metrics = canvas.measure_text(0.0, 0.0, text, &paint).unwrap();
         let width = metrics.width() + PADDING * 2.0;
-        Size::Absolute(width as u32)
-    }
+        let height = metrics.height() + PADDING * 2.0;
 
-    fn get_height(&self, canvas: &Canvas<OpenGl>, font: &FontId) -> Size {
-        let text = self.model.text_base.text.as_ref().map(|str| str.as_str()).unwrap_or("");
-        let mut paint = Paint::color(Color::black());
-        paint.set_font(&[*font]);
-        paint.set_font_size(FONT_SIZE);
-        let metrics = canvas.measure_text(0.0, 0.0, text, &paint).unwrap();
-        let width = metrics.height() + PADDING * 2.0;
-        Size::Absolute(width as u32)
+        self.get_model_mut().measured_width = Some(width as f64);
+        self.get_model_mut().measured_height = Some(height as f64);
     }
 
     fn handle_own_event(&mut self, path: &mut Vec<String>, event: &Signal, dispatch: &mut Box<dyn FnMut(Signal) + '_>) {
@@ -82,10 +75,6 @@ impl IUIComponent for Label {
         }
     }
 
-    fn get_name(&self) -> Option<&str> {
-        self.model.text_base.ui_component.id.as_deref()
-    }
-
     fn get_children(&self) -> Iter<'_, Box<dyn IUIComponent>> {
         self.children.iter()
     }
@@ -94,32 +83,12 @@ impl IUIComponent for Label {
         self.children.iter_mut()
     }
 
-    fn get_id(&self) -> &String {
-        self.model.text_base.ui_component.uid.as_ref().unwrap()
+    fn get_model(&self) -> &UIComponent {
+        &self.model.text_base.ui_component
     }
 
-    fn get_x(&self) -> f64 {
-        self.model.text_base.ui_component.x.unwrap()
-    }
-
-    fn get_y(&self) -> f64 {
-        self.model.text_base.ui_component.y.unwrap()
-    }
-
-    fn set_x(&mut self, x: f64) {
-        self.model.text_base.ui_component.x = Some(x);
-    }
-
-    fn set_y(&mut self, y: f64) {
-        self.model.text_base.ui_component.y = Some(y);
-    }
-
-    fn set_width(&mut self, width: f64) {
-        self.model.text_base.ui_component.width = Some(width);
-    }
-
-    fn set_height(&mut self, height: f64) {
-        self.model.text_base.ui_component.height = Some(height);
+    fn get_model_mut(&mut self) -> &mut UIComponent {
+        &mut self.model.text_base.ui_component
     }
 }
 

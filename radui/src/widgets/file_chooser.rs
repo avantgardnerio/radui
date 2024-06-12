@@ -6,25 +6,20 @@ use std::slice::{Iter, IterMut};
 use uuid::Uuid;
 
 use crate::events::{Signal, SignalType};
-use crate::generated::models::TitleWindow;
+use crate::generated::models::{TitleWindow, UIComponent};
 use crate::widgets::label::Label;
 use crate::widgets::modal::Modal;
 use crate::widgets::IUIComponent;
 
 pub struct FileChooser {
-    pub name: String,
-    pub id: String,
-    pub x: f64,
-    pub y: f64,
-    pub width: f64,
-    pub height: f64,
+    pub model: UIComponent,
     pub current_dir: PathBuf,
     pub children: Vec<Box<dyn IUIComponent>>,
     pub lbl_up_id: Vec<String>,
 }
 
 impl FileChooser {
-    pub fn new(name: &str, path: &Vec<String>) -> Self {
+    pub fn new(id: &str, path: &Vec<String>) -> Self {
         println!("new FC");
         let bytes = include_bytes!("../../resources/lib.xml");
         let content = String::from_utf8_lossy(bytes);
@@ -37,20 +32,19 @@ impl FileChooser {
         let lbl_path = lbl_path.as_mut().as_any_mut().downcast_mut::<Label>().unwrap();
         lbl_path.model.text_base.text = current_dir.to_str().map(|str| str.to_string());
 
-        let id = Uuid::new_v4().to_string();
-        let my_path = path.iter().cloned().chain(once(id.clone())).collect();
+        let uid = Uuid::new_v4().to_string();
+        let my_path = path.iter().cloned().chain(once(uid.clone())).collect();
         let label = window.find_by_name("lblUp").unwrap();
         label.add_event_listener(SignalType::Activated, my_path);
         let lbl_up_id = path.iter().cloned().chain(once(label.get_id().clone())).collect();
 
         let widget = Box::new(window);
         Self {
-            name: name.to_string(),
-            id,
-            x: 0.0,
-            y: 0.0,
-            width: 0.0,
-            height: 0.0,
+            model: UIComponent {
+                id: Some(id.to_string()),
+                uid: Some(uid),
+                ..Default::default()
+            },
             current_dir,
             children: vec![widget],
             lbl_up_id,
@@ -75,10 +69,6 @@ impl IUIComponent for FileChooser {
         }
     }
 
-    fn get_name(&self) -> Option<&str> {
-        Some(self.name.as_str())
-    }
-
     fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IUIComponent>> {
         self.children.iter_mut()
     }
@@ -87,31 +77,11 @@ impl IUIComponent for FileChooser {
         self.children.iter()
     }
 
-    fn get_id(&self) -> &String {
-        &self.id
+    fn get_model(&self) -> &UIComponent {
+        &self.model
     }
 
-    fn get_x(&self) -> f64 {
-        self.x
-    }
-
-    fn get_y(&self) -> f64 {
-        self.y
-    }
-
-    fn set_x(&mut self, x: f64) {
-        self.x = x;
-    }
-
-    fn set_y(&mut self, y: f64) {
-        self.y = y;
-    }
-
-    fn set_width(&mut self, width: f64) {
-        self.width = width;
-    }
-
-    fn set_height(&mut self, height: f64) {
-        self.height = height;
+    fn get_model_mut(&mut self) -> &mut UIComponent {
+        &mut self.model
     }
 }

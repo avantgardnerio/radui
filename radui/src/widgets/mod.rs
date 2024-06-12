@@ -1,4 +1,3 @@
-use std::cmp::max;
 use std::slice::{Iter, IterMut};
 
 use as_any::AsAny;
@@ -6,7 +5,7 @@ use femtovg::renderer::OpenGl;
 use femtovg::{Canvas, FontId};
 
 use crate::events::{Signal, SignalType};
-use crate::geom::Size;
+use crate::generated::models;
 
 pub mod app_window;
 pub mod colors;
@@ -18,47 +17,61 @@ pub mod modal;
 pub mod vbox;
 
 pub trait IUIComponent: AsAny {
-    fn get_x(&self) -> f64;
+    fn get_model(&self) -> &models::UIComponent;
 
-    fn get_y(&self) -> f64;
+    fn get_model_mut(&mut self) -> &mut models::UIComponent;
 
-    fn set_x(&mut self, x: f64);
-
-    fn set_y(&mut self, y: f64);
-
-    fn set_width(&mut self, width: f64);
-
-    fn set_height(&mut self, height: f64);
-
-    fn get_width(&self, canvas: &Canvas<OpenGl>, font: &FontId) -> Size {
-        let size = self.get_children().fold(0u32, |acc, w| {
-            let cur = match w.get_width(canvas, font) {
-                Size::Absolute(w) => w,
-                Size::Relative(_) => 0,
-            };
-            max(acc, cur)
-        });
-        Size::Absolute(size)
+    fn get_x(&self) -> f64 {
+        self.get_model().x.unwrap()
     }
 
-    fn get_height(&self, canvas: &Canvas<OpenGl>, font: &FontId) -> Size {
-        let size = self.get_children().fold(0u32, |acc, w| {
-            let cur = match w.get_height(canvas, font) {
-                Size::Absolute(h) => h,
-                Size::Relative(_) => 0,
-            };
-            max(acc, cur)
-        });
-        Size::Absolute(size)
+    fn get_y(&self) -> f64 {
+        self.get_model().y.unwrap()
+    }
+
+    fn set_x(&mut self, x: f64) {
+        self.get_model_mut().x = Some(x);
+    }
+
+    fn set_y(&mut self, y: f64) {
+        self.get_model_mut().y = Some(y);
+    }
+
+    fn set_width(&mut self, width: f64) {
+        self.get_model_mut().width = Some(width);
+    }
+
+    fn set_height(&mut self, height: f64) {
+        self.get_model_mut().height = Some(height);
+    }
+
+    fn measure(&mut self, _canvas: &Canvas<OpenGl>, _font: &FontId) {
+        let model = self.get_model_mut();
+        model.measured_width = Some(0.0);
+        model.measured_height = Some(0.0);
+        model.measured_min_width = Some(0.0);
+        model.measured_min_height = Some(0.0);
+    }
+
+    fn get_width(&self) -> f64 {
+        self.get_model().width.unwrap()
+    }
+
+    fn get_height(&self) -> f64 {
+        self.get_model().height.unwrap()
     }
 
     fn add_event_listener(&mut self, _typ: SignalType, _id: Vec<String>) {
         todo!()
     }
 
-    fn get_name(&self) -> Option<&str>;
+    fn get_name(&self) -> Option<&str> {
+        self.get_model().id.as_ref().map(|id| id.as_str())
+    }
 
-    fn get_id(&self) -> &String;
+    fn get_id(&self) -> &String {
+        self.get_model().uid.as_ref().unwrap()
+    }
 
     fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IUIComponent>>;
 

@@ -5,7 +5,7 @@ use femtovg::{Canvas, Color, FontId, Paint, Path};
 use uuid::Uuid;
 
 use crate::generated::models;
-use crate::geom::Size;
+use crate::generated::models::UIComponent;
 use crate::widgets::IUIComponent;
 
 pub struct DataGrid {
@@ -27,18 +27,6 @@ impl IUIComponent for DataGrid {
         self.height = height;
     }
 
-    fn get_height(&self, _canvas: &Canvas<OpenGl>, _font: &FontId) -> Size {
-        Size::Absolute(self.model
-            .skinnable_container_base
-            .skinnable_component
-            .ui_component
-            .height.unwrap() as u32)
-    }
-
-    fn get_name(&self) -> Option<&str> {
-        self.model.skinnable_container_base.skinnable_component.ui_component.id.as_deref()
-    }
-
     fn get_children(&self) -> Iter<'_, Box<dyn IUIComponent>> {
         self.children.iter()
     }
@@ -47,32 +35,20 @@ impl IUIComponent for DataGrid {
         self.children.iter_mut()
     }
 
+    fn get_model(&self) -> &UIComponent {
+        &self.model.skinnable_container_base.skinnable_component.ui_component
+    }
+
+    fn get_model_mut(&mut self) -> &mut UIComponent {
+        &mut self.model.skinnable_container_base.skinnable_component.ui_component
+    }
+
+    fn get_name(&self) -> Option<&str> {
+        self.get_model().id.as_ref().map(|id| id.as_str())
+    }
+
     fn get_id(&self) -> &String {
-        self.model.skinnable_container_base.skinnable_component.ui_component.uid.as_ref().unwrap()
-    }
-
-    fn get_x(&self) -> f64 {
-        self.model.skinnable_container_base.skinnable_component.ui_component.x.unwrap()
-    }
-
-    fn get_y(&self) -> f64 {
-        self.model.skinnable_container_base.skinnable_component.ui_component.y.unwrap()
-    }
-
-    fn set_x(&mut self, x: f64) {
-        self.model.skinnable_container_base.skinnable_component.ui_component.x = Some(x);
-    }
-
-    fn set_y(&mut self, y: f64) {
-        self.model.skinnable_container_base.skinnable_component.ui_component.y = Some(y);
-    }
-
-    fn set_width(&mut self, width: f64) {
-        self.model.skinnable_container_base.skinnable_component.ui_component.width = Some(width);
-    }
-
-    fn set_height(&mut self, height: f64) {
-        self.model.skinnable_container_base.skinnable_component.ui_component.height = Some(height);
+        self.get_model().uid.as_ref().unwrap()
     }
 }
 
