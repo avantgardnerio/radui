@@ -66,6 +66,9 @@ fn generate_struct(schema: &LogicalSchema, el: &Element) -> Option<String> {
         };
         let typ = match attr.typ.as_str() {
             "string" => "Option<String>",
+            "int" => "Option<i64>",
+            "boolean" => "Option<bool>",
+            "double" => "Option<f64>",
             _ => panic!("Unknown type: {}", attr.typ),
         };
         let str = format!("\tpub {}: {typ},\n", attr.name.to_case(Case::Snake));

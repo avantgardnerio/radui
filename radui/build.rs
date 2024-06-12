@@ -14,7 +14,7 @@ fn main() {
     let dest_path = "src/generated/models.rs";
     // println!("cargo:warning=generating {}", dest_path); // example log statement
 
-    let content = fs::read_to_string(input).expect("Unable to read file");
+    let content = fs::read_to_string(input).expect("Unable to  read file");
     let schema: Schema = from_str(&*content).unwrap();
     let logical: LogicalSchema = schema.into();
     let code = generate(logical);
