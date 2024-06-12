@@ -1,6 +1,6 @@
 use crate::generated::models;
 use crate::generated::models::{Components, UIComponent};
-use crate::widgets::IUIComponent;
+use crate::widgets::ui_component::{DrawContext, IUIComponent};
 use std::slice::{Iter, IterMut};
 use uuid::Uuid;
 
@@ -16,6 +16,10 @@ impl IUIComponent for Modal {
 
     fn get_model_mut(&mut self) -> &mut UIComponent {
         &mut self.model.panel.skinnable_container.skinnable_container_base.skinnable_component.ui_component
+    }
+
+    fn measure(&mut self, _ctx: &mut DrawContext) {
+        todo!()
     }
 
     fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IUIComponent>> {

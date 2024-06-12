@@ -1,11 +1,10 @@
-use femtovg::renderer::OpenGl;
-use femtovg::{Canvas, FontId, Path};
+use femtovg::Path;
 use std::slice::{Iter, IterMut};
 use uuid::Uuid;
 
 use crate::generated::models;
 use crate::generated::models::{Components, UIComponent};
-use crate::widgets::IUIComponent;
+use crate::widgets::ui_component::{DrawContext, IUIComponent};
 
 pub trait IAppWindow: IUIComponent {
     fn get_title(&self) -> &str;
@@ -62,13 +61,10 @@ impl IUIComponent for AppWindow {
             .unwrap()
     }
 
-    fn layout(&mut self, width: u32, height: u32, canvas: &Canvas<OpenGl>, font: &FontId) {
+    fn update_display_list(&mut self, width: f64, height: f64, ctx: &DrawContext) {
         println!("window width = {width}");
-        self.width = width;
-        self.height = height;
-        self.get_children_mut().for_each(|c| {
-            c.layout(width, height, canvas, font)
-        });
+        self.set_actual_size(width, height);
+        self.get_children_mut().for_each(|c| c.update_display_list(width, height, ctx));
     }
 
     fn get_children_mut(&mut self) -> IterMut<'_, Box<dyn IUIComponent>> {
@@ -79,14 +75,14 @@ impl IUIComponent for AppWindow {
         self.children.iter()
     }
 
-    fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId) {
+    fn draw(&self, ctx: &mut DrawContext) {
         for widget in self.get_children() {
-            canvas.save();
-            canvas.translate(widget.get_x() as f32, widget.get_y() as f32);
+            ctx.canvas.save();
+            ctx.canvas.translate(widget.get_x() as f32, widget.get_y() as f32);
 
-            widget.draw(canvas, font);
+            widget.draw(ctx);
 
-            canvas.restore();
+            ctx.canvas.restore();
         }
 
         println!("drawing window");
@@ -108,6 +104,10 @@ impl IUIComponent for AppWindow {
 
     fn get_model_mut(&mut self) -> &mut UIComponent {
         &mut self.model.application.skinnable_container.skinnable_container_base.skinnable_component.ui_component
+    }
+
+    fn measure(&mut self, _ctx: &mut DrawContext) {
+        todo!()
     }
 }
 

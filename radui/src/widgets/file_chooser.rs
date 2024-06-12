@@ -9,7 +9,7 @@ use crate::events::{Signal, SignalType};
 use crate::generated::models::{TitleWindow, UIComponent};
 use crate::widgets::label::Label;
 use crate::widgets::modal::Modal;
-use crate::widgets::IUIComponent;
+use crate::widgets::ui_component::{DrawContext, IUIComponent};
 
 pub struct FileChooser {
     pub model: UIComponent,
@@ -40,11 +40,7 @@ impl FileChooser {
 
         let widget = Box::new(window);
         Self {
-            model: UIComponent {
-                id: Some(id.to_string()),
-                uid: Some(uid),
-                ..Default::default()
-            },
+            model: UIComponent { id: Some(id.to_string()), uid: Some(uid), ..Default::default() },
             current_dir,
             children: vec![widget],
             lbl_up_id,
@@ -83,5 +79,9 @@ impl IUIComponent for FileChooser {
 
     fn get_model_mut(&mut self) -> &mut UIComponent {
         &mut self.model
+    }
+
+    fn measure(&mut self, _ctx: &mut DrawContext) {
+        todo!()
     }
 }

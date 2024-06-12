@@ -1,30 +1,26 @@
 use std::slice::{Iter, IterMut};
 
-use femtovg::renderer::OpenGl;
-use femtovg::{Canvas, Color, FontId, Paint, Path};
+use femtovg::{Color, Paint, Path};
 use uuid::Uuid;
 
 use crate::generated::models;
 use crate::generated::models::UIComponent;
-use crate::widgets::IUIComponent;
+use crate::widgets::ui_component::{DrawContext, IUIComponent};
 
 pub struct DataGrid {
     pub model: models::DataGrid,
-    pub width: u32,
-    pub height: u32,
     pub children: Vec<Box<dyn IUIComponent>>,
 }
 
 impl IUIComponent for DataGrid {
-    fn draw(&self, canvas: &mut Canvas<OpenGl>, _font: &FontId) {
+    fn draw(&self, ctx: &mut DrawContext) {
         let mut path = Path::new();
-        path.rect(0.0, 0.0, self.width as f32, self.height as f32);
-        canvas.fill_path(&path, &Paint::color(Color::white()));
+        path.rect(0.0, 0.0, self.get_width() as f32, self.get_height() as f32);
+        ctx.canvas.fill_path(&path, &Paint::color(Color::white()));
     }
 
-    fn layout(&mut self, width: u32, height: u32, _canvas: &Canvas<OpenGl>, _font: &FontId) {
-        self.width = width;
-        self.height = height;
+    fn update_display_list(&mut self, width: f64, height: f64, _ctx: &DrawContext) {
+        self.set_actual_size(width, height);
     }
 
     fn get_children(&self) -> Iter<'_, Box<dyn IUIComponent>> {
@@ -50,12 +46,16 @@ impl IUIComponent for DataGrid {
     fn get_id(&self) -> &String {
         self.get_model().uid.as_ref().unwrap()
     }
+
+    fn measure(&mut self, _ctx: &mut DrawContext) {
+        todo!()
+    }
 }
 
 impl From<models::DataGrid> for Box<dyn IUIComponent> {
     fn from(mut value: models::DataGrid) -> Self {
         value.skinnable_container_base.skinnable_component.ui_component.uid = Some(Uuid::new_v4().to_string());
-        let me = DataGrid { model: value, width: 0, height: 0, children: vec![] };
+        let me = DataGrid { model: value, children: vec![] };
         Box::new(me)
     }
 }

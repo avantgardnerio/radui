@@ -24,6 +24,7 @@ use winit::{dpi::PhysicalSize, window::Window};
 
 use crate::geom::Point2d;
 use crate::widgets::app_window::IAppWindow;
+use crate::widgets::ui_component::DrawContext;
 
 pub struct App {}
 
@@ -38,6 +39,7 @@ impl App {
         let mut canvas = Canvas::new(renderer).expect("Cannot create canvas");
         canvas.set_size(1000, 600, window.scale_factor() as f32); // TODO: window size from model
         let font = canvas.add_font_mem(&resource!("resources/FiraSans-Regular.ttf")).expect("Cannot add font");
+        let mut ctx = DrawContext { canvas, font };
 
         let mut first = true;
         let mut mouse_pos: Point2d<u32> = Point2d { dims: [0, 0] };
@@ -64,7 +66,7 @@ impl App {
                             }
 
                             let size = window.inner_size();
-                            win.layout(size.width, size.height, &canvas, &font);
+                            win.update_display_list(size.width as f64, size.height as f64, &ctx);
                             window.request_redraw();
                         }
                     },
@@ -74,18 +76,19 @@ impl App {
                     println!("redraw");
                     // Make sure the canvas has the right size:
                     let size = window.inner_size();
-                    canvas.set_size(size.width, size.height, window.scale_factor() as f32);
+                    ctx.canvas.set_size(size.width, size.height, window.scale_factor() as f32);
 
                     if first {
-                        win.layout(size.width, size.height, &canvas, &font);
+                        win.validate_size(true, &mut ctx);
+                        win.update_display_list(size.width as f64, size.height as f64, &ctx);
                         first = false;
                     }
 
-                    canvas.clear_rect(0, 0, size.width, size.height, Color::black());
+                    ctx.canvas.clear_rect(0, 0, size.width, size.height, Color::black());
 
-                    win.draw(&mut canvas, &font);
+                    win.draw(&mut ctx);
 
-                    canvas.flush();
+                    ctx.canvas.flush();
                     surface.swap_buffers(&context).expect("Could not swap buffers");
                 }
                 Event::UserEvent(ev) => {

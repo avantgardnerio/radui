@@ -2,14 +2,13 @@ use std::collections::HashMap;
 use std::iter::once;
 use std::slice::{Iter, IterMut};
 
-use femtovg::renderer::OpenGl;
-use femtovg::{Canvas, Color, FontId, Paint, Path};
+use femtovg::{Color, Paint, Path};
 use uuid::Uuid;
 
 use crate::events::{Signal, SignalType};
 use crate::generated::models;
 use crate::generated::models::UIComponent;
-use crate::widgets::IUIComponent;
+use crate::widgets::ui_component::{DrawContext, IUIComponent};
 
 const FONT_SIZE: f32 = 24.0;
 const PADDING: f32 = 2.0;
@@ -27,29 +26,28 @@ impl IUIComponent for Label {
         self.listeners.entry(typ).and_modify(|v| v.push(id.clone())).or_insert_with(|| vec![id]);
     }
 
-    fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId) {
+    fn draw(&self, ctx: &mut DrawContext) {
         let mut path = Path::new();
         path.rect(0.0, 0.0, self.width as f32, self.height as f32);
-        canvas.fill_path(&path, &Paint::color(Color::rgb(246, 245, 244)));
+        ctx.canvas.fill_path(&path, &Paint::color(Color::rgb(246, 245, 244)));
 
         let text = self.model.text_base.text.as_ref().map(|str| str.as_str()).unwrap_or("");
         let mut paint = Paint::color(Color::black());
-        paint.set_font(&[*font]);
+        paint.set_font(&[ctx.font]);
         paint.set_font_size(FONT_SIZE);
-        canvas.fill_text(0.0, FONT_SIZE, text, &paint).expect("Can't write");
+        ctx.canvas.fill_text(0.0, FONT_SIZE, text, &paint).expect("Can't write");
     }
 
-    fn layout(&mut self, width: u32, height: u32, _canvas: &Canvas<OpenGl>, _font: &FontId) {
-        self.width = width;
-        self.height = height;
+    fn update_display_list(&mut self, width: f64, height: f64, _ctx: &DrawContext) {
+        self.set_actual_size(width, height);
     }
 
-    fn measure(&mut self, canvas: &Canvas<OpenGl>, font: &FontId) {
+    fn measure(&mut self, ctx: &mut DrawContext) {
         let mut paint = Paint::color(Color::black());
-        paint.set_font(&[*font]);
+        paint.set_font(&[ctx.font]);
         paint.set_font_size(FONT_SIZE);
         let text = self.model.text_base.text.as_ref().map(|str| str.as_str()).unwrap_or("");
-        let metrics = canvas.measure_text(0.0, 0.0, text, &paint).unwrap();
+        let metrics = ctx.canvas.measure_text(0.0, 0.0, text, &paint).unwrap();
         let width = metrics.width() + PADDING * 2.0;
         let height = metrics.height() + PADDING * 2.0;
 

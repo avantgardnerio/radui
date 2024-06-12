@@ -1,8 +1,6 @@
 use std::iter::once;
 use std::slice::{Iter, IterMut};
 
-use femtovg::renderer::OpenGl;
-use femtovg::{Canvas, FontId};
 use itertools::{Either, Itertools};
 use uuid::Uuid;
 
@@ -10,35 +8,32 @@ use crate::events::{Signal, SignalType};
 use crate::generated::models;
 use crate::generated::models::{Components, UIComponent};
 use crate::geom::{Point2d, Size};
-use crate::widgets::IUIComponent;
+use crate::widgets::ui_component::{DrawContext, IUIComponent};
 
 pub struct HBox {
     pub model: models::HBox,
     pub children: Vec<Box<dyn IUIComponent>>,
-    pub width: f64,
-    pub height: f64,
 }
 
 impl IUIComponent for HBox {
-    fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId) {
+    fn draw(&self, ctx: &mut DrawContext) {
         for (idx, widget) in self.children.iter().enumerate() {
             let left = widget.get_x();
-            let right = self.children.get(idx + 1).map(|w| w.get_x()).unwrap_or(self.width);
+            let right = self.children.get(idx + 1).map(|w| w.get_x()).unwrap_or(self.get_width());
             let width = right - left;
 
-            canvas.save();
-            canvas.translate(left as f32, 0.0);
-            canvas.scissor(0.0, 0.0, width as f32, self.height as f32);
+            ctx.canvas.save();
+            ctx.canvas.translate(left as f32, 0.0);
+            ctx.canvas.scissor(0.0, 0.0, width as f32, self.get_height() as f32);
 
-            widget.draw(canvas, font);
+            widget.draw(ctx);
 
-            canvas.restore();
+            ctx.canvas.restore();
         }
     }
 
-    fn layout(&mut self, width: u32, height: u32, canvas: &Canvas<OpenGl>, font: &FontId) {
-        self.width = width as f64;
-        self.height = height as f64;
+    fn update_display_list(&mut self, width: f64, height: f64, ctx: &DrawContext) {
+        self.set_actual_size(width, height);
 
         // calculate size of pie
         let (abs, rel): (Vec<_>, Vec<_>) =
@@ -70,7 +65,7 @@ impl IUIComponent for HBox {
             let width = rights[idx] - left;
             widget.set_width(width);
             // println!("Hbox bounds={:?}", widget.bounds);
-            widget.layout(width as u32, width as u32, canvas, font);
+            widget.update_display_list(width, width, ctx);
         }
     }
 
@@ -108,6 +103,10 @@ impl IUIComponent for HBox {
     fn get_model_mut(&mut self) -> &mut UIComponent {
         &mut self.model.mx_box.container.ui_component
     }
+
+    fn measure(&mut self, _ctx: &mut DrawContext) {
+        todo!()
+    }
 }
 
 impl From<models::HBox> for Box<dyn IUIComponent> {
@@ -128,7 +127,7 @@ impl From<models::HBox> for Box<dyn IUIComponent> {
             })
             .collect::<Vec<_>>();
         value.mx_box.container.ui_component.uid = Some(Uuid::new_v4().to_string());
-        let me = HBox { model: value, children, width: 0.0, height: 0.0 };
+        let me = HBox { model: value, children };
         Box::new(me)
     }
 }

@@ -1,8 +1,6 @@
 use std::iter::once;
 use std::slice::{Iter, IterMut};
 
-use femtovg::renderer::OpenGl;
-use femtovg::{Canvas, FontId};
 use itertools::{Either, Itertools};
 use uuid::Uuid;
 
@@ -10,7 +8,7 @@ use crate::events::{Signal, SignalType};
 use crate::generated::models;
 use crate::generated::models::{Components, UIComponent};
 use crate::geom::{Point2d, Size};
-use crate::widgets::IUIComponent;
+use crate::widgets::ui_component::{DrawContext, IUIComponent};
 
 pub struct Vbox {
     pub model: models::VBox,
@@ -18,25 +16,24 @@ pub struct Vbox {
 }
 
 impl IUIComponent for Vbox {
-    fn draw(&self, canvas: &mut Canvas<OpenGl>, font: &FontId) {
+    fn draw(&self, ctx: &mut DrawContext) {
         for (idx, widget) in self.children.iter().enumerate() {
             let top = widget.get_y();
             let bottom = self.children.get(idx + 1).map(|w| w.get_y()).unwrap_or(self.get_height());
             let height = bottom - top;
 
-            canvas.save();
-            canvas.translate(0.0, top as f32);
-            canvas.scissor(0.0, 0.0, self.get_width() as f32, height as f32);
+            ctx.canvas.save();
+            ctx.canvas.translate(0.0, top as f32);
+            ctx.canvas.scissor(0.0, 0.0, self.get_width() as f32, height as f32);
 
-            widget.draw(canvas, font);
+            widget.draw(ctx);
 
-            canvas.restore();
+            ctx.canvas.restore();
         }
     }
 
-    fn layout(&mut self, width: u32, height: u32, canvas: &Canvas<OpenGl>, font: &FontId) {
-        self.set_width(width as f64);
-        self.set_height(height as f64);
+    fn update_display_list(&mut self, width: f64, height: f64, ctx: &DrawContext) {
+        self.set_actual_size(width, height);
 
         // calculate size of pie
         let (abs, rel): (Vec<_>, Vec<_>) =
@@ -67,7 +64,7 @@ impl IUIComponent for Vbox {
             let top = widget.get_y();
             let height = bottoms[idx] - top;
             widget.set_height(height);
-            widget.layout(width, height as u32, canvas, font);
+            widget.update_display_list(width, height, ctx);
         }
     }
 
@@ -104,6 +101,10 @@ impl IUIComponent for Vbox {
 
     fn get_model_mut(&mut self) -> &mut UIComponent {
         &mut self.model.mx_box.container.ui_component
+    }
+
+    fn measure(&mut self, _ctx: &mut DrawContext) {
+        todo!()
     }
 }
 
