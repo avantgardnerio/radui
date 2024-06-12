@@ -1,22 +1,22 @@
-use std::any::Any;
 use as3_parser::compilation_unit::CompilationUnit;
 use as3_parser::ns::{Attribute, Expression, FunctionName, QualifiedIdentifierIdentifier};
 use as3_parser::parser::ParserFacade;
 use as3_parser::tree::Directive;
 use glob::glob;
+use itertools::Itertools;
 use quick_xml::se::Serializer;
 use rad_xsd_parser::models;
 use rad_xsd_parser::models::{
-    Choice, ChoiceOption, ComplexContent, ComplexContentEl, ComplexType, ComplexTypeEl, Element, Extension,
+    Annotation, Choice, ChoiceOption, ComplexContent, ComplexContentEl, ComplexType, ComplexTypeEl, Element, Extension,
     ExtensionEl, Group, Schema, SchemaElement, Sequence, SequenceEl,
 };
 use serde::Serialize;
+use std::any::Any;
 use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::fs::File;
 use std::io::Write;
 use std::iter::once;
-use itertools::Itertools;
 
 #[derive(Debug, Clone)]
 pub struct Class {
@@ -71,7 +71,11 @@ fn main() {
         let attributes: Vec<models::Attribute> = class
             .setters
             .iter()
-            .map(|(name, setter)| models::Attribute { name: name.clone(), typ: setter.typ.clone() })
+            .map(|(name, setter)| models::Attribute {
+                name: name.clone(),
+                typ: setter.typ.clone(),
+                annotation: setter.doc.as_ref().map(|doc| Annotation { documentation: doc.clone() }),
+            })
             .collect();
         if let Some(parent) = &class.extends {
             let extensions = once(ExtensionEl::Sequence(seq.clone()))
@@ -142,7 +146,7 @@ fn load_classes(home: &str) -> HashMap<String, Class> {
         ("uint", "uint"),
         ("String", "string"),
         ("Number", "double"),
-        ("Boolean", "boolean")
+        ("Boolean", "boolean"),
     ]);
     let black_list = [
         "accessibility",
@@ -171,6 +175,7 @@ fn load_classes(home: &str) -> HashMap<String, Class> {
         "state",
         "url",
         "tip",
+        "nest",
         "tab",
         "z",
     ];
@@ -197,6 +202,22 @@ fn load_classes(home: &str) -> HashMap<String, Class> {
                     }
                 }
 
+                let mut getter_doc = defn.block.directives.iter()
+                    .filter_map(|directive| {
+                        let Directive::FunctionDefinition(func) = directive.as_ref() else {
+                            return None;
+                        };
+                        let FunctionName::Getter((name, _)) = &func.name else {
+                            return None;
+                        };
+                        let Some(doc) = func.asdoc.clone() else {
+                            return None;
+                        };
+                        let Some((doc, _)) = &doc.main_body else {
+                            return None;
+                        };
+                        Some((name.clone(), doc.clone()))
+                    }).collect::<HashMap<String, String>>();
                 let mut setters = HashMap::new();
                 for directive in defn.block.directives.iter() {
                     let Directive::FunctionDefinition(func) = directive.as_ref() else {
@@ -245,12 +266,12 @@ fn load_classes(home: &str) -> HashMap<String, Class> {
                     if blacked_out {
                         continue;
                     }
-                    let doc = func.asdoc.as_ref().map(|doc| doc.main_body.as_ref().map(|body| body.0.clone())).flatten();
-                    let setter = Setter {
-                        name: name.clone(),
-                        typ: typ.to_string(),
-                        doc,
-                    };
+                    let mut doc =
+                        func.asdoc.as_ref().map(|doc| doc.main_body.as_ref().map(|body| body.0.clone())).flatten();
+                    if doc.is_none() {
+                        doc = getter_doc.get(name.as_str()).cloned();
+                    }
+                    let setter = Setter { name: name.clone(), typ: typ.to_string(), doc };
                     setters.insert(name.clone(), setter);
                 }
                 let class = Class { name: class_name.clone(), extends, setters };

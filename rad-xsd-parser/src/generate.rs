@@ -1,8 +1,8 @@
 use crate::logical::LogicalSchema;
 use crate::models::{ComplexContentEl, ComplexType, Element, ExtensionEl};
 use convert_case::{Case, Casing};
-use std::collections::HashMap;
 use quick_xml::se::to_string;
+use std::collections::HashMap;
 
 pub fn generate(schema: LogicalSchema) -> String {
     let groups = schema

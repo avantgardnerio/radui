@@ -1,139 +1,52 @@
 <schema targetNamespace="http://www.macromedia.com/2003/mxml" xmlns:mx="http://www.macromedia.com/2003/mxml" xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
-	<complexType mixed="false" name="ILabel">
-		<complexContent>
-			<extension base="mx:ITextBase">
-				<sequence minOccurs="0" maxOccurs="unbounded">
-					<group ref="mx:Components"/>
-				</sequence>
-			</extension>
-		</complexContent>
-	</complexType>
-	<element name="Label" type="mx:ILabel"/>
-	<complexType mixed="false" name="IVBox">
-		<complexContent>
-			<extension base="mx:IBox">
-				<sequence minOccurs="0" maxOccurs="unbounded">
-					<group ref="mx:Components"/>
-				</sequence>
-				<attribute name="direction" type="string"/>
-			</extension>
-		</complexContent>
-	</complexType>
-	<element name="VBox" type="mx:IVBox"/>
-	<complexType mixed="false" name="IDataGrid">
-		<complexContent>
-			<extension base="mx:ISkinnableContainerBase">
-				<sequence minOccurs="0" maxOccurs="unbounded">
-					<group ref="mx:Components"/>
-				</sequence>
-				<attribute name="showDataTips" type="boolean"/>
-				<attribute name="requestedMinRowCount" type="int"/>
-				<attribute name="requestedMinColumnCount" type="int"/>
-				<attribute name="rowHeight" type="double"/>
-				<attribute name="requestedRowCount" type="int"/>
-				<attribute name="sortableColumns" type="boolean"/>
-				<attribute name="nestLevel" type="int"/>
-				<attribute name="dataTipField" type="string"/>
-				<attribute name="variableRowHeight" type="boolean"/>
-				<attribute name="requestedMaxRowCount" type="int"/>
-				<attribute name="editorActivationMouseEvent" type="string"/>
-				<attribute name="requireSelection" type="boolean"/>
-				<attribute name="preserveSelection" type="boolean"/>
-				<attribute name="selectionMode" type="string"/>
-				<attribute name="requestedColumnCount" type="int"/>
-				<attribute name="lockedRowCount" type="int"/>
-				<attribute name="lockedColumnCount" type="int"/>
-				<attribute name="imeMode" type="string"/>
-				<attribute name="tabIndex" type="int"/>
-				<attribute name="selectedIndex" type="int"/>
-				<attribute name="editable" type="boolean"/>
-			</extension>
-		</complexContent>
-	</complexType>
-	<element name="DataGrid" type="mx:IDataGrid"/>
 	<complexType mixed="false" name="IContainer">
 		<complexContent>
 			<extension base="mx:IUIComponent">
 				<sequence minOccurs="0" maxOccurs="unbounded">
 					<group ref="mx:Components"/>
 				</sequence>
-				<attribute name="label" type="string"/>
-				<attribute name="verticalScrollPosition" type="double"/>
-				<attribute name="autoLayout" type="boolean"/>
-				<attribute name="nestLevel" type="int"/>
+				<attribute name="autoLayout" type="boolean">
+					<annotation>
+						<documentation>If &lt;code&gt;true&lt;/code&gt;, measurement and layout are done
+ when the position or size of a child is changed.
+ If &lt;code&gt;false&lt;/code&gt;, measurement and layout are done only once,
+ when children are added to or removed from the container.
+
+ &lt;p&gt;When using the Move effect, the layout around the component that
+ is moving does not readjust to fit that the Move effect animates.
+ Setting a container's &lt;code&gt;autoLayout&lt;/code&gt; property to
+ &lt;code&gt;true&lt;/code&gt; has no effect on this behavior.&lt;/p&gt;
+
+ &lt;p&gt;The Zoom effect does not work when the &lt;code&gt;autoLayout&lt;/code&gt; 
+ property is &lt;code&gt;false&lt;/code&gt;.&lt;/p&gt;
+
+ &lt;p&gt;The &lt;code&gt;autoLayout&lt;/code&gt; property does not apply to
+ Accordion or ViewStack containers.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="verticalScrollPosition" type="double">
+					<annotation>
+						<documentation>The current position of the vertical scroll bar.
+ This is equal to the distance in pixels between the top edge
+ of the scrollable surface and the topmost piece of the surface
+ that is currently visible.</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="label" type="string">
+					<annotation>
+						<documentation>The text displayed by some navigator containers to represent
+ this Container.
+
+ &lt;p&gt;For example, if this Container is a child of a TabNavigator,
+ this string appears in the corresponding tab.
+ If this Container is a child of an Accordion,
+ this string appears in the corresponding header.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
 			</extension>
 		</complexContent>
 	</complexType>
 	<element name="Container" type="mx:IContainer"/>
-	<complexType mixed="false" name="IUIComponent">
-		<complexContent>
-			<extension base="mx:IFlexSprite">
-				<sequence minOccurs="0" maxOccurs="unbounded">
-					<group ref="mx:Components"/>
-				</sequence>
-				<attribute name="cacheAsBitmap" type="boolean"/>
-				<attribute name="explicitMinWidth" type="double"/>
-				<attribute name="measuredMinHeight" type="double"/>
-				<attribute name="measuredWidth" type="double"/>
-				<attribute name="nestLevel" type="int"/>
-				<attribute name="minHeight" type="double"/>
-				<attribute name="currentState" type="string"/>
-				<attribute name="maxWidth" type="double"/>
-				<attribute name="percentHeight" type="double"/>
-				<attribute name="explicitWidth" type="double"/>
-				<attribute name="cacheHeuristic" type="boolean"/>
-				<attribute name="measuredMinWidth" type="double"/>
-				<attribute name="explicitMaxWidth" type="double"/>
-				<attribute name="validationSubField" type="string"/>
-				<attribute name="explicitHeight" type="double"/>
-				<attribute name="measuredHeight" type="double"/>
-				<attribute name="scaleX" type="double"/>
-				<attribute name="maxHeight" type="double"/>
-				<attribute name="layoutDirection" type="string"/>
-				<attribute name="isPopUp" type="boolean"/>
-				<attribute name="x" type="double"/>
-				<attribute name="percentWidth" type="double"/>
-				<attribute name="currentStateDeferred" type="string"/>
-				<attribute name="id" type="string"/>
-				<attribute name="minWidth" type="double"/>
-				<attribute name="visible" type="boolean"/>
-				<attribute name="uid" type="string"/>
-				<attribute name="explicitMaxHeight" type="double"/>
-				<attribute name="y" type="double"/>
-				<attribute name="processedDescriptors" type="boolean"/>
-				<attribute name="width" type="double"/>
-				<attribute name="height" type="double"/>
-				<attribute name="scaleY" type="double"/>
-				<attribute name="toolTip" type="string"/>
-				<attribute name="explicitMinHeight" type="double"/>
-				<attribute name="errorString" type="string"/>
-				<attribute name="includeInLayout" type="boolean"/>
-			</extension>
-		</complexContent>
-	</complexType>
-	<element name="UIComponent" type="mx:IUIComponent"/>
-	<complexType mixed="false" name="ITitleWindow">
-		<complexContent>
-			<extension base="mx:IPanel">
-				<sequence minOccurs="0" maxOccurs="unbounded">
-					<group ref="mx:Components"/>
-				</sequence>
-			</extension>
-		</complexContent>
-	</complexType>
-	<element name="TitleWindow" type="mx:ITitleWindow"/>
-	<complexType mixed="false" name="IPanel">
-		<complexContent>
-			<extension base="mx:ISkinnableContainer">
-				<sequence minOccurs="0" maxOccurs="unbounded">
-					<group ref="mx:Components"/>
-				</sequence>
-				<attribute name="controlBarVisible" type="boolean"/>
-				<attribute name="title" type="string"/>
-			</extension>
-		</complexContent>
-	</complexType>
-	<element name="Panel" type="mx:IPanel"/>
 	<complexType mixed="false" name="IFlexSprite">
 		<complexContent>
 			<extension base="mx:ISprite">
@@ -144,6 +57,134 @@
 		</complexContent>
 	</complexType>
 	<element name="FlexSprite" type="mx:IFlexSprite"/>
+	<complexType mixed="false" name="ITextBase">
+		<complexContent>
+			<extension base="mx:IUIComponent">
+				<sequence minOccurs="0" maxOccurs="unbounded">
+					<group ref="mx:Components"/>
+				</sequence>
+				<attribute name="visible" type="boolean"/>
+				<attribute name="text" type="string">
+					<annotation>
+						<documentation>The text displayed by this text component.
+
+ &lt;p&gt;The formatting of this text is controlled by CSS styles.
+ The supported styles depend on the subclass.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="maxDisplayedLines" type="int">
+					<annotation>
+						<documentation>An integer which determines whether, and where,
+ the text gets truncated.
+
+ &lt;p&gt;Truncating text means replacing excess text
+ with a truncation indicator such as "...".
+ The truncation indicator is locale-dependent;
+ it is specified by the "truncationIndicator" resource
+ in the "core" resource bundle.&lt;/p&gt;
+
+ &lt;p&gt;If the value is 0, no truncation occurs.
+ Instead, the text will simply be clipped
+ if it doesn't fit within the component's bounds.&lt;/p&gt;
+
+ &lt;p&gt;If the value is is a positive integer,
+ the text will be truncated if necessary to reduce
+ the number of lines to this integer.&lt;/p&gt;
+
+ &lt;p&gt;If the value is -1, the text will be truncated to display
+ as many lines as will completely fit within the height
+ of the component.&lt;/p&gt;
+
+ &lt;p&gt;Truncation is only performed if the &lt;code&gt;lineBreak&lt;/code&gt;
+ style is &lt;code&gt;"toFit"&lt;/code&gt;; the value of this property
+ is ignored if &lt;code&gt;lineBreak&lt;/code&gt; is &lt;code&gt;"explicit"&lt;/code&gt;.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="TextBase" type="mx:ITextBase"/>
+	<complexType mixed="false" name="IPanel">
+		<complexContent>
+			<extension base="mx:ISkinnableContainer">
+				<sequence minOccurs="0" maxOccurs="unbounded">
+					<group ref="mx:Components"/>
+				</sequence>
+				<attribute name="controlBarVisible" type="boolean">
+					<annotation>
+						<documentation>If &lt;code&gt;true&lt;/code&gt;, the control bar is visible.
+ The flag has no affect if there is no value set for
+ the &lt;code&gt;controlBarContent&lt;/code&gt; property.
+
+ &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt; The Panel container does not monitor the 
+ &lt;code&gt;controlBarGroup&lt;/code&gt; property. 
+ If other code makes it invisible, the Panel container 
+ might not update correctly.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="title" type="string">
+					<annotation>
+						<documentation>Title or caption displayed in the title bar.</documentation>
+					</annotation>
+				</attribute>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="Panel" type="mx:IPanel"/>
+	<complexType mixed="false" name="IDataGrid">
+		<complexContent>
+			<extension base="mx:ISkinnableContainerBase">
+				<sequence minOccurs="0" maxOccurs="unbounded">
+					<group ref="mx:Components"/>
+				</sequence>
+				<attribute name="imeMode" type="string">
+					<annotation>
+						<documentation>The default value for the GridColumn &lt;code&gt;imeMode&lt;/code&gt; property, 
+ which specifies the IME (Input Method Editor) mode.
+ The IME enables users to enter text in Chinese, Japanese, and Korean.
+ Flex sets the specified IME mode when the control gets focus,
+ and sets it back to the previous value when the control loses focus.
+
+&lt;p&gt;The flash.system.IMEConversionMode class defines constants for the
+ valid values for this property.
+ You can also specify &lt;code&gt;null&lt;/code&gt; to specify no IME.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="lockedColumnCount" type="int"/>
+				<attribute name="selectionMode" type="string"/>
+				<attribute name="requestedMinRowCount" type="int"/>
+				<attribute name="preserveSelection" type="boolean"/>
+				<attribute name="requireSelection" type="boolean"/>
+				<attribute name="variableRowHeight" type="boolean"/>
+				<attribute name="requestedMaxRowCount" type="int"/>
+				<attribute name="editorActivationMouseEvent" type="string">
+					<annotation>
+						<documentation>The type of mouse event that starts an editor session. Must be one of
+ values in &lt;code&gt;GridItemEditorMouseEvent&lt;/code&gt;. This value 
+ provides a default value for each column of a DataGrid. A different
+ value can be specified on a grid column to override the default.</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="rowHeight" type="double"/>
+				<attribute name="requestedMinColumnCount" type="int"/>
+				<attribute name="requestedRowCount" type="int"/>
+				<attribute name="selectedIndex" type="int"/>
+				<attribute name="requestedColumnCount" type="int"/>
+				<attribute name="lockedRowCount" type="int"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="DataGrid" type="mx:IDataGrid"/>
+	<complexType mixed="false" name="ILabel">
+		<complexContent>
+			<extension base="mx:ITextBase">
+				<sequence minOccurs="0" maxOccurs="unbounded">
+					<group ref="mx:Components"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="Label" type="mx:ILabel"/>
 	<complexType mixed="false" name="ISkinnableContainerBase">
 		<complexContent>
 			<extension base="mx:ISkinnableComponent">
@@ -154,65 +195,749 @@
 		</complexContent>
 	</complexType>
 	<element name="SkinnableContainerBase" type="mx:ISkinnableContainerBase"/>
+	<complexType mixed="false" name="ITitleWindow">
+		<complexContent>
+			<extension base="mx:IPanel">
+				<sequence minOccurs="0" maxOccurs="unbounded">
+					<group ref="mx:Components"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="TitleWindow" type="mx:ITitleWindow"/>
 	<complexType mixed="false" name="ISkinnableComponent">
 		<complexContent>
 			<extension base="mx:IUIComponent">
 				<sequence minOccurs="0" maxOccurs="unbounded">
 					<group ref="mx:Components"/>
 				</sequence>
-				<attribute name="mouseChildren" type="boolean"/>
 				<attribute name="errorString" type="string"/>
+				<attribute name="mouseChildren" type="boolean"/>
 			</extension>
 		</complexContent>
 	</complexType>
 	<element name="SkinnableComponent" type="mx:ISkinnableComponent"/>
-	<complexType mixed="false" name="IBox">
+	<complexType mixed="false" name="IApplication">
 		<complexContent>
-			<extension base="mx:IContainer">
+			<extension base="mx:ISkinnableContainer">
 				<sequence minOccurs="0" maxOccurs="unbounded">
 					<group ref="mx:Components"/>
 				</sequence>
-				<attribute name="direction" type="string"/>
+				<attribute name="colorCorrection" type="string">
+					<annotation>
+						<documentation>The value of the stage's &lt;code&gt;colorCorrection&lt;/code&gt; property.
+ If this application does not have access to the stage's &lt;code&gt;colorCorrection&lt;/code&gt; property,
+ the value of the &lt;code&gt;colorCorrection&lt;/code&gt; property is &lt;code&gt;null&lt;/code&gt;.
+
+ &lt;p&gt;Only the main application is allowed to set the &lt;code&gt;colorCorrection&lt;/code&gt;
+ property. If a nested application's needs to set the color correction property, it
+ must set it by referencing the main application's instance.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="applicationDPI" type="double">
+					<annotation>
+						<documentation>The DPI of the application.
+ 
+ By default, this is the DPI of the device that the application is currently running on.
+
+ When set in MXML, Flex will scale the Application to match its DPI to the
+ &lt;code&gt;runtimeDPI&lt;/code&gt;.
+ 
+ This property cannot be set by ActionScript code; it must be set in MXML code.</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="controlBarVisible" type="boolean">
+					<annotation>
+						<documentation>If &lt;code&gt;true&lt;/code&gt;, the control bar is visible.
+ The flag has no affect if there is no value set for
+ the &lt;code&gt;controlBarContent&lt;/code&gt; property.
+
+ &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt; The Application container does not monitor the
+ &lt;code&gt;controlBarGroup&lt;/code&gt; property.
+ If other code makes it invisible, the Application container might
+ not update correctly.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="percentHeight" type="double"/>
+				<attribute name="percentWidth" type="double"/>
 			</extension>
 		</complexContent>
 	</complexType>
-	<element name="Box" type="mx:IBox"/>
+	<element name="Application" type="mx:IApplication"/>
+	<complexType mixed="false" name="IUIComponent">
+		<complexContent>
+			<extension base="mx:IFlexSprite">
+				<sequence minOccurs="0" maxOccurs="unbounded">
+					<group ref="mx:Components"/>
+				</sequence>
+				<attribute name="minHeight" type="double">
+					<annotation>
+						<documentation>The minimum recommended height of the component to be considered
+ by the parent during layout. This value is in the
+ component's coordinates, in pixels. The default value depends on
+ the component's implementation.
+
+ &lt;p&gt;If the application developer sets the value of minHeight,
+ the new value is stored in explicitMinHeight. The default value of minHeight
+ does not change. As a result, at layout time, if
+ minHeight was explicitly set by the application developer, then the value of
+ explicitMinHeight is used for the component's minimum recommended height.
+ If minHeight is not set explicitly by the application developer, then the value of
+ measuredMinHeight is used.&lt;/p&gt;
+
+ &lt;p&gt;This value is used by the container in calculating
+ the size and position of the component.
+ It is not used by the component itself in determining
+ its default size.
+ Thus this property may not have any effect if parented by
+ Container, or containers that don't factor in
+ this property.
+ Because the value is in component coordinates,
+ the true &lt;code&gt;minHeight&lt;/code&gt; with respect to its parent
+ is affected by the &lt;code&gt;scaleY&lt;/code&gt; property.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="measuredWidth" type="double">
+					<annotation>
+						<documentation>The default width of the component, in pixels.
+ This value is set by the &lt;code&gt;measure()&lt;/code&gt; method.</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="measuredHeight" type="double">
+					<annotation>
+						<documentation>The default height of the component, in pixels.
+ This value is set by the &lt;code&gt;measure()&lt;/code&gt; method.</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="scaleX" type="double">
+					<annotation>
+						<documentation>Number that specifies the horizontal scaling factor.
+
+ &lt;p&gt;The default value is 1.0, which means that the object
+ is not scaled.
+ A &lt;code&gt;scaleX&lt;/code&gt; of 2.0 means the object has been
+ magnified by a factor of 2, and a &lt;code&gt;scaleX&lt;/code&gt; of 0.5
+ means the object has been reduced by a factor of 2.&lt;/p&gt;
+
+ &lt;p&gt;A value of 0.0 is an invalid value.
+ Rather than setting it to 0.0, set it to a small value, or set
+ the &lt;code&gt;visible&lt;/code&gt; property to &lt;code&gt;false&lt;/code&gt; to hide the component.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="explicitMinHeight" type="double">
+					<annotation>
+						<documentation>The minimum recommended height of the component to be considered
+ by the parent during layout. This value is in the
+ component's coordinates, in pixels.
+
+ &lt;p&gt;Application developers typically do not set the explicitMinHeight property. Instead, they
+ set the value of the minHeight property, which sets the explicitMinHeight property. The
+ value of minHeight does not change.&lt;/p&gt;
+
+ &lt;p&gt;At layout time, if minHeight was explicitly set by the application developer, then
+ the value of explicitMinHeight is used. Otherwise, the value of measuredMinHeight
+ is used.&lt;/p&gt;
+
+ &lt;p&gt;This value is used by the container in calculating
+ the size and position of the component.
+ It is not used by the component itself in determining
+ its default size.
+ Thus this property may not have any effect if parented by
+ Container, or containers that don't factor in
+ this property.
+ Because the value is in component coordinates,
+ the true &lt;code&gt;minHeight&lt;/code&gt; with respect to its parent
+ is affected by the &lt;code&gt;scaleY&lt;/code&gt; property.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="percentWidth" type="double">
+					<annotation>
+						<documentation>Specifies the width of a component as a percentage
+ of its parent's size. Allowed values are 0-100. The default value is NaN.
+ Setting the &lt;code&gt;width&lt;/code&gt; or &lt;code&gt;explicitWidth&lt;/code&gt; properties
+ resets this property to NaN.
+
+ &lt;p&gt;This property returns a numeric value only if the property was
+ previously set; it does not reflect the exact size of the component
+ in percent.&lt;/p&gt;
+
+ &lt;p&gt;This property is always set to NaN for the UITextField control.&lt;/p&gt;
+
+ &lt;p&gt;When used with Spark layouts, this property is used to calculate the
+ width of the component's bounds after scaling and rotation. For example 
+ if the component is rotated at 90 degrees, then specifying 
+ &lt;code&gt;percentWidth&lt;/code&gt; will affect the component's height.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="explicitWidth" type="double">
+					<annotation>
+						<documentation>Number that specifies the explicit width of the component,
+ in pixels, in the component's coordinates.
+
+ &lt;p&gt;This value is used by the container in calculating
+ the size and position of the component.
+ It is not used by the component itself in determining
+ its default size.
+ Thus this property may not have any effect if parented by
+ Container, or containers that don't factor in
+ this property.
+ Because the value is in component coordinates,
+ the true &lt;code&gt;explicitWidth&lt;/code&gt; with respect to its parent
+ is affected by the &lt;code&gt;scaleX&lt;/code&gt; property.&lt;/p&gt;
+ &lt;p&gt;Setting the &lt;code&gt;width&lt;/code&gt; property also sets this property to
+ the specified width value.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="maxHeight" type="double">
+					<annotation>
+						<documentation>The maximum recommended height of the component to be considered
+ by the parent during layout. This value is in the
+ component's coordinates, in pixels. The default value of this property is
+ set by the component developer.
+
+ &lt;p&gt;The component developer uses this property to set an upper limit on the
+ height of the component.&lt;/p&gt;
+
+ &lt;p&gt;If the application developer overrides the default value of maxHeight,
+ the new value is stored in explicitMaxHeight. The default value of maxHeight
+ does not change. As a result, at layout time, if
+ maxHeight was explicitly set by the application developer, then the value of
+ explicitMaxHeight is used for the component's maximum recommended height.
+ If maxHeight is not set explicitly by the user, then the default value is used.&lt;/p&gt;
+
+ &lt;p&gt;This value is used by the container in calculating
+ the size and position of the component.
+ It is not used by the component itself in determining
+ its default size.
+
+ Thus this property may not have any effect if parented by
+ Container, or containers that don't factor in
+ this property.
+ Because the value is in component coordinates,
+ the true &lt;code&gt;maxHeight&lt;/code&gt; with respect to its parent
+ is affected by the &lt;code&gt;scaleY&lt;/code&gt; property.
+ Some components have no theoretical limit to their height.
+ In those cases their &lt;code&gt;maxHeight&lt;/code&gt; is set to
+ &lt;code&gt;UIComponent.DEFAULT_MAX_HEIGHT&lt;/code&gt;.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="maxWidth" type="double">
+					<annotation>
+						<documentation>The maximum recommended width of the component to be considered
+ by the parent during layout. This value is in the
+ component's coordinates, in pixels. The default value of this property is
+ set by the component developer.
+
+ &lt;p&gt;The component developer uses this property to set an upper limit on the
+ width of the component.&lt;/p&gt;
+
+ &lt;p&gt;If the application developer overrides the default value of maxWidth,
+ the new value is stored in explicitMaxWidth. The default value of maxWidth
+ does not change. As a result, at layout time, if
+ maxWidth was explicitly set by the application developer, then the value of
+ explicitMaxWidth is used for the component's maximum recommended width.
+ If maxWidth is not set explicitly by the user, then the default value is used.&lt;/p&gt;
+
+ &lt;p&gt;This value is used by the container in calculating
+ the size and position of the component.
+ It is not used by the component itself in determining
+ its default size.
+ Thus this property may not have any effect if parented by
+ Container, or containers that don't factor in
+ this property.
+ Because the value is in component coordinates,
+ the true &lt;code&gt;maxWidth&lt;/code&gt; with respect to its parent
+ is affected by the &lt;code&gt;scaleX&lt;/code&gt; property.
+ Some components have no theoretical limit to their width.
+ In those cases their &lt;code&gt;maxWidth&lt;/code&gt; is set to
+ &lt;code&gt;UIComponent.DEFAULT_MAX_WIDTH&lt;/code&gt;.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="height" type="double">
+					<annotation>
+						<documentation>Number that specifies the height of the component, in pixels,
+ in the parent's coordinates.
+ The default value is 0, but this property contains the actual component
+ height after Flex completes sizing the components in your application.
+
+ &lt;p&gt;Note: You can specify a percentage value in the MXML
+ &lt;code&gt;height&lt;/code&gt; attribute, such as &lt;code&gt;height="100%"&lt;/code&gt;,
+ but you cannot use a percentage value for the &lt;code&gt;height&lt;/code&gt;
+ property in ActionScript;
+ use the &lt;code&gt;percentHeight&lt;/code&gt; property instead.&lt;/p&gt;
+
+ &lt;p&gt;Setting this property causes a &lt;code&gt;resize&lt;/code&gt; event to be dispatched.
+ See the &lt;code&gt;resize&lt;/code&gt; event for details on when
+ this event is dispatched.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="errorString" type="string">
+					<annotation>
+						<documentation>The text that displayed by a component's error tip when a
+ component is monitored by a Validator and validation fails.
+
+ &lt;p&gt;You can use the &lt;code&gt;errorString&lt;/code&gt; property to show a
+ validation error for a component, without actually using a validator class.
+ When you write a String value to the &lt;code&gt;errorString&lt;/code&gt; property,
+ Flex draws a red border around the component to indicate the validation error,
+ and the String appears in a tooltip as the validation error message when you move
+ the mouse over the component, just as if a validator detected a validation error.&lt;/p&gt;
+
+ &lt;p&gt;To clear the validation error, write an empty String, "",
+ to the &lt;code&gt;errorString&lt;/code&gt; property.&lt;/p&gt;
+
+ &lt;p&gt;Note that writing a value to the &lt;code&gt;errorString&lt;/code&gt; property
+ does not trigger the valid or invalid events; it only changes the border
+ color and displays the validation error message.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="visible" type="boolean">
+					<annotation>
+						<documentation>Whether or not the display object is visible. 
+ Display objects that are not visible are disabled. 
+ For example, if &lt;code&gt;visible=false&lt;/code&gt; for an InteractiveObject instance, 
+ it cannot be clicked. 
+
+ &lt;p&gt;When setting to &lt;code&gt;true&lt;/code&gt;, the object dispatches
+ a &lt;code&gt;show&lt;/code&gt; event.
+ When setting to &lt;code&gt;false&lt;/code&gt;, the object dispatches
+ a &lt;code&gt;hide&lt;/code&gt; event.
+ In either case the children of the object does not emit a
+ &lt;code&gt;show&lt;/code&gt; or &lt;code&gt;hide&lt;/code&gt; event unless the object
+ has specifically written an implementation to do so.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="isPopUp" type="boolean">
+					<annotation>
+						<documentation>Set to &lt;code&gt;true&lt;/code&gt; by the PopUpManager to indicate
+ that component has been popped up.</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="minWidth" type="double">
+					<annotation>
+						<documentation>The minimum recommended width of the component to be considered
+ by the parent during layout. This value is in the
+ component's coordinates, in pixels. The default value depends on
+ the component's implementation.
+
+ &lt;p&gt;If the application developer sets the value of minWidth,
+ the new value is stored in explicitMinWidth. The default value of minWidth
+ does not change. As a result, at layout time, if
+ minWidth was explicitly set by the application developer, then the value of
+ explicitMinWidth is used for the component's minimum recommended width.
+ If minWidth is not set explicitly by the application developer, then the value of
+ measuredMinWidth is used.&lt;/p&gt;
+
+ &lt;p&gt;This value is used by the container in calculating
+ the size and position of the component.
+ It is not used by the component itself in determining
+ its default size.
+ Thus this property may not have any effect if parented by
+ Container, or containers that don't factor in
+ this property.
+ Because the value is in component coordinates,
+ the true &lt;code&gt;minWidth&lt;/code&gt; with respect to its parent
+ is affected by the &lt;code&gt;scaleX&lt;/code&gt; property.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="includeInLayout" type="boolean">
+					<annotation>
+						<documentation>Specifies whether this component is included in the layout of the
+ parent container.
+ If &lt;code&gt;true&lt;/code&gt;, the object is included in its parent container's
+ layout and is sized and positioned by its parent container as per its layout rules.
+ If &lt;code&gt;false&lt;/code&gt;, the object size and position are not affected by its parent container's
+ layout.</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="uid" type="string">
+					<annotation>
+						<documentation>A unique identifier for the object.
+ Flex data-driven controls, including all controls that are
+ subclasses of List class, use a UID to track data provider items.
+
+ &lt;p&gt;Flex can automatically create and manage UIDs.
+ However, there are circumstances when you must supply your own
+ &lt;code&gt;uid&lt;/code&gt; property by implementing the IUID interface,
+ or when supplying your own &lt;code&gt;uid&lt;/code&gt; property improves processing efficiency.
+ UIDs do not need to be universally unique for most uses in Flex.
+ One exception is for messages sent by data services.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="x" type="double">
+					<annotation>
+						<documentation>Number that specifies the component's horizontal position,
+ in pixels, within its parent container.
+
+ &lt;p&gt;Setting this property directly or calling &lt;code&gt;move()&lt;/code&gt;
+ has no effect -- or only a temporary effect -- if the
+ component is parented by a layout container such as HBox, Grid,
+ or Form, because the layout calculations of those containers
+ set the &lt;code&gt;x&lt;/code&gt; position to the results of the calculation.
+ However, the &lt;code&gt;x&lt;/code&gt; property must almost always be set
+ when the parent is a Canvas or other absolute-positioning
+ container because the default value is 0.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="explicitMaxWidth" type="double">
+					<annotation>
+						<documentation>The maximum recommended width of the component to be considered
+ by the parent during layout. This value is in the
+ component's coordinates, in pixels.
+
+ &lt;p&gt;Application developers typically do not set the explicitMaxWidth property. Instead, they
+ set the value of the maxWidth property, which sets the explicitMaxWidth property. The
+ value of maxWidth does not change.&lt;/p&gt;
+
+ &lt;p&gt;At layout time, if maxWidth was explicitly set by the application developer, then
+ the value of explicitMaxWidth is used. Otherwise, the default value for maxWidth
+ is used.&lt;/p&gt;
+
+ &lt;p&gt;This value is used by the container in calculating
+ the size and position of the component.
+ It is not used by the component itself in determining
+ its default size.
+ Thus this property may not have any effect if parented by
+ Container, or containers that don't factor in
+ this property.
+ Because the value is in component coordinates,
+ the true &lt;code&gt;maxWidth&lt;/code&gt; with respect to its parent
+ is affected by the &lt;code&gt;scaleX&lt;/code&gt; property.
+ Some components have no theoretical limit to their width.
+ In those cases their &lt;code&gt;maxWidth&lt;/code&gt; is set to
+ &lt;code&gt;UIComponent.DEFAULT_MAX_WIDTH&lt;/code&gt;.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="scaleY" type="double">
+					<annotation>
+						<documentation>Number that specifies the vertical scaling factor.
+
+ &lt;p&gt;The default value is 1.0, which means that the object
+ is not scaled.
+ A &lt;code&gt;scaleY&lt;/code&gt; of 2.0 means the object has been
+ magnified by a factor of 2, and a &lt;code&gt;scaleY&lt;/code&gt; of 0.5
+ means the object has been reduced by a factor of 2.&lt;/p&gt;
+
+ &lt;p&gt;A value of 0.0 is an invalid value.
+ Rather than setting it to 0.0, set it to a small value, or set
+ the &lt;code&gt;visible&lt;/code&gt; property to &lt;code&gt;false&lt;/code&gt; to hide the component.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="validationSubField" type="string">
+					<annotation>
+						<documentation>Used by a validator to associate a subfield with this component.</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="measuredMinHeight" type="double">
+					<annotation>
+						<documentation>The default minimum height of the component, in pixels.
+ This value is set by the &lt;code&gt;measure()&lt;/code&gt; method.</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="explicitMaxHeight" type="double">
+					<annotation>
+						<documentation>The maximum recommended height of the component to be considered
+ by the parent during layout. This value is in the
+ component's coordinates, in pixels.
+
+ &lt;p&gt;Application developers typically do not set the explicitMaxHeight property. Instead, they
+ set the value of the maxHeight property, which sets the explicitMaxHeight property. The
+ value of maxHeight does not change.&lt;/p&gt;
+
+ &lt;p&gt;At layout time, if maxHeight was explicitly set by the application developer, then
+ the value of explicitMaxHeight is used. Otherwise, the default value for maxHeight
+ is used.&lt;/p&gt;
+
+ &lt;p&gt;This value is used by the container in calculating
+ the size and position of the component.
+ It is not used by the component itself in determining
+ its default size.
+ Thus this property may not have any effect if parented by
+ Container, or containers that don't factor in
+ this property.
+ Because the value is in component coordinates,
+ the true &lt;code&gt;maxHeight&lt;/code&gt; with respect to its parent
+ is affected by the &lt;code&gt;scaleY&lt;/code&gt; property.
+ Some components have no theoretical limit to their height.
+ In those cases their &lt;code&gt;maxHeight&lt;/code&gt; is set to
+ &lt;code&gt;UIComponent.DEFAULT_MAX_HEIGHT&lt;/code&gt;.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="width" type="double">
+					<annotation>
+						<documentation>Number that specifies the width of the component, in pixels,
+ in the parent's coordinates.
+ The default value is 0, but this property contains the actual component
+ width after Flex completes sizing the components in your application.
+
+ &lt;p&gt;Note: You can specify a percentage value in the MXML
+ &lt;code&gt;width&lt;/code&gt; attribute, such as &lt;code&gt;width="100%"&lt;/code&gt;,
+ but you cannot use a percentage value in the &lt;code&gt;width&lt;/code&gt;
+ property in ActionScript.
+ Use the &lt;code&gt;percentWidth&lt;/code&gt; property instead.&lt;/p&gt;
+
+ &lt;p&gt;Setting this property causes a &lt;code&gt;resize&lt;/code&gt; event to
+ be dispatched.
+ See the &lt;code&gt;resize&lt;/code&gt; event for details on when
+ this event is dispatched.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="y" type="double">
+					<annotation>
+						<documentation>Number that specifies the component's vertical position,
+ in pixels, within its parent container.
+
+ &lt;p&gt;Setting this property directly or calling &lt;code&gt;move()&lt;/code&gt;
+ has no effect -- or only a temporary effect -- if the
+ component is parented by a layout container such as HBox, Grid,
+ or Form, because the layout calculations of those containers
+ set the &lt;code&gt;x&lt;/code&gt; position to the results of the calculation.
+ However, the &lt;code&gt;x&lt;/code&gt; property must almost always be set
+ when the parent is a Canvas or other absolute-positioning
+ container because the default value is 0.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="measuredMinWidth" type="double">
+					<annotation>
+						<documentation>The default minimum width of the component, in pixels.
+ This value is set by the &lt;code&gt;measure()&lt;/code&gt; method.</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="explicitHeight" type="double">
+					<annotation>
+						<documentation>Number that specifies the explicit height of the component,
+ in pixels, in the component's coordinates.
+
+ &lt;p&gt;This value is used by the container in calculating
+ the size and position of the component.
+ It is not used by the component itself in determining
+ its default size.
+ Thus this property may not have any effect if parented by
+ Container, or containers that don't factor in
+ this property.
+ Because the value is in component coordinates,
+ the true &lt;code&gt;explicitHeight&lt;/code&gt; with respect to its parent
+ is affected by the &lt;code&gt;scaleY&lt;/code&gt; property.&lt;/p&gt;
+ &lt;p&gt;Setting the &lt;code&gt;height&lt;/code&gt; property also sets this property to
+ the specified height value.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="explicitMinWidth" type="double">
+					<annotation>
+						<documentation>The minimum recommended width of the component to be considered
+ by the parent during layout. This value is in the
+ component's coordinates, in pixels.
+
+ &lt;p&gt;Application developers typically do not set the explicitMinWidth property. Instead, they
+ set the value of the minWidth property, which sets the explicitMinWidth property. The
+ value of minWidth does not change.&lt;/p&gt;
+
+ &lt;p&gt;At layout time, if minWidth was explicitly set by the application developer, then
+ the value of explicitMinWidth is used. Otherwise, the value of measuredMinWidth
+ is used.&lt;/p&gt;
+
+ &lt;p&gt;This value is used by the container in calculating
+ the size and position of the component.
+ It is not used by the component itself in determining
+ its default size.
+ Thus this property may not have any effect if parented by
+ Container, or containers that don't factor in
+ this property.
+ Because the value is in component coordinates,
+ the true &lt;code&gt;minWidth&lt;/code&gt; with respect to its parent
+ is affected by the &lt;code&gt;scaleX&lt;/code&gt; property.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="processedDescriptors" type="boolean">
+					<annotation>
+						<documentation>Set to &lt;code&gt;true&lt;/code&gt; after immediate or deferred child creation,
+ depending on which one happens. For a Container object, it is set
+ to &lt;code&gt;true&lt;/code&gt; at the end of
+ the &lt;code&gt;createComponentsFromDescriptors()&lt;/code&gt; method,
+ meaning after the Container object creates its children from its child descriptors.
+
+ &lt;p&gt;For example, if an Accordion container uses deferred instantiation,
+ the &lt;code&gt;processedDescriptors&lt;/code&gt; property for the second pane of
+ the Accordion container does not become &lt;code&gt;true&lt;/code&gt; until after
+ the user navigates to that pane and the pane creates its children.
+ But, if the Accordion had set the &lt;code&gt;creationPolicy&lt;/code&gt; property
+ to &lt;code&gt;"all"&lt;/code&gt;, the &lt;code&gt;processedDescriptors&lt;/code&gt; property
+ for its second pane is set to &lt;code&gt;true&lt;/code&gt; during application startup.&lt;/p&gt;
+
+ &lt;p&gt;For classes that are not containers, which do not have descriptors,
+ it is set to &lt;code&gt;true&lt;/code&gt; after the &lt;code&gt;createChildren()&lt;/code&gt;
+ method creates any internal component children.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="percentHeight" type="double">
+					<annotation>
+						<documentation>Specifies the height of a component as a percentage
+ of its parent's size. Allowed values are 0-100. The default value is NaN.
+ Setting the &lt;code&gt;height&lt;/code&gt; or &lt;code&gt;explicitHeight&lt;/code&gt; properties
+ resets this property to NaN.
+
+ &lt;p&gt;This property returns a numeric value only if the property was
+ previously set; it does not reflect the exact size of the component
+ in percent.&lt;/p&gt;
+
+ &lt;p&gt;This property is always set to NaN for the UITextField control.&lt;/p&gt;
+ 
+ &lt;p&gt;When used with Spark layouts, this property is used to calculate the
+ height of the component's bounds after scaling and rotation. For example 
+ if the component is rotated at 90 degrees, then specifying 
+ &lt;code&gt;percentHeight&lt;/code&gt; will affect the component's width.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="layoutDirection" type="string">
+					<annotation>
+						<documentation>Changes to the layoutDirection style cause an invalidateProperties() call,
+ see StyleProtoChain/styleChanged().  At commitProperties() time we use
+ invalidateLayoutDirection() to add/remove the mirroring transform.
+
+ layoutDirection=undefined or layoutDirection=null has the same effect
+ as setStyle(“layoutDirection”, undefined).</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="id" type="string">
+					<annotation>
+						<documentation>ID of the component. This value becomes the instance name of the object
+ and should not contain any white space or special characters. Each component
+ throughout an application should have a unique id.
+
+ &lt;p&gt;If your application is going to be tested by third party tools, give each component
+ a meaningful id. Testing tools use ids to represent the control in their scripts and
+ having a meaningful name can make scripts more readable. For example, set the
+ value of a button to submit_button rather than b1 or button1.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="UIComponent" type="mx:IUIComponent"/>
 	<complexType mixed="false" name="IWindowedApplication">
 		<complexContent>
 			<extension base="mx:IApplication">
 				<sequence minOccurs="0" maxOccurs="unbounded">
 					<group ref="mx:Components"/>
 				</sequence>
-				<attribute name="width" type="double"/>
-				<attribute name="autoExit" type="boolean"/>
-				<attribute name="height" type="double"/>
-				<attribute name="maxHeight" type="double"/>
-				<attribute name="minHeight" type="double"/>
-				<attribute name="status" type="string"/>
-				<attribute name="title" type="string"/>
-				<attribute name="minWidth" type="double"/>
-				<attribute name="visible" type="boolean"/>
-				<attribute name="alwaysInFront" type="boolean"/>
-				<attribute name="showStatusBar" type="boolean"/>
-				<attribute name="maxWidth" type="double"/>
+				<attribute name="height" type="double">
+					<annotation>
+						<documentation>Also sets the stage's height.</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="minHeight" type="double">
+					<annotation>
+						<documentation>Specifies the minimum height of the application's window.</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="minWidth" type="double">
+					<annotation>
+						<documentation>Specifies the minimum width of the application's window.</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="showStatusBar" type="boolean">
+					<annotation>
+						<documentation>If &lt;code&gt;true&lt;/code&gt;, the status bar is visible.
+
+ &lt;p&gt;The status bar only appears when you use the WindowedApplicationSkin
+ class or the SparkChromeWindowedApplicationSkin class as the skin for 
+ your application or any of your application's windows.&lt;/p&gt;</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="status" type="string">
+					<annotation>
+						<documentation>The string that appears in the status bar, if it is visible.</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="autoExit" type="boolean">
+					<annotation>
+						<documentation>Specifies whether the AIR application will quit when the last
+ window closes or will continue running in the background.</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="title" type="string">
+					<annotation>
+						<documentation>The title that appears in the window title bar and
+ the taskbar.
+
+ If you are using system chrome and you set this property to something
+ different than the &amp;lt;title&amp;gt; tag in your application.xml,
+ you may see the title from the XML file appear briefly first.</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="maxWidth" type="double">
+					<annotation>
+						<documentation>Specifies the maximum width of the application's window.</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="visible" type="boolean">
+					<annotation>
+						<documentation>Also sets the NativeWindow's visibility.</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="maxHeight" type="double">
+					<annotation>
+						<documentation>Specifies the maximum height of the application's window.</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="width" type="double">
+					<annotation>
+						<documentation>Also sets the stage's width.</documentation>
+					</annotation>
+				</attribute>
 			</extension>
 		</complexContent>
 	</complexType>
 	<element name="WindowedApplication" type="mx:IWindowedApplication"/>
-	<complexType mixed="false" name="ITextBase">
+	<complexType mixed="false" name="IBox">
 		<complexContent>
-			<extension base="mx:IUIComponent">
+			<extension base="mx:IContainer">
 				<sequence minOccurs="0" maxOccurs="unbounded">
 					<group ref="mx:Components"/>
 				</sequence>
-				<attribute name="text" type="string"/>
-				<attribute name="maxDisplayedLines" type="int"/>
-				<attribute name="visible" type="boolean"/>
-				<attribute name="showTruncationTip" type="boolean"/>
+				<attribute name="direction" type="string">
+					<annotation>
+						<documentation>The direction in which this Box container lays out its children.
+ Possible MXML values are
+ &lt;code&gt;"horizontal"&lt;/code&gt; and &lt;code&gt;"vertical"&lt;/code&gt;.
+ Possible values in ActionScript are &lt;code&gt;BoxDirection.HORIZONTAL&lt;/code&gt;
+ and &lt;code&gt;BoxDirection.VERTICAL&lt;/code&gt;.</documentation>
+					</annotation>
+				</attribute>
 			</extension>
 		</complexContent>
 	</complexType>
-	<element name="TextBase" type="mx:ITextBase"/>
+	<element name="Box" type="mx:IBox"/>
+	<complexType mixed="false" name="IVBox">
+		<complexContent>
+			<extension base="mx:IBox">
+				<sequence minOccurs="0" maxOccurs="unbounded">
+					<group ref="mx:Components"/>
+				</sequence>
+				<attribute name="direction" type="string">
+					<annotation>
+						<documentation>Don't allow user to change the direction</documentation>
+					</annotation>
+				</attribute>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="VBox" type="mx:IVBox"/>
+	<complexType mixed="false" name="IHBox">
+		<complexContent>
+			<extension base="mx:IBox">
+				<sequence minOccurs="0" maxOccurs="unbounded">
+					<group ref="mx:Components"/>
+				</sequence>
+				<attribute name="direction" type="string">
+					<annotation>
+						<documentation>Don't allow user to change the direction</documentation>
+					</annotation>
+				</attribute>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="HBox" type="mx:IHBox"/>
 	<complexType mixed="false" name="ISkinnableContainer">
 		<complexContent>
 			<extension base="mx:ISkinnableContainerBase">
@@ -224,54 +949,25 @@
 		</complexContent>
 	</complexType>
 	<element name="SkinnableContainer" type="mx:ISkinnableContainer"/>
-	<complexType mixed="false" name="IApplication">
-		<complexContent>
-			<extension base="mx:ISkinnableContainer">
-				<sequence minOccurs="0" maxOccurs="unbounded">
-					<group ref="mx:Components"/>
-				</sequence>
-				<attribute name="percentWidth" type="double"/>
-				<attribute name="tabIndex" type="int"/>
-				<attribute name="percentHeight" type="double"/>
-				<attribute name="toolTip" type="string"/>
-				<attribute name="controlBarVisible" type="boolean"/>
-				<attribute name="colorCorrection" type="string"/>
-				<attribute name="applicationDPI" type="double"/>
-				<attribute name="viewSourceURL" type="string"/>
-			</extension>
-		</complexContent>
-	</complexType>
-	<element name="Application" type="mx:IApplication"/>
-	<complexType mixed="false" name="IHBox">
-		<complexContent>
-			<extension base="mx:IBox">
-				<sequence minOccurs="0" maxOccurs="unbounded">
-					<group ref="mx:Components"/>
-				</sequence>
-				<attribute name="direction" type="string"/>
-			</extension>
-		</complexContent>
-	</complexType>
-	<element name="HBox" type="mx:IHBox"/>
 	<complexType mixed="false" name="ISprite"/>
 	<group name="Components">
 		<choice>
-			<element name="Label" type="mx:ILabel"/>
-			<element name="VBox" type="mx:IVBox"/>
-			<element name="DataGrid" type="mx:IDataGrid"/>
 			<element name="Container" type="mx:IContainer"/>
-			<element name="UIComponent" type="mx:IUIComponent"/>
-			<element name="TitleWindow" type="mx:ITitleWindow"/>
-			<element name="Panel" type="mx:IPanel"/>
 			<element name="FlexSprite" type="mx:IFlexSprite"/>
-			<element name="SkinnableContainerBase" type="mx:ISkinnableContainerBase"/>
-			<element name="SkinnableComponent" type="mx:ISkinnableComponent"/>
-			<element name="Box" type="mx:IBox"/>
-			<element name="WindowedApplication" type="mx:IWindowedApplication"/>
 			<element name="TextBase" type="mx:ITextBase"/>
-			<element name="SkinnableContainer" type="mx:ISkinnableContainer"/>
+			<element name="Panel" type="mx:IPanel"/>
+			<element name="DataGrid" type="mx:IDataGrid"/>
+			<element name="Label" type="mx:ILabel"/>
+			<element name="SkinnableContainerBase" type="mx:ISkinnableContainerBase"/>
+			<element name="TitleWindow" type="mx:ITitleWindow"/>
+			<element name="SkinnableComponent" type="mx:ISkinnableComponent"/>
 			<element name="Application" type="mx:IApplication"/>
+			<element name="UIComponent" type="mx:IUIComponent"/>
+			<element name="WindowedApplication" type="mx:IWindowedApplication"/>
+			<element name="Box" type="mx:IBox"/>
+			<element name="VBox" type="mx:IVBox"/>
 			<element name="HBox" type="mx:IHBox"/>
+			<element name="SkinnableContainer" type="mx:ISkinnableContainer"/>
 		</choice>
 	</group>
 </schema>
