@@ -66,7 +66,8 @@ fn generate_struct(schema: &LogicalSchema, el: &Element) -> Option<String> {
         };
         let typ = match attr.typ.as_str() {
             "string" => "Option<String>",
-            "int" => "Option<i64>",
+            "int" => "Option<i32>",
+            "uint" => "Option<u32>",
             "boolean" => "Option<bool>",
             "double" => "Option<f64>",
             _ => panic!("Unknown type: {}", attr.typ),
